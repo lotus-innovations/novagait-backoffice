@@ -14,6 +14,11 @@ export interface Store {
   expire(key: string, ttlSeconds: number): Promise<void>;
   /** Delete keys of any type. No-op for keys that do not exist (LOT-92). */
   del(keys: string[]): Promise<void>;
+  /**
+   * Atomic integer increment; creates the key at delta if absent. TTL is
+   * applied only on creation (LOT-103: rate/budget/session counters).
+   */
+  incrBy(key: string, delta: number, ttlSeconds?: number): Promise<number>;
 }
 
 interface Entry {
@@ -98,5 +103,25 @@ export class InMemoryStore implements Store {
 
   async del(keys: string[]): Promise<void> {
     for (const key of keys) this.data.delete(key);
+  }
+
+  async incrBy(
+    key: string,
+    delta: number,
+    ttlSeconds?: number,
+  ): Promise<number> {
+    const entry = this.live(key);
+    const current =
+      entry && typeof entry.value === "string" ? Number(entry.value) : 0;
+    const next = current + delta;
+    this.data.set(key, {
+      value: String(next),
+      expiresAt: entry
+        ? entry.expiresAt
+        : ttlSeconds
+          ? Date.now() + ttlSeconds * 1000
+          : null,
+    });
+    return next;
   }
 }

@@ -19,6 +19,7 @@ export interface RedisLike {
   ltrim(key: string, start: number, stop: number): Promise<unknown>;
   expire(key: string, seconds: number): Promise<unknown>;
   del(...keys: string[]): Promise<number>;
+  incrby(key: string, delta: number): Promise<number>;
 }
 
 function asString(value: unknown): string {
@@ -77,6 +78,17 @@ export class RedisStore implements Store {
       const chunk = keys.slice(i, i + 100);
       if (chunk.length > 0) await this.redis.del(...chunk);
     }
+  }
+
+  async incrBy(
+    key: string,
+    delta: number,
+    ttlSeconds?: number,
+  ): Promise<number> {
+    const next = await this.redis.incrby(key, delta);
+    // First increment created the key: stamp the TTL.
+    if (next === delta && ttlSeconds) await this.redis.expire(key, ttlSeconds);
+    return next;
   }
 }
 

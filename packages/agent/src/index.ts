@@ -8,6 +8,7 @@ export * from "./similarity";
 export * from "./kb";
 export * from "./retrieval";
 export * from "./memory";
+export * from "./containment";
 export * from "./loop";
 export * from "./policy-constants";
 export * from "./pricing";

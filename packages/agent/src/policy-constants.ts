@@ -15,6 +15,13 @@ export const MAX_ITERATIONS = 8; // loop cap (spec 13 §1)
 export const RUN_WALL_CLOCK_MS = 90_000;
 export const MAX_RUN_COST_MICRO_USD = 20_000; // $0.02 per run
 
+// Containment layers (spec 13 §1, LOT-103).
+export const DAILY_BUDGET_MICRO_USD = 1_000_000; // $1.00/day, then capacity mode
+export const SESSION_RUN_CAP = 5; // runs per visitor session
+export const IP_LIMIT_PER_HOUR = 10;
+export const IP_LIMIT_PER_DAY = 30;
+export const INTAKE_NOTE_MAX_CHARS = 280;
+
 export function priceToleranceCents(poLineTotalCents: number): number {
   return Math.max(
     Math.round(poLineTotalCents * PRICE_TOLERANCE_PCT),

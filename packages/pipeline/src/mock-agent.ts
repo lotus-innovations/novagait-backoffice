@@ -47,6 +47,9 @@ export interface MockPipelineOptions {
   mode: RunMode;
   // "script": deterministic approver approves pending gates (video/e2e).
   approver?: "script" | "none";
+  // Visitor's free-text intake note (spec 13 §1): injection-screened like
+  // the document itself; a hostile note constrains the route.
+  note?: string;
 }
 
 export interface MockPipelineResult {
@@ -179,9 +182,15 @@ export async function runMockPipeline(
     return finish("rejected", "reject", null);
   }
   const injection = await traceGuardrail(checkInjection(text));
+  const noteScreen = options.note
+    ? await traceGuardrail(checkInjection(options.note))
+    : null;
 
   // --- extraction + lookups (real executor logic, traced) ----------------
-  await machine.transition("extracted");
+  await machine.transition(
+    "extracted",
+    options.note ? { visitor_note: options.note } : {},
+  );
   const vendors = await backend.listVendors();
   const extraction = parseFixture(text, vendors);
 
@@ -250,6 +259,7 @@ export async function runMockPipeline(
   // --- policy guardrails + route (code disposes) -------------------------
   const guardrails = [
     injection,
+    ...(noteScreen ? [noteScreen] : []),
     await traceGuardrail(checkFloor(extraction.total_cents)),
     await traceGuardrail(checkVendor(resolution)),
     await traceGuardrail(checkDuplicate(duplicateOf)),

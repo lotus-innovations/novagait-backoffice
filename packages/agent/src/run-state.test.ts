@@ -134,6 +134,11 @@ describe("RedisStore driver mapping", () => {
         }
         return removed;
       },
+      async incrby(key, delta) {
+        const next = Number(kv.get(key) ?? 0) + delta;
+        kv.set(key, String(next));
+        return next;
+      },
     };
     return { client, calls };
   }
