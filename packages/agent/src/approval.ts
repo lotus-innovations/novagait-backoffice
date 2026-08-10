@@ -86,6 +86,9 @@ export interface ApprovalRecord {
   reason: string | null;
   requested_at: string;
   decided_at: string | null;
+  // Edit-then-approve payload (LOT-104): the approver's corrections to the
+  // drafted payment, applied at execution.
+  edits?: { gl_code?: string; pay_date?: string } | null;
 }
 
 const APPROVAL_TTL_SECONDS = 24 * 60 * 60;
@@ -143,6 +146,7 @@ export async function decideApproval(
     actor: string;
     decision: "approve" | "reject" | "edit_approve";
     reason: string;
+    edits?: { gl_code?: string; pay_date?: string };
   },
 ): Promise<ApprovalRecord> {
   const record = await getApproval(store, approvalId);
@@ -158,6 +162,8 @@ export async function decideApproval(
         : "rejected";
   record.actor = decision.actor;
   record.reason = decision.reason;
+  record.edits =
+    decision.decision === "edit_approve" ? (decision.edits ?? null) : null;
   record.decided_at = new Date().toISOString();
   await store.set(
     approvalKey(approvalId),

@@ -32,6 +32,20 @@ export class TraceWriter {
     this.runId = runId ?? ulid();
   }
 
+  /**
+   * Continue an existing run's trace (approval resume, LOT-104): seq picks
+   * up after the recorded events, so a resumed run appends a second
+   * approval/execution segment and a final run.end. The parked segment's
+   * run.end{outcome:"awaiting_approval"} stays in the list by design; the
+   * run summary hash is overwritten by the final run.end.
+   */
+  static async resume(store: Store, runId: string): Promise<TraceWriter> {
+    const events = await store.listRange(traceKeys.trace(runId), 0, -1);
+    const writer = new TraceWriter(store, runId);
+    writer.seq = events.length;
+    return writer;
+  }
+
   private stamp(input: TraceEventInput): TraceEvent {
     const event = {
       ...input,

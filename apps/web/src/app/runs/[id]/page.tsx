@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getApprovalForRun } from "@novagait/agent";
 import { formatMicroUsd, getRunSummary, getRunTrace } from "@/lib/runs";
 import { getStore } from "@/lib/runtime";
 
@@ -14,6 +16,10 @@ export default async function RunDetailPage({
   const summary = await getRunSummary(store, id);
   const events = await getRunTrace(store, id);
   if (!summary && events.length === 0) notFound();
+  const approval =
+    summary?.outcome === "awaiting_approval"
+      ? await getApprovalForRun(store, id)
+      : null;
 
   return (
     <main>
@@ -48,6 +54,15 @@ export default async function RunDetailPage({
           </tbody>
         </table>
       )}
+      {approval?.status === "pending" ? (
+        <p role="status" className="banner">
+          This run is paused at the approval gate.{" "}
+          <Link href={`/approvals/${approval.approval_id}`}>
+            Review and decide
+          </Link>
+          .
+        </p>
+      ) : null}
       <p>
         <a href={`/api/runs/${id}/trace.jsonl`}>
           Download the full trace (jsonl)

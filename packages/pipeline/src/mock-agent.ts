@@ -31,6 +31,7 @@ import {
   type VendorProfileUpdate,
 } from "@novagait/agent";
 import { MockBackend } from "@novagait/mock-backend";
+import { buildExecutor } from "./execute";
 import { decideRoute, matchInvoice } from "./match";
 import { parseFixture } from "./parse";
 
@@ -341,7 +342,32 @@ export async function runMockPipeline(
     },
   );
 
-  await machine.transition("decided", { route, policy_line: policyLine });
+  // Stash everything the approver screen and a resume need (LOT-104):
+  // the full extraction (evidence with source spans), match result, and
+  // the execution essentials for the drafted payment.
+  const execution =
+    resolution !== null
+      ? {
+          vendor_id: resolution,
+          invoice_number: extraction.invoice_number,
+          total_cents: extraction.total_cents,
+          gl_code:
+            profile?.learned_gl_code ??
+            vendors.find((v) => v.id === resolution)!.default_gl_code,
+          pay_date:
+            extraction.due_date ?? new Date().toISOString().slice(0, 10),
+          inbox_item_id: item.id,
+        }
+      : null;
+  await machine.transition("decided", {
+    route,
+    policy_line: policyLine,
+    draft_ref: draftRef,
+    extraction,
+    match,
+    execution,
+    kb_citation: kbHits[0]?.citation ?? null,
+  });
 
   if (route === "reject") {
     await machine.transition("rejected");
@@ -356,6 +382,9 @@ export async function runMockPipeline(
   }
 
   // --- approve routes: through the gate (GR-EXEC) ------------------------
+  // The gl_code / pay_date in `execution` already encode the learned-GL
+  // override and due-date policy; the executor is shared with the approval
+  // resume path (execute.ts) so first pass and resume can never drift.
   const gate = gateExecuteAction(
     {
       store,
@@ -369,65 +398,7 @@ export async function runMockPipeline(
         mode,
       },
     },
-    async (simulated) => {
-      const vendor = vendors.find((v) => v.id === resolution)!;
-      if (!simulated) {
-        await backend.postToLedger({
-          id: `LED-${writer.runId.slice(-6)}`,
-          vendor_id: vendor.id,
-          invoice_number: extraction.invoice_number,
-          amount_cents: extraction.total_cents,
-          posted_date: new Date().toISOString().slice(0, 10),
-          run_id: writer.runId,
-        });
-      }
-      await writer.append({
-        type: "backend.write",
-        node_id: nodeIds.execute("ledger"),
-        table: "ledger",
-        row_id: `LED-${writer.runId.slice(-6)}`,
-        simulated,
-      });
-      const paymentRow = {
-        id: `PAY-${writer.runId.slice(-6)}`,
-        vendor_id: vendor.id,
-        amount_cents: extraction.total_cents,
-        // Learned GL code from the vendor profile wins over the master
-        // default (gl-coding policy).
-        gl_code: profile?.learned_gl_code ?? vendor.default_gl_code,
-        pay_date: extraction.due_date ?? new Date().toISOString().slice(0, 10),
-        run_id: writer.runId,
-        status: "scheduled" as const,
-      };
-      if (!simulated) {
-        try {
-          await backend.schedulePayment(paymentRow);
-        } catch {
-          // Transient failure (failure toggle): alert lands in the trace,
-          // one retry, success. The "integration is real" beat.
-          await writer.append({
-            type: "backend.write",
-            node_id: nodeIds.execute("payment_schedule"),
-            table: "payment_schedule",
-            row_id: "(transient failure, retrying)",
-            simulated,
-          });
-          await backend.schedulePayment(paymentRow);
-        }
-        await backend.setInboxState(item.id, "processed");
-      }
-      await writer.append({
-        type: "backend.write",
-        node_id: nodeIds.execute("payment_schedule"),
-        table: "payment_schedule",
-        row_id: paymentRow.id,
-        simulated,
-      });
-      return JSON.stringify({
-        ledger: `LED-${writer.runId.slice(-6)}`,
-        payment: paymentRow.id,
-      });
-    },
+    buildExecutor({ backend, writer, execution: execution! }),
   );
 
   const runGate = (): Promise<GateOutcome> =>
