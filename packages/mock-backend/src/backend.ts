@@ -5,10 +5,8 @@
 // Date-format inconsistency and the vendor-name variant live in the
 // fixtures, not here.
 
-import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import { join, normalize } from "node:path";
 import type { Store } from "@novagait/agent";
+import { FIXTURES } from "./fixtures.generated";
 import {
   INBOX_SEED,
   LEDGER_HISTORY,
@@ -39,8 +37,6 @@ const KEYS = {
 } as const;
 
 export const PO_PAGE_SIZE = 5;
-
-const FIXTURES_DIR = fileURLToPath(new URL("../fixtures", import.meta.url));
 
 export interface MockBackendOptions {
   // Latency jitter 50-300ms (spec 11 §3). Off in unit tests.
@@ -216,14 +212,14 @@ export class MockBackend {
     await this.writeJson(KEYS.inbox, items);
   }
 
-  // Fixture names come from seeded data, but normalize and contain anyway:
-  // fixture reads must never escape the fixtures directory.
+  // Fixtures are compiled into the bundle (fixtures.generated.ts) so the
+  // backend is bundler/serverless-safe; the files on disk stay the source
+  // of truth and a unit test fails on drift. Unknown names throw, which
+  // also closes the path-traversal surface entirely.
   async readFixture(fixture: string): Promise<string> {
-    const resolved = normalize(join(FIXTURES_DIR, fixture));
-    if (!resolved.startsWith(FIXTURES_DIR)) {
-      throw new Error(`fixture path escapes fixtures dir: ${fixture}`);
-    }
-    return readFile(resolved, "utf8");
+    const text = FIXTURES[fixture];
+    if (text === undefined) throw new Error(`unknown fixture: ${fixture}`);
+    return text;
   }
 
   // --- records -----------------------------------------------------------

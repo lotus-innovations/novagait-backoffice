@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gen:fixtures": "node scripts/generate-fixtures.mjs"
   },
   "dependencies": {
     "@novagait/agent": "*"

@@ -96,9 +96,9 @@ describe("MockBackend", () => {
     expect((await backend.getInboxItem("INB-001"))?.state).toBe("processing");
   });
 
-  it("refuses fixture paths that escape the fixtures directory", async () => {
+  it("refuses unknown fixture names (no fs, no traversal surface)", async () => {
     await expect(backend.readFixture("../../package.json")).rejects.toThrow(
-      /escapes fixtures dir/,
+      /unknown fixture/,
     );
   });
 

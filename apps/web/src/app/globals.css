@@ -1,0 +1,163 @@
+:root {
+  --ink: #1c2026;
+  --muted: #5b6472;
+  --bg: #ffffff;
+  --panel: #f4f6f8;
+  --line: #d9dde3;
+  --accent: #1f5fbf;
+  --good: #1e7d4f;
+  --warn: #b3651a;
+  --bad: #b02a37;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+header.site {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex;
+  gap: 20px;
+  align-items: baseline;
+}
+
+header.site .brand {
+  font-weight: 700;
+}
+
+header.site nav {
+  display: flex;
+  gap: 14px;
+}
+
+header.site a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+header.site a:hover,
+header.site a:focus-visible {
+  text-decoration: underline;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+footer.site {
+  max-width: 1000px;
+  margin: 24px auto 0;
+  padding: 14px 24px 32px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--panel);
+}
+
+code {
+  background: var(--panel);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  word-break: break-all;
+}
+
+a {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.outcome-executed {
+  color: var(--good);
+  font-weight: 600;
+}
+
+.outcome-held,
+.outcome-awaiting_approval {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.outcome-rejected,
+.outcome-error,
+.outcome-cost_capped,
+.outcome-iteration_capped {
+  color: var(--bad);
+  font-weight: 600;
+}
+
+details.event {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: 8px 0;
+  background: var(--bg);
+}
+
+details.event > summary {
+  cursor: pointer;
+  padding: 8px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+}
+
+details.event[open] > summary {
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+details.event pre {
+  margin: 0;
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  background: var(--bg);
+}
+
+.empty {
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
