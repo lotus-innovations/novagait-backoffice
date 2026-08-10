@@ -3,26 +3,32 @@
 // end to end with no model and no key: this is what CI, previews, and e2e
 // exercise. Deterministic by construction.
 
-import { createHash } from "node:crypto";
 import {
+  DedupeLedger,
+  MEMORY_STORE_NAMES,
   PROMPT_VERSION,
   RunStateMachine,
   TOOLS_VERSION,
   TraceWriter,
+  VendorProfileStore,
   checkDuplicate,
   checkFloor,
   checkInjection,
   checkScope,
   checkVendor,
   constrainRoute,
+  contentDigest,
   decideApproval,
   gateExecuteAction,
   nodeIds,
+  searchKb,
   type GateOutcome,
   type GuardrailResult,
   type RunMode,
   type RunOutcome,
   type Store,
+  type VendorProfile,
+  type VendorProfileUpdate,
 } from "@novagait/agent";
 import { MockBackend } from "@novagait/mock-backend";
 import { decideRoute, matchInvoice } from "./match";
@@ -57,10 +63,9 @@ export async function runMockPipeline(
   const item = await backend.getInboxItem(options.inboxItemId);
   if (!item) throw new Error(`unknown inbox item: ${options.inboxItemId}`);
   const text = await backend.readFixture(item.fixture);
-  const digest = createHash("sha256")
-    .update(text.replace(/\s+/g, " ").trim())
-    .digest("hex")
-    .slice(0, 16);
+  const digest = contentDigest(text);
+  const dedupe = new DedupeLedger(store);
+  const profiles = new VendorProfileStore(store);
 
   const writer = new TraceWriter(store);
   const machine = await RunStateMachine.create(store, {
@@ -92,6 +97,32 @@ export async function runMockPipeline(
     });
     return result;
   };
+
+  const traceMemoryRead = async (
+    storeName: string,
+    key: string,
+    hit: boolean,
+  ) =>
+    writer.append({
+      type: "memory.read",
+      node_id: nodeIds.memory(storeName),
+      store: storeName,
+      key,
+      hit,
+    });
+
+  const traceMemoryWrite = async (
+    storeName: string,
+    key: string,
+    fieldDiff: Record<string, string>,
+  ) =>
+    writer.append({
+      type: "memory.write",
+      node_id: nodeIds.memory(storeName),
+      store: storeName,
+      key,
+      field_diff: fieldDiff,
+    });
 
   const traceCall = async <T>(
     name: string,
@@ -161,6 +192,18 @@ export async function runMockPipeline(
     async () => extraction.vendor_id,
   );
 
+  // Vendor profile read at match time (spec 07 §9): the second run for a
+  // vendor is visibly better-informed (learned GL code, history).
+  let profile: VendorProfile | null = null;
+  if (resolution) {
+    profile = await profiles.get(resolution);
+    await traceMemoryRead(
+      MEMORY_STORE_NAMES.vendorProfiles,
+      `vendor:${resolution}`,
+      profile !== null,
+    );
+  }
+
   const po = extraction.po_reference
     ? await traceCall("lookup_po", 0, { po_id: extraction.po_reference }, () =>
         backend.getPurchaseOrder(extraction.po_reference!),
@@ -173,7 +216,12 @@ export async function runMockPipeline(
         )
       : null;
 
-  const priorSeen = await store.get(`seen:${digest}`);
+  const priorSeen = await dedupe.check(digest);
+  await traceMemoryRead(
+    MEMORY_STORE_NAMES.dedupe,
+    `seen:${digest}`,
+    priorSeen !== null,
+  );
   const ledgerDup =
     extraction.vendor_id !== null &&
     (await backend.invoiceExists(
@@ -191,7 +239,10 @@ export async function runMockPipeline(
     },
     async () => ({ duplicate: duplicateOf !== null, prior: duplicateOf }),
   );
-  await store.set(`seen:${digest}`, writer.runId, 24 * 60 * 60);
+  await dedupe.record(digest, writer.runId);
+  await traceMemoryWrite(MEMORY_STORE_NAMES.dedupe, `seen:${digest}`, {
+    run_id: writer.runId,
+  });
 
   await machine.transition("matched");
   const match = matchInvoice(extraction, po, receiving);
@@ -211,10 +262,52 @@ export async function runMockPipeline(
   });
   const constrained = constrainRoute(proposed.route, guardrails);
   const route = constrained.route;
+
+  // Ground the policy line in the kb (LOT-94): one retrieval per run, the
+  // top excerpt's citation rides along to the approver.
+  const kbQuery =
+    duplicateOf !== null
+      ? "duplicate invoice resubmission handling"
+      : resolution === null
+        ? "unresolved vendor name resolution"
+        : match.exceptions.includes("price_variance_exceeds_tolerance")
+          ? "tolerance for price variance"
+          : match.exceptions.length > 0
+            ? "three-way match exceptions and holds"
+            : "autonomy cap and approval authority";
+  const kbHits = await traceCall("kb_search", 1, { query: kbQuery }, async () =>
+    searchKb(kbQuery, 1),
+  );
+  const citation = kbHits[0] ? ` [${kbHits[0].citation}]` : "";
+
   const policyLine =
-    constrained.constrained_by.length > 0
+    (constrained.constrained_by.length > 0
       ? `${proposed.reason}; constrained by ${constrained.constrained_by.join(", ")}`
-      : proposed.reason;
+      : proposed.reason) + citation;
+
+  // Bounded profile write via tool call after a completed run (spec 07 §9):
+  // last_seen always, exception count on holds. Audited: tool.call +
+  // memory.write both land in the trace.
+  const writeVendorProfile = async (fields: VendorProfileUpdate) => {
+    if (!resolution) return;
+    const canonical = vendors.find((v) => v.id === resolution)?.canonical_name;
+    const { diff } = await traceCall(
+      "update_vendor_profile",
+      3,
+      { vendor_id: resolution, fields: fields as Record<string, unknown> },
+      () =>
+        profiles.applyUpdate(resolution, {
+          ...fields,
+          canonical_name: canonical,
+        }),
+    );
+    await traceMemoryWrite(
+      MEMORY_STORE_NAMES.vendorProfiles,
+      `vendor:${resolution}`,
+      diff,
+    );
+  };
+  const today = new Date().toISOString().slice(0, 10);
 
   const draftRef = await traceCall(
     "draft_action",
@@ -246,6 +339,7 @@ export async function runMockPipeline(
     return finish("rejected", route, null);
   }
   if (route === "exception_hold") {
+    await writeVendorProfile({ last_seen: today, exception_increment: 1 });
     await machine.transition("held", { exceptions: match.exceptions });
     await backend.setInboxState(item.id, "held");
     return finish("held", route, null);
@@ -288,7 +382,9 @@ export async function runMockPipeline(
         id: `PAY-${writer.runId.slice(-6)}`,
         vendor_id: vendor.id,
         amount_cents: extraction.total_cents,
-        gl_code: vendor.default_gl_code,
+        // Learned GL code from the vendor profile wins over the master
+        // default (gl-coding policy).
+        gl_code: profile?.learned_gl_code ?? vendor.default_gl_code,
         pay_date: extraction.due_date ?? new Date().toISOString().slice(0, 10),
         run_id: writer.runId,
         status: "scheduled" as const,
@@ -368,6 +464,7 @@ export async function runMockPipeline(
       machine.state.data.approval_id === undefined
         ? null
         : String(machine.state.data.approval_id);
+    await writeVendorProfile({ last_seen: today });
     await machine.transition("executed");
     return finish("executed", route, approvalId);
   }

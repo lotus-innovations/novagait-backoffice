@@ -4,7 +4,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   InMemoryStore,
+  MEMORY_STORE_NAMES,
   RunStateMachine,
+  VendorProfileStore,
   readTrace,
   validateTraceEvent,
 } from "@novagait/agent";
@@ -177,6 +179,85 @@ describe("runMockPipeline end-to-end", () => {
         event.table === "payment_schedule",
     );
     expect(paymentWrites).toHaveLength(2); // failed attempt + success
+  });
+
+  it("memory stores: traced reads/writes, profile accrues, citation lands (LOT-94)", async () => {
+    const first = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    const firstEvents = await trace(first.runId);
+
+    // First run: profile miss, dedupe miss, both writes traced.
+    const profileRead = firstEvents.find(
+      (event) =>
+        event.type === "memory.read" &&
+        event.store === MEMORY_STORE_NAMES.vendorProfiles,
+    );
+    expect(profileRead && "hit" in profileRead && profileRead.hit).toBe(false);
+    const dedupeRead = firstEvents.find(
+      (event) =>
+        event.type === "memory.read" &&
+        event.store === MEMORY_STORE_NAMES.dedupe,
+    );
+    expect(dedupeRead && "hit" in dedupeRead && dedupeRead.hit).toBe(false);
+    expect(
+      firstEvents.some(
+        (event) =>
+          event.type === "memory.write" &&
+          event.store === MEMORY_STORE_NAMES.dedupe,
+      ),
+    ).toBe(true);
+    expect(
+      firstEvents.some(
+        (event) =>
+          event.type === "memory.write" &&
+          event.store === MEMORY_STORE_NAMES.vendorProfiles,
+      ),
+    ).toBe(true);
+
+    // kb_search + update_vendor_profile are real traced tool calls, and the
+    // policy line the approver sees carries the kb citation.
+    const toolNames = firstEvents
+      .filter((event) => event.type === "tool.call")
+      .map((event) => ("name" in event ? event.name : ""));
+    expect(toolNames).toContain("kb_search");
+    expect(toolNames).toContain("update_vendor_profile");
+    const dispositions = await backend.dispositions();
+    expect(
+      dispositions.find((d) => d.run_id === first.runId)?.summary,
+    ).toContain("[Approval Authority");
+
+    // Second run for the same vendor (Corvida reporting invoice) is
+    // visibly better-informed.
+    const second = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-005",
+      mode: "autonomous",
+    });
+    const secondRead = (await trace(second.runId)).find(
+      (event) =>
+        event.type === "memory.read" &&
+        event.store === MEMORY_STORE_NAMES.vendorProfiles,
+    );
+    expect(secondRead && "hit" in secondRead && secondRead.hit).toBe(true);
+  });
+
+  it("learned GL code from the vendor profile overrides the master default", async () => {
+    const profiles = new VendorProfileStore(store);
+    await profiles.applyUpdate("V-001", { learned_gl_code: "6150" });
+    const result = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    expect(result.outcome).toBe("executed");
+    const [payment] = await backend.paymentSchedule();
+    expect(payment.gl_code).toBe("6150");
   });
 
   it("shadow mode simulates execution and touches nothing", async () => {

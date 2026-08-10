@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gen:kb": "node scripts/generate-kb.mjs && prettier --write src/kb.generated.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.0",
