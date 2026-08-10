@@ -161,3 +161,19 @@ details.event pre {
     transition: none !important;
   }
 }
+
+/* Rows written by an agent run (/backend closing-the-loop highlight). */
+.row-agent > td {
+  background: color-mix(in srgb, var(--good) 10%, transparent);
+}
+
+mark {
+  background: color-mix(in srgb, var(--good) 18%, transparent);
+  color: inherit;
+  padding: 0 3px;
+  border-radius: 3px;
+}
+
+main section {
+  margin-top: 28px;
+}

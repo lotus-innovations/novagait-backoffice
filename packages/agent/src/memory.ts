@@ -1,6 +1,6 @@
 // Named, schema'd, bounded, inspectable memory stores (spec 07 §9, arch
 // doc E). Three stores by design: run state (run-state.ts, wired at
-// LOT-88), vendor profiles, and the dedupe ledger — the latter two live
+// LOT-88), vendor profiles, and the dedupe ledger; the latter two live
 // here. Every read/write is traced by the caller as memory.read /
 // memory.write; store methods return what the trace needs (hit flags,
 // field diffs) so call sites cannot forget the numbers.
