@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import "./globals.css";
 
@@ -15,8 +16,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <header className="site">
           <span className="brand">Novagait Back Office</span>
           <nav aria-label="Main">
-            <a href="/">Home</a>
-            <a href="/runs">Runs</a>
+            <Link href="/">Home</Link>
+            <Link href="/runs">Runs</Link>
           </nav>
         </header>
         {children}
