@@ -1,6 +1,7 @@
 export const AGENT_PACKAGE = "@novagait/agent";
 
 export * from "./extraction";
+export * from "./approval";
 export * from "./guardrail-types";
 export * from "./guardrails";
 export * from "./similarity";
