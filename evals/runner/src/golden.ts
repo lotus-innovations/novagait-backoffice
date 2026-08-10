@@ -4,6 +4,7 @@
 // ad hoc in the case file.
 
 import { readdir, readFile } from "node:fs/promises";
+import { TOOL_NAMES } from "@novagait/agent";
 import { join } from "node:path";
 
 export const DECISIONS = [
@@ -17,18 +18,9 @@ export type Decision = (typeof DECISIONS)[number];
 export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 
-// The agent tool surface (spec 07 §9, LOT-89 ticket). Frozen here so a
-// golden case cannot reference a tool that will never exist.
-export const KNOWN_TOOLS = [
-  "lookup_vendor",
-  "lookup_po",
-  "lookup_receiving",
-  "check_duplicate",
-  "draft_action",
-  "update_vendor_profile",
-  "execute_action",
-  "kb_search",
-] as const;
+// The agent tool surface is single-sourced from the agent package
+// (LOT-89): a golden case cannot reference a tool that does not exist.
+export const KNOWN_TOOLS = TOOL_NAMES;
 
 export interface GoldenExpectedFields {
   vendor_id: string | null;
