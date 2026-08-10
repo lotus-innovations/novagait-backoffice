@@ -1,0 +1,27 @@
+name: CI
+
+# Key-free by design: no ANTHROPIC_API_KEY exists anywhere in GitHub (not
+# even as an Actions secret). Unit tests are pure logic; model-in-the-loop
+# eval results are produced locally and committed (see evals/).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
