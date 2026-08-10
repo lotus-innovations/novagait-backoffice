@@ -1,0 +1,25 @@
+{
+  "id": "INV-005",
+  "tags": ["ambiguous", "date-ambiguity"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/2026-08-06-corvida-reporting.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-001",
+      "invoice_number": "CB-2026-0806R",
+      "total_cents": 21000,
+      "currency": "USD",
+      "po_reference": "PO-2210"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Match holds against PO-2210 and $210 is under the cap, but invoice date 5/8/2026 is ambiguous (May 8 vs Aug 5) and due date is prose. Date ambiguity is a minor exception: route for approval, never guess silently."
+}

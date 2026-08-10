@@ -1,0 +1,25 @@
+{
+  "id": "INV-008",
+  "tags": ["price-mismatch"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/2026-08-07-pelora-overbill.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-005",
+      "invoice_number": "PFG-2380",
+      "total_cents": 73500,
+      "currency": "USD",
+      "po_reference": "PO-2206"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Invoice $735.00 vs PO $612.00: +$123 exceeds max(2%, $25) tolerance. Match fails on price: exception hold with variance shown in the draft."
+}

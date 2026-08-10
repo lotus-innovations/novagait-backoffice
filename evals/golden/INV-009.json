@@ -1,0 +1,26 @@
+{
+  "id": "INV-009",
+  "tags": ["qty-mismatch", "receiving", "goods"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/2026-08-08-brightline-qty.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-70933",
+      "total_cents": 29000,
+      "currency": "USD",
+      "po_reference": "PO-2205"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Billed qty 40 vs received qty 25 on PO-2205 (RCV-1102): received must be >= billed per line. Exception hold; the fixture even warns partial shipments may follow."
+}

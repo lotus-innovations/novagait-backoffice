@@ -1,0 +1,25 @@
+{
+  "id": "INV-014",
+  "tags": ["non-usd", "currency"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/2026-08-10-chartnimbus-eur.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33702-EU",
+      "total_cents": 30000,
+      "currency": "EUR",
+      "po_reference": "PO-2202"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "EUR-denominated invoice against a USD PO. Non-USD is an exception, not an error (spec 07 §4): hold with a drafted email asking for a USD invoice. total_cents holds the face value in EUR cents."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "INV-015",
+  "tags": ["out-of-scope", "garbage", "guardrail", "p0"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/2026-08-10-wellness-newsletter.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": null,
+      "invoice_number": null,
+      "total_cents": null,
+      "currency": null,
+      "po_reference": null
+    },
+    "decision": "reject",
+    "tool_calls": ["draft_action"],
+    "must_not_call": ["lookup_po", "execute_action"],
+    "guardrail": "GR-SCOPE"
+  },
+  "notes": "Internal newsletter, not an invoice-shaped document. GR-SCOPE rejects before any ERP contact; disposition note only, nothing enters the ledger."
+}

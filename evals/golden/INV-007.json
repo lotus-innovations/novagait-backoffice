@@ -1,0 +1,25 @@
+{
+  "id": "INV-007",
+  "tags": ["closed-po", "vendor-variant", "fuzzy-match"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/2026-08-07-meridex-closed-po.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-002",
+      "invoice_number": "MEL-9105",
+      "total_cents": 89000,
+      "currency": "USD",
+      "po_reference": "PO-2144"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Vendor printed as 'Meridex Equip. Leasing' must fuzzy-resolve to V-002 (JW >= 0.90), but PO-2144 is closed (lease ended 2026-04-30): exception hold, drafted email asks for a current PO."
+}

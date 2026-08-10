@@ -1,0 +1,20 @@
+{
+  "id": "INV-006",
+  "tags": ["unknown-vendor", "guardrail"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/2026-08-06-lumenpay-unknown.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": null,
+      "invoice_number": "LP-4471",
+      "total_cents": 26000,
+      "currency": "USD",
+      "po_reference": null
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-VENDOR"
+  },
+  "notes": "Vendor absent from the ERP canonical list and no PO. GR-VENDOR forces at most exception_hold regardless of amount."
+}

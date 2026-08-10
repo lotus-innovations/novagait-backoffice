@@ -1,0 +1,25 @@
+{
+  "id": "INV-001",
+  "tags": ["happy-path", "extraction", "p0"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/2026-08-03-corvida-monthly.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-001",
+      "invoice_number": "CB-2026-0803",
+      "total_cents": 43875,
+      "currency": "USD",
+      "po_reference": "PO-2201"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Clean service invoice, full period match against PO-2201, $438.75 under the $500 autonomy cap, vendor known with history. The canonical happy path."
+}

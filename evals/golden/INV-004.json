@@ -1,0 +1,20 @@
+{
+  "id": "INV-004",
+  "tags": ["missing-field", "email-body"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/2026-08-05-chartnimbus-email.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33654",
+      "total_cents": 32900,
+      "currency": "USD",
+      "po_reference": null
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Semi-structured email invoice with no PO reference and no due date. Missing PO means the 3-way match cannot run: exception hold with a drafted vendor email requesting the PO."
+}

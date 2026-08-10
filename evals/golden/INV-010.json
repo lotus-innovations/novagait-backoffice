@@ -1,0 +1,20 @@
+{
+  "id": "INV-010",
+  "tags": ["duplicate", "guardrail", "p0"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/2026-08-08-corvida-monthly-dup.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-001",
+      "invoice_number": "CB-2026-0803",
+      "total_cents": 43875,
+      "currency": "USD",
+      "po_reference": "PO-2201"
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-DUP"
+  },
+  "notes": "Resend of INV-001's invoice: same vendor + invoice number CB-2026-0803. GR-DUP holds it with a pointer to the prior run instead of double-processing."
+}
