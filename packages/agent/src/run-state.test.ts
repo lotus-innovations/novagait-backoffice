@@ -125,6 +125,15 @@ describe("RedisStore driver mapping", () => {
         calls.push(`expire:${key}`);
         return 1;
       },
+      async del(...keys) {
+        calls.push(`del:${keys.join(",")}`);
+        let removed = 0;
+        for (const key of keys) {
+          if (kv.delete(key) || lists.delete(key) || hashes.delete(key))
+            removed++;
+        }
+        return removed;
+      },
     };
     return { client, calls };
   }

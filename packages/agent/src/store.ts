@@ -12,6 +12,8 @@ export interface Store {
   listRange(key: string, start: number, stop: number): Promise<string[]>;
   listTrim(key: string, start: number, stop: number): Promise<void>;
   expire(key: string, ttlSeconds: number): Promise<void>;
+  /** Delete keys of any type. No-op for keys that do not exist (LOT-92). */
+  del(keys: string[]): Promise<void>;
 }
 
 interface Entry {
@@ -92,5 +94,9 @@ export class InMemoryStore implements Store {
     const entry = this.live(key);
     if (!entry) return;
     entry.expiresAt = Date.now() + ttlSeconds * 1000;
+  }
+
+  async del(keys: string[]): Promise<void> {
+    for (const key of keys) this.data.delete(key);
   }
 }

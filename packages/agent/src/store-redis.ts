@@ -18,6 +18,7 @@ export interface RedisLike {
   lrange(key: string, start: number, stop: number): Promise<unknown[]>;
   ltrim(key: string, start: number, stop: number): Promise<unknown>;
   expire(key: string, seconds: number): Promise<unknown>;
+  del(...keys: string[]): Promise<number>;
 }
 
 function asString(value: unknown): string {
@@ -68,6 +69,14 @@ export class RedisStore implements Store {
 
   async expire(key: string, ttlSeconds: number): Promise<void> {
     await this.redis.expire(key, ttlSeconds);
+  }
+
+  async del(keys: string[]): Promise<void> {
+    // Chunked: Upstash REST has a request-size limit and DEL is variadic.
+    for (let i = 0; i < keys.length; i += 100) {
+      const chunk = keys.slice(i, i + 100);
+      if (chunk.length > 0) await this.redis.del(...chunk);
+    }
   }
 }
 
