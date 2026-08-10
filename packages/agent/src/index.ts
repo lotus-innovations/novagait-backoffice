@@ -1,6 +1,7 @@
 export const AGENT_PACKAGE = "@novagait/agent";
 
 export * from "./extraction";
+export * from "./loop";
 export * from "./policy-constants";
 export * from "./pricing";
 export * from "./prompts";

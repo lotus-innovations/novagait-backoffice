@@ -95,7 +95,7 @@ export const toolInputSchemas = {
   }),
 } as const;
 
-const toolDescriptions: Record<ToolName, string> = {
+export const toolDescriptions: Record<ToolName, string> = {
   lookup_vendor:
     "Resolve a printed vendor name against the ERP canonical vendor list. Returns the vendor record or null; fuzzy resolution is reported with its score.",
   lookup_po:
