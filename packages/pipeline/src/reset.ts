@@ -8,10 +8,17 @@
 //   dedupe ledger  -> contentDigest of every fixture (intake is
 //                     seeded-documents-only per spec 13, so these are the
 //                     only digests that can exist)
-// The budget counter named in spec 11 §1 does not exist yet; it arrives
-// with the live-spend lane and joins this list then.
+//   budget counter -> today's and yesterday's UTC day keys
+// Per-IP rate and per-session counters are deliberately NOT cleared (not
+// enumerable without a scan); their TTLs bound them and the spec does not
+// reset visitor limits.
 
-import { contentDigest, traceKeys, type Store } from "@novagait/agent";
+import {
+  budgetKey,
+  contentDigest,
+  traceKeys,
+  type Store,
+} from "@novagait/agent";
 import { FIXTURES, MockBackend, VENDORS } from "@novagait/mock-backend";
 
 export interface ResetSummary {
@@ -41,7 +48,9 @@ export async function resetDemo(store: Store): Promise<ResetSummary> {
     ...new Set(Object.values(FIXTURES).map((text) => contentDigest(text))),
   ].map((digest) => `seen:${digest}`);
 
-  await store.del([...keys, ...vendorKeys, ...dedupeKeys]);
+  const budgetKeys = [budgetKey(), budgetKey(Date.now() - 24 * 60 * 60 * 1000)];
+
+  await store.del([...keys, ...vendorKeys, ...dedupeKeys, ...budgetKeys]);
 
   // seed() overwrites every backend key, including the failure toggle.
   await new MockBackend(store).seed();

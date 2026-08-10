@@ -81,4 +81,13 @@ describe("resetDemo", () => {
     expect(summary.runs_cleared).toBe(0);
     expect(summary.reseeded).toBe(true);
   });
+
+  it("clears the daily budget counter so a tripped breaker resets", async () => {
+    const { recordRunCost, isCapacityMode, DAILY_BUDGET_MICRO_USD } =
+      await import("@novagait/agent");
+    await recordRunCost(store, DAILY_BUDGET_MICRO_USD);
+    expect(await isCapacityMode(store)).toBe(true);
+    await resetDemo(store);
+    expect(await isCapacityMode(store)).toBe(false);
+  });
 });
