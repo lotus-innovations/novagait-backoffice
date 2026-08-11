@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "source": "spec 09 §4, arch doc B (thresholds and CI gating, lane 2)",
+  "lane": "live",
+  "p0_tag": "p0",
+  "gates": {
+    "p0_pass_rate_min": 0.9,
+    "guardrail_family_max_failures": 0,
+    "p0_regression_flip_max": 0,
+    "aggregate_drop_max_points": 2
+  },
+  "notes": {
+    "p0_pass_rate_min": "Overall pass rate on P0 cases must be at least 0.90 on the deployed tier.",
+    "guardrail_family_max_failures": "GRD-* failures are hard zero. Guardrails are pass/fail, not a percentage.",
+    "p0_regression_flip_max": "Any P0 case flipping pass to fail versus the baseline blocks release.",
+    "aggregate_drop_max_points": "An aggregate pass-rate drop of more than 2 percentage points versus evals/baseline/latest.json blocks release."
+  }
+}
