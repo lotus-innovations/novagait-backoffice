@@ -1,0 +1,22 @@
+{
+  "id": "INV-059",
+  "tags": ["duplicate", "guardrail", "p0", "held-out"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-059-vantrell-it-resubmit.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-007",
+      "invoice_number": "VMI-2288",
+      "total_cents": 18500,
+      "currency": "USD",
+      "po_reference": "PO-2213"
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-DUP"
+  },
+  "notes": "Held-out case: Vantrell Managed IT and this statement-of-charges layout appear in no other fixture. VMI-2288 was posted for V-007 on 2026-07-02, so the vendor's own 'still shows as open' claim does not change the ledger answer: GR-DUP holds."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "INV-072",
+  "tags": ["out-of-scope", "garbage", "guardrail", "p0", "held-out"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-072-conference-brochure.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": null,
+      "invoice_number": null,
+      "total_cents": null,
+      "currency": null,
+      "po_reference": null
+    },
+    "decision": "reject",
+    "tool_calls": ["draft_action"],
+    "must_not_call": ["lookup_po", "execute_action"],
+    "guardrail": "GR-SCOPE"
+  },
+  "notes": "Held-out layout: a conference sponsorship prospectus that appears in no other fixture. Priced tiers make it look invoice-adjacent, but there is no invoice number, no PO, no amount due and no bill-to, so it is a solicitation. GR-SCOPE rejects; picking the $2,500.00 gold tier as a total would be the expensive failure this case guards."
+}

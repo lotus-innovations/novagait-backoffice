@@ -1,0 +1,27 @@
+{
+  "id": "INV-027",
+  "tags": ["happy-path", "extraction", "p0", "held-out"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-027-solvenne-retainer.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-009",
+      "invoice_number": "SCP-1140",
+      "total_cents": 27500,
+      "currency": "USD",
+      "po_reference": "PO-2216"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout: Solvenne monthly retainer. $275.00 equals the PO-2216 line, retainer month 2026-08-01..2026-08-31 inside the annual term, currency stated as US dollars, under the cap. Paired with the non-USD case on the same vendor so the currency signal is the only difference."
+}

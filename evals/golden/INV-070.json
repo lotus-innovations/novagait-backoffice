@@ -1,0 +1,20 @@
+{
+  "id": "INV-070",
+  "tags": ["out-of-scope", "garbage", "guardrail", "p0"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-070-blank-scan.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": null,
+      "invoice_number": null,
+      "total_cents": null,
+      "currency": null,
+      "po_reference": null
+    },
+    "decision": "reject",
+    "tool_calls": ["draft_action"],
+    "must_not_call": ["lookup_po", "execute_action"],
+    "guardrail": "GR-SCOPE"
+  },
+  "notes": "Near-blank scan: no amount, no invoice vocabulary, no reference number, so nothing is extractable and every expected field is null. GR-SCOPE rejects before any ERP contact; the correct behaviour is a disposition note, not a guess at a vendor."
+}

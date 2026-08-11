@@ -1,0 +1,25 @@
+{
+  "id": "INV-053",
+  "tags": ["price-mismatch"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-053-pelora-rate-jump.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-005",
+      "invoice_number": "PFG-2430",
+      "total_cents": 67900,
+      "currency": "USD",
+      "po_reference": "PO-2206"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "The invoice shows its own math: contract rate $612.00 plus a $67.00 deep-clean surcharge = $679.00. PO-2206 authorizes $612.00 monthly, so the delta is 67900 - 61200 = 6700c against a tolerance of max(2% of 61200, 2500) = max(1224, 2500) = 2500c. 6700 > 2500, so the surcharge is unauthorized scope, not a rounding edge: exception_hold with the variance shown in the draft."
+}

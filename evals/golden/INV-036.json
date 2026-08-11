@@ -1,0 +1,20 @@
+{
+  "id": "INV-036",
+  "tags": ["missing-field", "email-body"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-036-pelora-no-po.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-005",
+      "invoice_number": "PFG-2401",
+      "total_cents": 61200,
+      "currency": "USD",
+      "po_reference": null
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Email billing summary from a known vendor with the amount matching PO-2206 exactly, but the message states no purchase order is on file and none appears anywhere in the body. Without a PO the 3-way match cannot run (spec 07 section 5), so the route is exception_hold with a drafted vendor email asking for the PO, same shape as INV-004."
+}

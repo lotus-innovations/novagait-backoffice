@@ -1,0 +1,27 @@
+{
+  "id": "INV-033",
+  "tags": ["tolerance-edge", "price-variance", "held-out"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-033-ferrowind-hvac-tolerance.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-008",
+      "invoice_number": "FCG-820",
+      "total_cents": 46300,
+      "currency": "USD",
+      "po_reference": "PO-2215"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor, work-order layout distinct from the other Ferrowind fixtures. Invoice $463.00 vs PO-2215 $440.00: +$23.00 for a belt kit fitted during the visit, inside max(2% of $440.00 = $8.80, $25.00) = $25.00. Under the cap; routes for approval on the tolerance edge."
+}

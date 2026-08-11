@@ -1,0 +1,27 @@
+{
+  "id": "INV-019",
+  "tags": ["happy-path", "email-body", "p0"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-019-chartnimbus-training-email.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33720",
+      "total_cents": 18000,
+      "currency": "USD",
+      "po_reference": "PO-2209"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Email-body invoice: fields are stated but embedded in prose. $180.00 equals the PO-2209 training add-on line, delivery 2026-08-10..2026-08-14 falls inside the PO term (2026-08-01..2026-08-31), under the cap. Tests extraction from a semi-structured body that is nevertheless complete."
+}

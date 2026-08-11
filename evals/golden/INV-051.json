@@ -1,0 +1,26 @@
+{
+  "id": "INV-051",
+  "tags": ["price-mismatch", "goods", "receiving"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-051-brightline-band-price.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-71400",
+      "total_cents": 35260,
+      "currency": "USD",
+      "po_reference": "PO-2204"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Line math: tape 24 at $3.90 = $93.60 (PO exact), bands 50 at $2.75 = $137.50 against PO-2204's 50 at $2.15 = $107.50, wipes 30 at $4.05 = $121.50 (PO exact). Quantities all equal RCV-1101, so receiving is clean and price is the only defect. Band line delta = 13750 - 10750 = 3000c; tolerance on that line = max(2% of 10750, 2500) = max(215, 2500) = 2500c, so 3000 > 2500 and the line fails. Same verdict on the document total: 35260 against PO total 32260 is 3000c against max(2% of 32260, 2500) = max(645, 2500) = 2500c. Beyond tolerance is exception_hold (spec 07 section 6), not a route_for_approval tolerance edge."
+}

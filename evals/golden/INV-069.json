@@ -1,0 +1,25 @@
+{
+  "id": "INV-069",
+  "tags": ["non-usd", "currency"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-069-meridex-eur-surcharge.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-002",
+      "invoice_number": "MEL-9177",
+      "total_cents": 124000,
+      "currency": "EUR",
+      "po_reference": "PO-2203"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "The August laser lease re-billed as EUR 1,240.00 through an EU settlement entity. The numeral equals the USD PO line, which is the trap: same digits, different currency, so it is not a match. Non-USD holds (spec 07 §4) and total_cents holds the face value in EUR cents."
+}

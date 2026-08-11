@@ -1,0 +1,25 @@
+{
+  "id": "INV-041",
+  "tags": ["inconsistent", "ambiguous", "extraction"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/eval-041-chartnimbus-total-mismatch.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33801",
+      "total_cents": 33900,
+      "currency": "USD",
+      "po_reference": "PO-2202"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "The document contradicts itself: one line item at $329.00, subtotal $329.00, tax $0.00, but TOTAL DUE $339.00. total_cents records the printed total ($339.00) as the extracted field, with the disagreement as the finding. Note that the price delta alone would not carry the case: $339.00 against PO-2202's $329.00 is $10.00, inside max(2%, $25) = $25.00 tolerance, and the amount is under the autonomy cap. The hold is on the internal inconsistency itself: subtotal plus tax must equal total, and when the payable amount is unknowable the run cannot auto-approve. exception_hold with a drafted request for a corrected invoice. The deterministic reference matcher (packages/pipeline/src/match.ts) compares only the total against the PO and does not cross-check subtotal plus tax, so the mock lane will not reproduce this hold; the case grades the model path."
+}

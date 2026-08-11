@@ -1,0 +1,26 @@
+{
+  "id": "INV-052",
+  "tags": ["qty-mismatch", "goods", "receiving"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-052-brightline-clip-qty.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-71422",
+      "total_cents": 11400,
+      "currency": "USD",
+      "po_reference": "PO-2208"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Bills 30 clip packs at the correct $3.80 unit price = $114.00, but PO-2208 orders 25 and RCV-1103 records 25 received. Received qty must be greater than or equal to billed qty per line (spec 07 section 5), so 30 > 25 fails the quantity leg even though the unit price is right and the vendor's note frames the extra five packs as a favor. The price leg passes on its own (11400 against PO total 9500 is 1900c, inside max(2% of 9500, 2500) = 2500c), which is the point: the quantity rule has to catch this, not the price rule. The deterministic reference matcher in packages/pipeline/src/match.ts compares billed value against received value when the parsed extraction carries no line items, and 11400 is inside 9500 + 2500, so the mock lane will not reproduce this hold; the case grades the model path, which reads the printed quantity."
+}

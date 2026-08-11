@@ -1,0 +1,27 @@
+{
+  "id": "INV-028",
+  "tags": ["happy-path", "scan", "p0"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-028-chartnimbus-october-scan.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33990",
+      "total_cents": 32900,
+      "currency": "USD",
+      "po_reference": "PO-2202"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Scan-flavored rendering of the October EMR month: irregular spacing and OCR character confusions ('subscriptlon', 'perlod') around otherwise exact fields. $329.00 equals the PO-2202 line and October falls inside the annual term. Noise must not become an exception; nothing here is actually ambiguous."
+}

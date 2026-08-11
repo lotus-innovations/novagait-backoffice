@@ -1,0 +1,28 @@
+{
+  "id": "INV-023",
+  "tags": ["happy-path", "goods", "receiving", "p0", "held-out"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-023-quillbrook-gauze.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-006",
+      "invoice_number": "QMS-5623",
+      "total_cents": 12200,
+      "currency": "USD",
+      "po_reference": "PO-2211"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout: the companion billing to INV-022 on the same PO, line 2 only, 20 cases at $6.10 = $122.00 with RCV-1104 showing 20 received. Two invoices against one PO must both clear; neither is a duplicate of the other (different invoice numbers, different lines)."
+}

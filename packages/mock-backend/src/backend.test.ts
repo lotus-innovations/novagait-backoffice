@@ -33,14 +33,15 @@ describe("MockBackend", () => {
   });
 
   it("paginates purchase orders at page size 5 with a next_page cursor", async () => {
+    const lastPage = Math.ceil(PURCHASE_ORDERS.length / PO_PAGE_SIZE);
     const page1 = await backend.listPurchaseOrders(1);
     expect(page1.items).toHaveLength(PO_PAGE_SIZE);
     expect(page1.next_page).toBe(2);
-    const page3 = await backend.listPurchaseOrders(3);
-    expect(page3.items.length).toBeGreaterThan(0);
-    expect(page3.next_page).toBeNull();
+    const tail = await backend.listPurchaseOrders(lastPage);
+    expect(tail.items.length).toBeGreaterThan(0);
+    expect(tail.next_page).toBeNull();
     const seen = new Set<string>();
-    for (let page = 1; page <= 3; page++) {
+    for (let page = 1; page <= lastPage; page++) {
       for (const po of (await backend.listPurchaseOrders(page)).items) {
         seen.add(po.id);
       }

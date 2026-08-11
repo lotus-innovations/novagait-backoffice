@@ -114,7 +114,7 @@ describe("tool schemas", () => {
 describe("prompt", () => {
   it("carries versions and the policy thresholds from policy-constants", () => {
     const prompt = buildSystemPrompt();
-    expect(PROMPT_VERSION).toBe("1.0.0");
+    expect(PROMPT_VERSION).toBe("1.1.0"); // tolerance-edge minor-exception rule (LOT-95 merge)
     expect(TOOLS_VERSION).toBe("1.0.0");
     expect(prompt).toContain("$500.00");
     expect(prompt).toContain("$5,000.00".replace(",", "")); // $5000.00

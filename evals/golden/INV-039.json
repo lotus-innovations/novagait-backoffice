@@ -1,0 +1,25 @@
+{
+  "id": "INV-039",
+  "tags": ["missing-field", "email-body", "held-out"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/eval-039-solvenne-amount-missing.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-009",
+      "invoice_number": "SCP-1155",
+      "total_cents": null,
+      "currency": "USD",
+      "po_reference": "PO-2216"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout. The notice names the vendor, the invoice number and PO-2216, but states no amount anywhere in the body ('retainer as agreed'), so total_cents is null: never infer the amount from the PO or from ledger history, because the point of the match is to compare an independently stated amount. No amount means no price comparison and no payable: exception_hold with a drafted request for a priced invoice. Currency stays USD as the default of record (spec 07 section 4); no EUR marker appears."
+}

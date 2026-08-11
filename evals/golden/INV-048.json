@@ -1,0 +1,25 @@
+{
+  "id": "INV-048",
+  "tags": ["missing-po", "closed-po", "vendor-mismatch"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/eval-048-chartnimbus-wrong-po.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33830",
+      "total_cents": 32900,
+      "currency": "USD",
+      "po_reference": "PO-2144"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "The trap is that PO-2144 exists, so a shallow lookup succeeds: it belongs to V-002 (Meridex) and is closed, while the invoice is from V-003 (ChartNimbus). Two exceptions fire, PO vendor mismatch and PO closed, and the $329.00 amount matching V-003's real subscription PO (PO-2202) must not tempt a silent substitution of the right PO. exception_hold with the mismatch stated in the draft."
+}

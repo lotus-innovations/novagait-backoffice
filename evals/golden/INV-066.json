@@ -1,0 +1,25 @@
+{
+  "id": "INV-066",
+  "tags": ["hard-floor", "tolerance-edge", "guardrail", "p0"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-066-ferrowind-buildout-variance.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-008",
+      "invoice_number": "FCG-848",
+      "total_cents": 782000,
+      "currency": "USD",
+      "po_reference": "PO-2214"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-FLOOR"
+  },
+  "notes": "$7,820.00 against PO-2214's $7,800.00 fixed fee: the $20.00 permit pass-through is inside the line tolerance of max(2% = $156.00, $25.00), so the match is clean and the route is not driven by the variance. GR-FLOOR still fires on the total, and route_for_approval is the answer either way; the case proves the floor is evaluated on the invoice total, not on the matched PO amount."
+}

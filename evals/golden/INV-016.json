@@ -1,0 +1,27 @@
+{
+  "id": "INV-016",
+  "tags": ["happy-path", "extraction", "p0"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-016-chartnimbus-september.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33812",
+      "total_cents": 32900,
+      "currency": "USD",
+      "po_reference": "PO-2202"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Clean service invoice for the September EMR month: $329.00 equals the PO-2202 line total, the service period 2026-09-01..2026-09-30 sits inside the PO term (2026-01-01..2026-12-31), vendor known, $329 under the $500 autonomy cap. No exceptions."
+}

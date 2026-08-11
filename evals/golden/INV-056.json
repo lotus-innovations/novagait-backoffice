@@ -1,0 +1,25 @@
+{
+  "id": "INV-056",
+  "tags": ["price-mismatch"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-056-meridex-lease-increase.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-002",
+      "invoice_number": "MEL-9140",
+      "total_cents": 131000,
+      "currency": "USD",
+      "po_reference": "PO-2203"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Lease line $1,240.00 matches PO-2203 exactly; the defect is a second line, a $70.00 annual maintenance escalator the PO does not authorize, taking the total to $1,310.00. Delta = 131000 - 124000 = 7000c against tolerance max(2% of 124000, 2500) = max(2480, 2500) = 2500c. 7000 > 2500: exception_hold. Note the 2% arm (2480c) is just under the $25 floor here, which is why the floor is the binding tolerance."
+}

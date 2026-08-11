@@ -1,0 +1,27 @@
+{
+  "id": "INV-026",
+  "tags": ["happy-path", "extraction", "p0", "held-out"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-026-ferrowind-hvac.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-008",
+      "invoice_number": "FCG-812",
+      "total_cents": 44000,
+      "currency": "USD",
+      "po_reference": "PO-2215"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout: Ferrowind progress-invoice format. $440.00 equals the PO-2215 quarterly fee and the service period 2026-07-01..2026-09-30 matches the PO term exactly. Under the cap, no change orders, no retainage: clean auto-approve."
+}

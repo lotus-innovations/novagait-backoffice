@@ -1,0 +1,25 @@
+{
+  "id": "INV-047",
+  "tags": ["missing-po"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-047-pelora-unknown-po.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-005",
+      "invoice_number": "PFG-2415",
+      "total_cents": 61200,
+      "currency": "USD",
+      "po_reference": "PO-2299"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Known vendor and a correct-looking amount, but PO-2299 does not exist in the ERP. po_reference records what the document printed (PO-2299), and the lookup returns nothing: match cannot run against a PO that is not there. Distinct from INV-036 (no PO stated at all) because here the vendor asserts a reference that turns out to be wrong. exception_hold; the drafted email asks the vendor to confirm the PO number."
+}

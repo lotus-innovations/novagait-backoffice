@@ -1,0 +1,27 @@
+{
+  "id": "INV-030",
+  "tags": ["tolerance-edge", "price-variance"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-030-pelora-tolerance.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-005",
+      "invoice_number": "PFG-2352",
+      "total_cents": 63400,
+      "currency": "USD",
+      "po_reference": "PO-2206"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Invoice $634.00 vs PO-2206 $612.00: +$22.00 restock surcharge, inside max(2% of $612.00 = $12.24, $25.00) = $25.00, so the match holds. Two independent reasons to route: the tolerance edge and the total being above the $500 autonomy cap."
+}

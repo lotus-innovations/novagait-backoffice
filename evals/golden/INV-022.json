@@ -1,0 +1,28 @@
+{
+  "id": "INV-022",
+  "tags": ["happy-path", "goods", "receiving", "p0", "held-out"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-022-quillbrook-gloves.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-006",
+      "invoice_number": "QMS-5580",
+      "total_cents": 17000,
+      "currency": "USD",
+      "po_reference": "PO-2211"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout (spec 09 section 1): Quillbrook Medical Supply appears in no other fixture and the boxed fixed-width layout matches no existing one. Line 1 of PO-2211 only: 40 boxes at $4.25 = $170.00, RCV-1104 shows 40 received on that line. Under the cap, no exceptions."
+}

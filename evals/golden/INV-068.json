@@ -1,0 +1,27 @@
+{
+  "id": "INV-068",
+  "tags": ["non-usd", "currency", "held-out"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-068-solvenne-eur-retainer.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-009",
+      "invoice_number": "SCP-1210",
+      "total_cents": 25300,
+      "currency": "EUR",
+      "po_reference": "PO-2216"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out case: this two-column EU-entity layout appears in no other fixture. EUR 253.00 billed against the USD PO-2216 retainer. Non-USD is an exception, not an error (spec 07 \u00a74): hold with a drafted email asking for a USD invoice. total_cents holds the face value in EUR cents; no conversion is attempted and none should be."
+}

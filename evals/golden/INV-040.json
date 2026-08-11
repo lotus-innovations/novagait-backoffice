@@ -1,0 +1,25 @@
+{
+  "id": "INV-040",
+  "tags": ["ambiguous", "missing-field", "held-out"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-040-solvenne-no-dates.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-009",
+      "invoice_number": "SCP-1162",
+      "total_cents": 27500,
+      "currency": "USD",
+      "po_reference": "PO-2216"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout. $275.00 matches PO-2216 exactly and $275.00 is under the $500 autonomy cap, but the statement prints no due date and no service period, so the payment date has to fall back to the vendor terms on file (Net 30) and the period cannot be confirmed against the PO term. That is a minor exception in the same family as INV-005's date ambiguity: route_for_approval, with the assumed terms stated in the draft rather than applied silently."
+}

@@ -1,0 +1,26 @@
+{
+  "id": "INV-054",
+  "tags": ["qty-mismatch", "goods", "receiving", "held-out"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-054-quillbrook-gel-qty.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-006",
+      "invoice_number": "QMS-5701",
+      "total_cents": 14400,
+      "currency": "USD",
+      "po_reference": "PO-2212"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout. Bills 30 cases of ultrasound gel at $4.80 = $144.00, which equals PO-2212 exactly, so the price leg passes with variance 0. RCV-1105 records only 18 cases received, and the invoice itself says the balance ships later. Billed 30 > received 18 fails the quantity leg (spec 07 section 5): exception_hold, pay for what arrived. Value check for the same conclusion: received value 18 at $4.80 = 8640c, and 14400 - 8640 = 5760c beyond the max(2% of 14400, 2500) = 2500c tolerance."
+}

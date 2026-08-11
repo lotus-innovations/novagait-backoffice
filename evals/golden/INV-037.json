@@ -1,0 +1,25 @@
+{
+  "id": "INV-037",
+  "tags": ["missing-field", "email-body", "extraction"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/eval-037-meridex-no-invoice-number.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-002",
+      "invoice_number": null,
+      "total_cents": 124000,
+      "currency": "USD",
+      "po_reference": "PO-2203"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Vendor, PO-2203 and the $1,240.00 amount all match the seeded lease, but the document carries no invoice number at all: the vendor says a numbered copy follows. expected.fields.invoice_number is null because the field is absent from the source, matching the INV-015 convention that an absent field is null rather than a placeholder string. The reference parser in packages/pipeline/src/parse.ts falls back to the literal 'UNKNOWN' when no number regex matches; 'UNKNOWN' is a parser sentinel, not an extracted value, so the golden records null. Spec 07 section 5 keys duplicate detection on vendor plus invoice_number, so a missing number makes the dedupe check unresolvable: exception_hold with a drafted request for the numbered invoice."
+}

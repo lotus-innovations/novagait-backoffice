@@ -1,0 +1,20 @@
+{
+  "id": "INV-050",
+  "tags": ["missing-po", "goods"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-050-brightline-no-po-goods.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-71305",
+      "total_cents": 21500,
+      "currency": "USD",
+      "po_reference": null
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Goods invoice from a known vendor, 50 gait belts at $4.30 = $215.00, ordered by phone with no purchase order anywhere on the document. For goods the match needs both a PO and a receiving record, and with no PO there is nothing to look up or receive against: exception_hold. No lookup_po and no lookup_receiving because there is no PO id to query, matching INV-004's tool shape."
+}

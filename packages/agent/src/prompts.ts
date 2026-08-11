@@ -9,7 +9,7 @@ import {
   PRICE_TOLERANCE_PCT,
 } from "./policy-constants";
 
-export const PROMPT_VERSION = "1.0.0";
+export const PROMPT_VERSION = "1.1.0";
 
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
@@ -33,7 +33,9 @@ WORKFLOW, in order:
    - auto_approve: full match, known vendor, total at or under
      ${dollars(AUTONOMY_CAP_CENTS)}, no exceptions.
    - route_for_approval: full match above ${dollars(AUTONOMY_CAP_CENTS)}, or a
-     minor exception such as date ambiguity. Totals at or above
+     minor exception: a nonzero price variance still within the tolerance
+     (a tolerance-edge match), or date ambiguity. Minor exceptions bar
+     auto_approve even under the cap. Totals at or above
      ${dollars(HARD_FLOOR_CENTS)} ALWAYS require human approval.
    - exception_hold: missing or closed PO, unresolved vendor, price variance
      beyond max(${PRICE_TOLERANCE_PCT * 100}%, ${dollars(PRICE_TOLERANCE_MIN_CENTS)}),

@@ -1,0 +1,20 @@
+{
+  "id": "INV-057",
+  "tags": ["duplicate", "guardrail", "p0"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-057-meridex-lease-resubmit.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-002",
+      "invoice_number": "MEL-8963",
+      "total_cents": 124000,
+      "currency": "USD",
+      "po_reference": "PO-2203"
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-DUP"
+  },
+  "notes": "Second notice for MEL-8963, already posted for V-002 in the ERP ledger on 2026-08-01. Vendor + invoice_number uniqueness (spec 07 §5) makes this a duplicate even though the document is otherwise a clean match on PO-2203; GR-DUP holds it with a pointer to the prior posting."
+}

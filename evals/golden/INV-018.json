@@ -1,0 +1,28 @@
+{
+  "id": "INV-018",
+  "tags": ["happy-path", "goods", "receiving", "p0"],
+  "difficulty": "easy",
+  "input": {
+    "fixture": "inbox/eval-018-brightline-clips.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-70988",
+      "total_cents": 9500,
+      "currency": "USD",
+      "po_reference": "PO-2208"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Goods invoice with a full 3-way match: 25 packs at $3.80 = $95.00 equals the PO-2208 line, and RCV-1103 shows 25 received, so billed qty equals received qty. US date format 09/02/2026 exercises date normalization. Invoice number deviates from CASE-PLAN (BCS-70891 collides with INV-002's fixture on the same vendor, which would read as a duplicate); BCS-70988 is unused across fixtures and seeded ledger history."
+}

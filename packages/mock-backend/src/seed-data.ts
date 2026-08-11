@@ -52,6 +52,41 @@ export const VENDORS: Vendor[] = [
     default_gl_code: "6300",
     active: true,
   },
+  // V-006..V-009: held-out eval vendors (spec 09 §1). Seeded in the ERP so
+  // matching works, but their names appear in no demo fixture or prompt —
+  // only in their own eval cases. Names collision-checked 2026-08-10.
+  {
+    id: "V-006",
+    canonical_name: "Quillbrook Medical Supply",
+    type: "goods",
+    terms_days: 30,
+    default_gl_code: "5200",
+    active: true,
+  },
+  {
+    id: "V-007",
+    canonical_name: "Vantrell Managed IT",
+    type: "service",
+    terms_days: 30,
+    default_gl_code: "6500",
+    active: true,
+  },
+  {
+    id: "V-008",
+    canonical_name: "Ferrowind Construction Group",
+    type: "service",
+    terms_days: 30,
+    default_gl_code: "6600",
+    active: true,
+  },
+  {
+    id: "V-009",
+    canonical_name: "Solvenne Compliance Partners",
+    type: "service",
+    terms_days: 30,
+    default_gl_code: "6700",
+    active: true,
+  },
 ];
 
 export const PURCHASE_ORDERS: PurchaseOrder[] = [
@@ -247,6 +282,133 @@ export const PURCHASE_ORDERS: PurchaseOrder[] = [
     ],
     service_period: { start: "2026-02-01", end: "2026-03-31" },
   },
+  // POs below exist for the held-out eval vendors (evals/CASE-PLAN.md).
+  {
+    id: "PO-2211",
+    vendor_id: "V-006",
+    status: "open",
+    type: "goods",
+    lines: [
+      {
+        line_no: 1,
+        description: "Exam gloves, nitrile, box",
+        qty: 40,
+        unit_price_cents: 425,
+      },
+      {
+        line_no: 2,
+        description: "Gauze pads, sterile, case",
+        qty: 20,
+        unit_price_cents: 610,
+      },
+    ],
+    service_period: null,
+  },
+  {
+    id: "PO-2212",
+    vendor_id: "V-006",
+    status: "open",
+    type: "goods",
+    lines: [
+      {
+        line_no: 1,
+        description: "Ultrasound gel, case",
+        qty: 30,
+        unit_price_cents: 480,
+      },
+    ],
+    service_period: null,
+  },
+  {
+    id: "PO-2213",
+    vendor_id: "V-007",
+    status: "open",
+    type: "service",
+    lines: [
+      {
+        line_no: 1,
+        description: "Managed IT support, monthly",
+        qty: 1,
+        unit_price_cents: 18500,
+      },
+    ],
+    service_period: { start: "2026-01-01", end: "2026-12-31" },
+  },
+  {
+    id: "PO-2214",
+    vendor_id: "V-008",
+    status: "open",
+    type: "service",
+    lines: [
+      {
+        line_no: 1,
+        description: "Treatment room buildout, fixed fee",
+        qty: 1,
+        unit_price_cents: 780000,
+      },
+    ],
+    service_period: { start: "2026-08-01", end: "2026-11-30" },
+  },
+  {
+    id: "PO-2215",
+    vendor_id: "V-008",
+    status: "open",
+    type: "service",
+    lines: [
+      {
+        line_no: 1,
+        description: "Quarterly HVAC maintenance",
+        qty: 1,
+        unit_price_cents: 44000,
+      },
+    ],
+    service_period: { start: "2026-07-01", end: "2026-09-30" },
+  },
+  {
+    id: "PO-2216",
+    vendor_id: "V-009",
+    status: "open",
+    type: "service",
+    lines: [
+      {
+        line_no: 1,
+        description: "Compliance audit retainer, monthly",
+        qty: 1,
+        unit_price_cents: 27500,
+      },
+    ],
+    service_period: { start: "2026-01-01", end: "2026-12-31" },
+  },
+  {
+    id: "PO-2217",
+    vendor_id: "V-007",
+    status: "open",
+    type: "service",
+    lines: [
+      {
+        line_no: 1,
+        description: "Network refresh project, fixed fee",
+        qty: 1,
+        unit_price_cents: 620000,
+      },
+    ],
+    service_period: { start: "2026-08-01", end: "2026-10-31" },
+  },
+  {
+    id: "PO-2146",
+    vendor_id: "V-008",
+    status: "closed",
+    type: "service",
+    lines: [
+      {
+        line_no: 1,
+        description: "Parking lot restriping (completed)",
+        qty: 1,
+        unit_price_cents: 96000,
+      },
+    ],
+    service_period: { start: "2026-04-01", end: "2026-04-30" },
+  },
 ];
 
 export const RECEIVING_RECORDS: ReceivingRecord[] = [
@@ -272,6 +434,21 @@ export const RECEIVING_RECORDS: ReceivingRecord[] = [
     received_date: "2026-08-07",
     lines: [{ line_no: 1, qty_received: 25 }],
   },
+  {
+    id: "RCV-1104",
+    po_id: "PO-2211",
+    received_date: "2026-08-08",
+    lines: [
+      { line_no: 1, qty_received: 40 },
+      { line_no: 2, qty_received: 20 },
+    ],
+  },
+  {
+    id: "RCV-1105",
+    po_id: "PO-2212",
+    received_date: "2026-08-09",
+    lines: [{ line_no: 1, qty_received: 18 }],
+  },
 ];
 
 // Seeded history: three posted invoices per recurring vendor so vendor
@@ -290,6 +467,11 @@ export const LEDGER_HISTORY: LedgerEntry[] = [
   ["V-004", "BCS-70544", 41320, "2026-07-15"],
   ["V-005", "PFG-2214", 61200, "2026-06-05"],
   ["V-005", "PFG-2288", 61200, "2026-07-05"],
+  ["V-006", "QMS-5480", 29200, "2026-07-12"],
+  ["V-007", "VMI-2201", 18500, "2026-06-02"],
+  ["V-007", "VMI-2288", 18500, "2026-07-02"],
+  ["V-008", "FCG-801", 44000, "2026-07-08"],
+  ["V-009", "SCP-1120", 27500, "2026-07-15"],
 ].map(([vendor, invoice, amount, date], index) => ({
   id: `LED-H${String(index + 1).padStart(3, "0")}`,
   vendor_id: vendor as string,

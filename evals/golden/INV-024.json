@@ -1,0 +1,27 @@
+{
+  "id": "INV-024",
+  "tags": ["happy-path", "email-body", "p0", "held-out"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-024-vantrell-august-email.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-007",
+      "invoice_number": "VMI-2354",
+      "total_cents": 18500,
+      "currency": "USD",
+      "po_reference": "PO-2213"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout: Vantrell Managed IT monthly support in email prose. $185.00 equals the PO-2213 line, coverage 2026-08-01..2026-08-31 sits inside the annual PO term, under the cap. The vendor name appears only on the remit line, so resolution must work off it."
+}

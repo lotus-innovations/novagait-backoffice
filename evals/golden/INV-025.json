@@ -1,0 +1,27 @@
+{
+  "id": "INV-025",
+  "tags": ["happy-path", "scan", "p0", "held-out"],
+  "difficulty": "medium",
+  "input": {
+    "fixture": "inbox/eval-025-vantrell-september-scan.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-007",
+      "invoice_number": "VMI-2421",
+      "total_cents": 18500,
+      "currency": "USD",
+      "po_reference": "PO-2213"
+    },
+    "decision": "auto_approve",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": [],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout with OCR-style noise (broken spacing, 'perlod'/'Descriptlon' character confusions) and the printed name abbreviated to 'VANTRELL MGD IT'. Verified with resolveVendorName from packages/agent/src/similarity.ts: Jaro-Winkler 0.9579 against 'Vantrell Managed IT', above the 0.90 threshold, so the vendor resolves to V-007 and the match proceeds. $185.00 equals the PO-2213 line for the September month."
+}

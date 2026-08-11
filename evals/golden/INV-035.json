@@ -1,0 +1,28 @@
+{
+  "id": "INV-035",
+  "tags": ["tolerance-edge", "price-variance", "goods", "receiving"],
+  "difficulty": "hard",
+  "input": {
+    "fixture": "inbox/eval-035-brightline-putty-tolerance.md"
+  },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-71100",
+      "total_cents": 18750,
+      "currency": "USD",
+      "po_reference": "PO-2205"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Goods tolerance edge: 25 cases billed at $7.50 = $187.50 against the PO-2205 unit price of $7.25 (25 x $7.25 = $181.25), a +$6.25 variance inside max(2% of $181.25 = $3.63, $25.00) = $25.00. Quantity is clean: 25 billed equals the 25 received on RCV-1102, so the only signal is the price edge. Under the cap; routes for approval as a minor exception."
+}

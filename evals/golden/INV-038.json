@@ -1,0 +1,26 @@
+{
+  "id": "INV-038",
+  "tags": ["ambiguous", "date-ambiguity", "goods"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/eval-038-brightline-ambiguous-date.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-004",
+      "invoice_number": "BCS-71230",
+      "total_cents": 9500,
+      "currency": "USD",
+      "po_reference": "PO-2208"
+    },
+    "decision": "route_for_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "25 clip packs at $3.80 = $95.00, exactly PO-2208 and exactly the 25 received on RCV-1103, and $95.00 is far under the $500 autonomy cap. The only defect is the invoice date '09/08/26': a 2-digit year that reads as 2026-09-08 or 2026-08-09 depending on convention, so it must not be normalized silently. Date ambiguity is a minor exception (spec 07 section 6): route_for_approval, mirroring INV-005."
+}

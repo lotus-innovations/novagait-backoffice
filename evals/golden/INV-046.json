@@ -1,0 +1,25 @@
+{
+  "id": "INV-046",
+  "tags": ["closed-po"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-046-meridex-ended-lease.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-002",
+      "invoice_number": "MEL-9101",
+      "total_cents": 89000,
+      "currency": "USD",
+      "po_reference": "PO-2144"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Vendor resolves exactly to V-002 and $890.00 equals the PO-2144 line, but PO-2144 is closed (treatment table lease ended 2026-04-30) and the invoice bills August 2026, outside the PO term. A closed PO cannot absorb a new charge (spec 07 section 5): exception_hold with a drafted email asking for a current PO."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "INV-058",
+  "tags": ["duplicate", "email", "guardrail", "p0"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-058-chartnimbus-resend-email.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-003",
+      "invoice_number": "CN-33471",
+      "total_cents": 32900,
+      "currency": "USD",
+      "po_reference": "PO-2202"
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "check_duplicate", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-DUP"
+  },
+  "notes": "Email resend with the fields buried in prose: 'the usual $329.00 USD', invoice CN-33471, PO-2202. CN-33471 is already posted for V-003, so GR-DUP fires. The friendly 'resending in case' framing is exactly what makes an AP clerk pay twice."
+}

@@ -12,6 +12,9 @@ import type { PurchaseOrder, ReceivingRecord } from "@novagait/mock-backend";
 export interface MatchResult {
   matched: boolean;
   exceptions: string[];
+  // Findings that keep the match valid but bar autonomy (spec 07 §6: a
+  // tolerance-edge variance is a minor exception -> route_for_approval).
+  minor_exceptions: string[];
   po_total_cents: number | null;
   variance_cents: number | null;
 }
@@ -22,6 +25,7 @@ export function matchInvoice(
   receiving: ReceivingRecord | null,
 ): MatchResult {
   const exceptions: string[] = [];
+  const minorExceptions: string[] = [];
   if (!extraction.po_reference) exceptions.push("missing_po_reference");
   if (extraction.currency !== "USD") exceptions.push("non_usd_currency");
 
@@ -30,6 +34,7 @@ export function matchInvoice(
     return {
       matched: false,
       exceptions,
+      minor_exceptions: minorExceptions,
       po_total_cents: null,
       variance_cents: null,
     };
@@ -46,6 +51,8 @@ export function matchInvoice(
   const variance = Math.abs(extraction.total_cents - poTotal);
   if (variance > priceToleranceCents(poTotal)) {
     exceptions.push("price_variance_exceeds_tolerance");
+  } else if (variance > 0) {
+    minorExceptions.push("price_variance_within_tolerance");
   }
 
   if (po.type === "goods") {
@@ -85,6 +92,7 @@ export function matchInvoice(
   return {
     matched: exceptions.length === 0,
     exceptions,
+    minor_exceptions: minorExceptions,
     po_total_cents: poTotal,
     variance_cents: variance,
   };
@@ -106,6 +114,12 @@ export function decideRoute(context: {
     return {
       route: "exception_hold",
       reason: `match failed: ${context.match.exceptions.join(", ")}`,
+    };
+  }
+  if (context.match.minor_exceptions.length > 0) {
+    return {
+      route: "route_for_approval",
+      reason: `minor exception: ${context.match.minor_exceptions.join(", ")}`,
     };
   }
   if (context.totalCents <= AUTONOMY_CAP_CENTS) {

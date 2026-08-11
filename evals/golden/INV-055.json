@@ -1,0 +1,26 @@
+{
+  "id": "INV-055",
+  "tags": ["price-mismatch", "goods", "receiving", "held-out"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-055-quillbrook-glove-price.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-006",
+      "invoice_number": "QMS-5710",
+      "total_cents": 34000,
+      "currency": "USD",
+      "po_reference": "PO-2211"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout. Line math: gloves 40 at $5.45 = $218.00 against PO-2211's 40 at $4.25 = $170.00, gauze 20 at $6.10 = $122.00 (PO exact). Quantities match RCV-1104 (40 and 20 received), so receiving is clean. Glove line delta = 21800 - 17000 = 4800c against a line tolerance of max(2% of 17000, 2500) = max(340, 2500) = 2500c, so 4800 > 2500 and the line fails. Document total agrees: 34000 against PO total 29200 is 4800c against max(2% of 29200, 2500) = max(584, 2500) = 2500c. A mid-quarter price increase is a PO change, not a payable variance: exception_hold."
+}

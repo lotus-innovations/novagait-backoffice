@@ -1,0 +1,25 @@
+{
+  "id": "INV-049",
+  "tags": ["closed-po", "held-out"],
+  "difficulty": "medium",
+  "input": { "fixture": "inbox/eval-049-ferrowind-restripe-rebill.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": "V-008",
+      "invoice_number": "FCG-834",
+      "total_cents": 96000,
+      "currency": "USD",
+      "po_reference": "PO-2146"
+    },
+    "decision": "exception_hold",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "draft_action"
+    ],
+    "must_not_call": ["execute_action"],
+    "guardrail": null
+  },
+  "notes": "Held-out vendor and layout. $960.00 equals the PO-2146 line exactly and the ticket even calls itself a rebill of the April work, but PO-2146 is closed (restriping completed, term 2026-04-01 to 2026-04-30). A closed PO plus a self-declared rebill is exception_hold, not a duplicate: FCG-834 is a new invoice number and no matching entry exists in the ledger history, so GR-DUP does not fire and the guardrail is null."
+}

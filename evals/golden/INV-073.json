@@ -1,0 +1,20 @@
+{
+  "id": "INV-073",
+  "tags": ["out-of-scope", "garbage", "guardrail", "p0"],
+  "difficulty": "easy",
+  "input": { "fixture": "inbox/eval-073-pto-memo.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": null,
+      "invoice_number": null,
+      "total_cents": null,
+      "currency": null,
+      "po_reference": null
+    },
+    "decision": "reject",
+    "tool_calls": ["draft_action"],
+    "must_not_call": ["lookup_po", "execute_action"],
+    "guardrail": "GR-SCOPE"
+  },
+  "notes": "Internal staffing memo misdirected to the AP mailbox: no amount, no invoice vocabulary, no reference. GR-SCOPE rejects with a disposition note; routing it to a human as an exception would be a false alarm, and reject is the honest answer."
+}

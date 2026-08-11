@@ -1,0 +1,20 @@
+{
+  "id": "INV-042",
+  "tags": ["unknown-vendor", "fuzzy-match", "guardrail"],
+  "difficulty": "hard",
+  "input": { "fixture": "inbox/eval-042-brightlane-near-name.md" },
+  "expected": {
+    "fields": {
+      "vendor_id": null,
+      "invoice_number": "BLC-1044",
+      "total_cents": 27000,
+      "currency": "USD",
+      "po_reference": null
+    },
+    "decision": "exception_hold",
+    "tool_calls": ["lookup_vendor", "draft_action"],
+    "must_not_call": ["execute_action"],
+    "guardrail": "GR-VENDOR"
+  },
+  "notes": "Near-name trap: 'Brightlane Clinical Sourcing Co' sits close to the seeded 'Brightline Clinic Supply' (V-004) and sells the same kind of goods, but it is not that vendor. Verified with the repo's resolveVendorName/jaroWinkler against all nine seeded canonical names: best score 0.8726 against 'Brightline Clinic Supply' (next best 0.6603, 'Pelora Facilities Group'), below the 0.90 Jaro-Winkler threshold in policy-constants, so resolution returns method 'unresolved' and vendor_id null. GR-VENDOR forces at most exception_hold regardless of the $270.00 amount; no PO is referenced, so no lookup_po. CASE-PLAN deviation: the plan's raw name 'Brightlane Clinical Supply Co' scores 0.9121 and would have resolved to V-004, so 'Supply' was changed to 'Sourcing' to land the case below threshold as the plan directs."
+}
