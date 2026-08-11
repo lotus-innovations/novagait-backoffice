@@ -24,12 +24,16 @@ export const traceKeys = {
 export class TraceWriter {
   private seq = 0;
   readonly runId: string;
+  // When set, echoed onto every event (LOT-102, optional EventBase.mode).
+  mode?: TraceEvent["mode"];
 
   constructor(
     private readonly store: Store,
     runId?: string,
+    mode?: TraceEvent["mode"],
   ) {
     this.runId = runId ?? ulid();
+    this.mode = mode;
   }
 
   /**
@@ -53,6 +57,7 @@ export class TraceWriter {
       ts: new Date().toISOString(),
       seq: this.seq++,
       trace_schema_version: TRACE_SCHEMA_VERSION,
+      ...(this.mode ? { mode: this.mode } : {}),
     } as TraceEvent;
     if (event.type === "tool.call") {
       event.args = redactToolArgs(event.args);

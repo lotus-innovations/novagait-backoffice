@@ -42,15 +42,18 @@ const MODE_HELP: Array<{ value: string; label: string; help: string }> = [
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; approver?: string }>;
 }) {
   await ensureSeeded();
-  const [{ error }, capacity, inbox] = await Promise.all([
+  const [{ error, approver }, capacity, inbox] = await Promise.all([
     searchParams,
     isCapacityMode(getStore()),
     getBackend().listInbox(),
   ]);
   const errorText = error ? ERRORS[error] : null;
+  // ?approver=script (spec 10 §3): deterministic approver for e2e and the
+  // walkthrough video; rides the form as a hidden field.
+  const scripted = approver === "script";
 
   return (
     <main>
@@ -94,6 +97,9 @@ export default async function Home({
             duplicate hold.
           </p>
           <form method="post" action="/api/intake">
+            {scripted ? (
+              <input type="hidden" name="approver" value="script" />
+            ) : null}
             <fieldset>
               <legend>Inbound document</legend>
               {inbox.map((item, index) => (

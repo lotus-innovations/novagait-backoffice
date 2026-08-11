@@ -92,19 +92,84 @@ describe("resumeRun", () => {
     expect(payment.gl_code).toBe("6100"); // Corvida default
   });
 
-  it("reject holds the run with the reason and touches nothing", async () => {
+  it("reject triggers exactly one revision, then a second reject holds", async () => {
     const parked = await parkRun();
-    const resumed = await resumeRun(store, backend, parked.runId, {
+
+    // First reject: the reason re-enters the loop, a revised draft parks a
+    // NEW approval instead of holding (spec 10 §3).
+    const revised = await resumeRun(store, backend, parked.runId, {
       actor: "visitor:test",
       decision: "reject",
       reason: "wrong PO",
     });
-    expect(resumed.outcome).toBe("held");
+    expect(revised.outcome).toBe("awaiting_approval");
+    expect(revised.approvalId).toBeTruthy();
+    const machineAfterRevision = await RunStateMachine.load(
+      store,
+      parked.runId,
+    );
+    expect(machineAfterRevision?.state.revision_count).toBe(1);
+    expect(machineAfterRevision?.state.step).toBe("awaiting_approval");
+
+    const currentApproval = await getApprovalForRun(store, parked.runId);
+    expect(currentApproval?.approval_id).toBe(revised.approvalId);
+    expect(currentApproval?.status).toBe("pending");
+    expect(currentApproval?.draft_ref).toMatch(/-R1$/);
+
+    const events = await readTrace(store, parked.runId);
+    const requests = events.filter((e) => e.type === "approval.requested");
+    expect(requests).toHaveLength(2);
+    const revisedDraftCall = events.find(
+      (e) =>
+        e.type === "tool.call" &&
+        "args" in e &&
+        (e.args as Record<string, unknown>).rejection_reason === "wrong PO",
+    );
+    expect(revisedDraftCall).toBeTruthy();
+
+    // Second reject: revision exhausted, the run holds with the reason.
+    const held = await resumeRun(store, backend, parked.runId, {
+      actor: "visitor:test",
+      decision: "reject",
+      reason: "still wrong",
+    });
+    expect(held.outcome).toBe("held");
     expect(await backend.paymentSchedule()).toHaveLength(0);
     expect((await backend.getInboxItem("INB-001"))?.state).toBe("held");
     const machine = await RunStateMachine.load(store, parked.runId);
     expect(machine?.state.step).toBe("held");
-    expect(machine?.state.data.rejection_reason).toBe("wrong PO");
+    expect(machine?.state.data.rejection_reason).toBe("still wrong");
+  });
+
+  it("a revised approval can be approved and executes", async () => {
+    const parked = await parkRun();
+    const revised = await resumeRun(store, backend, parked.runId, {
+      actor: "visitor:test",
+      decision: "reject",
+      reason: "recheck the period",
+    });
+    expect(revised.outcome).toBe("awaiting_approval");
+    const final = await resumeRun(store, backend, parked.runId, {
+      actor: "visitor:test",
+      decision: "approve",
+      reason: "revision addresses it",
+    });
+    expect(final.outcome).toBe("executed");
+    expect(await backend.paymentSchedule()).toHaveLength(1);
+  });
+
+  it("stamps the run mode on every trace event, including resumed segments", async () => {
+    const parked = await parkRun();
+    await resumeRun(store, backend, parked.runId, {
+      actor: "visitor:test",
+      decision: "approve",
+      reason: "ok",
+    });
+    const events = await readTrace(store, parked.runId);
+    expect(events.length).toBeGreaterThan(0);
+    for (const event of events) {
+      expect(event.mode, event.type).toBe("assisted");
+    }
   });
 
   it("refuses runs that are not awaiting approval and double decisions", async () => {

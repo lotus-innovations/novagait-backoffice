@@ -71,7 +71,7 @@ export async function runMockPipeline(
   const dedupe = new DedupeLedger(store);
   const profiles = new VendorProfileStore(store);
 
-  const writer = new TraceWriter(store);
+  const writer = new TraceWriter(store, undefined, mode);
   const machine = await RunStateMachine.create(store, {
     run_id: writer.runId,
     mode,

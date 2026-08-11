@@ -5,8 +5,10 @@
 // same code path that parked the run is the only thing that can finish it.
 
 import {
+  MAX_REVISIONS,
   RunStateMachine,
   TraceWriter,
+  createApproval,
   decideApproval,
   gateExecuteAction,
   getApprovalForRun,
@@ -27,6 +29,8 @@ export interface ApprovalDecisionInput {
 export interface ResumeResult {
   runId: string;
   outcome: RunOutcome;
+  // Set when a rejection produced a revision: the new pending approval.
+  approvalId?: string | null;
 }
 
 const GL_CODE_RE = /^\d{4}$/;
@@ -70,6 +74,7 @@ export async function resumeRun(
   });
 
   const writer = await TraceWriter.resume(store, runId);
+  writer.mode = machine.state.mode;
   await writer.append({
     type: "approval.decided",
     node_id: nodeIds.approval(),
@@ -96,6 +101,54 @@ export async function resumeRun(
   };
 
   if (input.decision === "reject") {
+    // Revision cycle (spec 10 §3): the rejection reason re-enters the loop
+    // as a tool result for exactly one revision, then the run holds. The
+    // state machine enforces the cap (awaiting_approval -> decided bumps
+    // revision_count and throws past MAX_REVISIONS).
+    if (machine.state.revision_count < MAX_REVISIONS) {
+      const revisedRef = `${approval.draft_ref}-R${machine.state.revision_count + 1}`;
+      const revisedLine = `revised after rejection ("${input.reason}"): ${String(
+        machine.state.data.policy_line ?? "",
+      )}`;
+      await machine.transition("decided", {
+        revised_after_rejection: input.reason,
+        draft_ref: revisedRef,
+      });
+      await writer.append({
+        type: "tool.call",
+        node_id: nodeIds.tool(machine.state.revision_count, "draft_action"),
+        name: "draft_action",
+        args: { route: approval.route, rejection_reason: input.reason },
+        result_summary: JSON.stringify({ draft_ref: revisedRef }).slice(0, 160),
+        duration_ms: 0,
+        attempt: 1,
+      });
+      await backend.saveDisposition({
+        id: revisedRef,
+        run_id: runId,
+        kind: "payment_draft",
+        summary: revisedLine,
+        created_at: new Date().toISOString(),
+      });
+      const revised = await createApproval(store, {
+        run_id: runId,
+        draft_ref: revisedRef,
+        route: approval.route,
+      });
+      await writer.append({
+        type: "approval.requested",
+        node_id: nodeIds.approval(),
+        approval_id: revised.approval_id,
+        route: approval.route,
+        draft_digest: revisedRef,
+        policy_line: revisedLine,
+      });
+      await machine.transition("awaiting_approval", {
+        approval_id: revised.approval_id,
+      });
+      const parked = await finish("awaiting_approval");
+      return { ...parked, approvalId: revised.approval_id };
+    }
     await machine.transition("held", {
       approval_rejected: true,
       rejection_reason: input.reason,

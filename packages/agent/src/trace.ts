@@ -25,6 +25,11 @@ export interface EventBase {
   ts: string; // ISO-8601 with offset
   seq: number; // monotonic per run, starts at 0
   trace_schema_version: number;
+  // Additive-optional within v1 (LOT-102): the run's mode echoed onto every
+  // event so any event is self-describing. Optional keeps replay validation
+  // and old traces valid (missing required fails; extra/optional does not);
+  // the v1 freeze is unbroken. Documented in the arch doc at LOT-110.
+  mode?: RunMode;
 }
 
 export type TraceEvent = EventBase &

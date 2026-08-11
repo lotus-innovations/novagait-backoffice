@@ -79,6 +79,7 @@ export async function POST(request: Request) {
       inboxItemId: item,
       mode: modeRaw as RunMode,
       note: note || undefined,
+      approver: form?.get("approver") === "script" ? "script" : "none",
     });
     await recordRunCost(store, 0); // mock lane: measured cost is zero
     const response = NextResponse.redirect(
