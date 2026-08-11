@@ -1,0 +1,44 @@
+{
+  "case_id": "INV-049",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-049",
+    "decision": "exception_hold",
+    "drafted_action_text": "match failed: po_closed [Three-Way Match Policy §Match outcome]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": "2026-09-06",
+      "invoice_date": "2026-08-07",
+      "invoice_number": "FCG-834",
+      "po_reference": "PO-2146",
+      "total_cents": 96000,
+      "vendor_id": "V-008",
+      "vendor_name_raw": "FERROWIND CONSTRUCTION GROUP"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-049",
+    "schema_errors": [],
+    "terminal_state": "held",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "update_vendor_profile"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

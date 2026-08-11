@@ -5,9 +5,15 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "cassettes:record": "vitest run --config src/cassettes/vitest.scripts.config.ts record.script",
+    "cassettes:check": "vitest run --config src/cassettes/vitest.scripts.config.ts check.script",
+    "cassettes:replay": "vitest run --config src/cassettes/vitest.scripts.config.ts replay.script",
+    "cassettes:baseline": "vitest run --config src/cassettes/vitest.scripts.config.ts baseline.script"
   },
   "dependencies": {
-    "@novagait/agent": "*"
+    "@novagait/agent": "*",
+    "@novagait/mock-backend": "*",
+    "@novagait/pipeline": "*"
   }
 }

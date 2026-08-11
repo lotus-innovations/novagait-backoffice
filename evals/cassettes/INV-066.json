@@ -1,0 +1,46 @@
+{
+  "case_id": "INV-066",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-066",
+    "decision": "route_for_approval",
+    "drafted_action_text": "minor exception: price_variance_within_tolerance [Price Variance Tolerance §Over-tolerance handling]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": "2026-09-19",
+      "invoice_date": "2026-08-20",
+      "invoice_number": "FCG-848",
+      "po_reference": "PO-2214",
+      "total_cents": 782000,
+      "vendor_id": "V-008",
+      "vendor_name_raw": "Ferrowind Construction Group"
+    },
+    "guardrails_fired": [
+      "GR-FLOOR"
+    ],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-066",
+    "schema_errors": [],
+    "terminal_state": "awaiting_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "execute_action"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

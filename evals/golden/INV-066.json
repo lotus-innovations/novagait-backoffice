@@ -20,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": "GR-FLOOR"
   },
   "notes": "$7,820.00 against PO-2214's $7,800.00 fixed fee: the $20.00 permit pass-through is inside the line tolerance of max(2% = $156.00, $25.00), so the match holds with a minor exception (price_variance_within_tolerance), which would route this for approval on its own. GR-FLOOR fires on the total and makes human approval mandatory regardless; the case proves the floor is evaluated on the invoice total, not on the matched PO amount."

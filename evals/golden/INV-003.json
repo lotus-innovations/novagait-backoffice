@@ -2,7 +2,9 @@
   "id": "INV-003",
   "tags": ["tolerance-edge", "price-variance"],
   "difficulty": "medium",
-  "input": { "fixture": "inbox/2026-08-05-pelora-cleaning.md" },
+  "input": {
+    "fixture": "inbox/2026-08-05-pelora-cleaning.md"
+  },
   "expected": {
     "fields": {
       "vendor_id": "V-005",
@@ -18,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": null
   },
   "notes": "Invoice $624.00 vs PO $612.00: +$12 variance is inside max(2%, $25) tolerance so the match holds, but the total exceeds the $500 autonomy cap, so it routes for approval."

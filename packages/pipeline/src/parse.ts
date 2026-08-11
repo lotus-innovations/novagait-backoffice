@@ -30,6 +30,12 @@ function normalizeDate(raw: string | null): string | null {
   return null; // ambiguous formats stay null: never guess (spec 07)
 }
 
+// Sentinels the parser substitutes when a field is absent or ambiguous.
+// Match/route logic keys off these, so they are exported constants rather
+// than magic strings at two call sites.
+export const INVOICE_NUMBER_SENTINEL = "UNKNOWN";
+export const INVOICE_DATE_SENTINEL = "1970-01-01";
+
 export function parseFixture(
   text: string,
   vendors: VendorCandidate[],
@@ -49,7 +55,7 @@ export function parseFixture(
       /INVOICE\s+#?([A-Z]{2,}[A-Z0-9-]*\d[A-Z0-9-]*)/,
       /invoice\s+([A-Z]{2,}-[\dA-Z-]+)/i,
       /#([A-Z]{2,}-\d+)/,
-    ]) ?? "UNKNOWN";
+    ]) ?? INVOICE_NUMBER_SENTINEL;
 
   // Best vendor resolution across candidate lines (letterhead, remit line).
   let bestLine: ReturnType<typeof resolveVendorName> = {
@@ -84,7 +90,7 @@ export function parseFixture(
     vendor_name_raw: vendorNameRaw,
     vendor_id: bestLine.vendor_id,
     invoice_number: invoiceNumber,
-    invoice_date: invoiceDate ?? "1970-01-01",
+    invoice_date: invoiceDate ?? INVOICE_DATE_SENTINEL,
     due_date: dueDate,
     currency,
     subtotal_cents: totalCents,

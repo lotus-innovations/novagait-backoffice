@@ -1,0 +1,44 @@
+{
+  "case_id": "INV-040",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-040",
+    "decision": "route_for_approval",
+    "drafted_action_text": "minor exception: date_ambiguity [Price Variance Tolerance §Over-tolerance handling]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": null,
+      "invoice_date": "1970-01-01",
+      "invoice_number": "SCP-1162",
+      "po_reference": "PO-2216",
+      "total_cents": 27500,
+      "vendor_id": "V-009",
+      "vendor_name_raw": "SOLVENNE COMPLIANCE PARTNERS"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-040",
+    "schema_errors": [],
+    "terminal_state": "awaiting_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "execute_action"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

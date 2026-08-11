@@ -217,13 +217,30 @@ export async function runMockPipeline(
     // --- document screens (pre-model in the live lane) ---------------------
     const scope = await traceGuardrail(checkScope(text));
     if (scope.verdict === "block") {
-      await backend.saveDisposition({
-        id: `DSP-${writer.runId.slice(-6)}`,
-        run_id: writer.runId,
-        kind: "rejection_note",
-        summary: "Not an invoice-shaped document; no ERP contact (GR-SCOPE).",
-        created_at: new Date().toISOString(),
-      });
+      // The disposition is a drafted action (spec 07 §7: reject produces a
+      // disposition note with reason), so it goes through a traced
+      // draft_action call like every other route — the live model drafts
+      // here too, and the eval tool-sequence graders assert the call.
+      await traceCall(
+        "draft_action",
+        1,
+        {
+          route: "reject",
+          summary: "Not an invoice-shaped document; no ERP contact (GR-SCOPE).",
+        },
+        async () => {
+          const ref = `DSP-${writer.runId.slice(-6)}`;
+          await backend.saveDisposition({
+            id: ref,
+            run_id: writer.runId,
+            kind: "rejection_note",
+            summary:
+              "Not an invoice-shaped document; no ERP contact (GR-SCOPE).",
+            created_at: new Date().toISOString(),
+          });
+          return ref;
+        },
+      );
       await machine.transition("rejected", { guardrail: "GR-SCOPE" });
       await backend.setInboxState(item.id, "rejected");
       return finish("rejected", "reject", null);

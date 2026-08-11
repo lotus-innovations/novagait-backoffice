@@ -1,0 +1,45 @@
+{
+  "case_id": "INV-035",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-035",
+    "decision": "exception_hold",
+    "drafted_action_text": "match failed: price_variance_exceeds_tolerance [Price Variance Tolerance §Over-tolerance handling]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": null,
+      "invoice_date": "2026-08-20",
+      "invoice_number": "BCS-71100",
+      "po_reference": "PO-2205",
+      "total_cents": 18750,
+      "vendor_id": "V-004",
+      "vendor_name_raw": "Brightline Clinic Supply - Carson, CA"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-035",
+    "schema_errors": [],
+    "terminal_state": "held",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "update_vendor_profile"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

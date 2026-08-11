@@ -1,0 +1,44 @@
+{
+  "case_id": "INV-003",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-003",
+    "decision": "route_for_approval",
+    "drafted_action_text": "minor exception: price_variance_within_tolerance [Price Variance Tolerance §Over-tolerance handling]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": "2026-09-04",
+      "invoice_date": "2026-08-05",
+      "invoice_number": "PFG-2361",
+      "po_reference": "PO-2206",
+      "total_cents": 62400,
+      "vendor_id": "V-005",
+      "vendor_name_raw": "Pelora Facilities Group"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-003",
+    "schema_errors": [],
+    "terminal_state": "awaiting_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "execute_action"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

@@ -1,0 +1,45 @@
+{
+  "case_id": "INV-055",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-055",
+    "decision": "exception_hold",
+    "drafted_action_text": "match failed: price_variance_exceeds_tolerance, qty_billed_exceeds_received [Price Variance Tolerance §Over-tolerance handling]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": "2026-09-09",
+      "invoice_date": "2026-08-10",
+      "invoice_number": "QMS-5710",
+      "po_reference": "PO-2211",
+      "total_cents": 34000,
+      "vendor_id": "V-006",
+      "vendor_name_raw": "QUILLBROOK MEDICAL SUPPLY"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-055",
+    "schema_errors": [],
+    "terminal_state": "held",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "update_vendor_profile"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

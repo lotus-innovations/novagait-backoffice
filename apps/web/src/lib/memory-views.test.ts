@@ -40,12 +40,17 @@ describe("memory view helpers", () => {
 
     const states = await listRunStates(store);
     expect(states.map((s) => s.run_id)).toEqual([second.runId, first.runId]);
-    expect(states[0].step).toBe("executed");
+    // INB-005 is the date-ambiguity fixture: a sentinel invoice date is a
+    // minor exception (spec 07 §6, LOT-106 amendment), so even autonomous
+    // mode parks it for approval instead of executing.
+    expect(states[0].step).toBe("awaiting_approval");
 
     const profiles = await listVendorProfiles(store);
     expect(profiles).toHaveLength(1);
     expect(profiles[0].vendor_id).toBe("V-001");
-    expect(profiles[0].runs_count).toBe(2);
+    // Only the executed INB-001 run updates the profile; the parked INB-005
+    // run writes it after approval, not before (spec 07 §9).
+    expect(profiles[0].runs_count).toBe(1);
 
     const dedupe = await listDedupeEntries(store);
     expect(dedupe.map((d) => d.run_id).sort()).toEqual(

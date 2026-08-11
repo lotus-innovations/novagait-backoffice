@@ -1,0 +1,45 @@
+{
+  "case_id": "INV-014",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-014",
+    "decision": "exception_hold",
+    "drafted_action_text": "vendor unresolved [Vendor Master and Name Resolution §Unresolved vendors]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "EUR",
+      "due_date": null,
+      "invoice_date": "2026-08-10",
+      "invoice_number": "CN-33702-EU",
+      "po_reference": "PO-2202",
+      "total_cents": 30000,
+      "vendor_id": null,
+      "vendor_name_raw": "ChartNimbus EMR (EU billing entity)"
+    },
+    "guardrails_fired": [
+      "GR-VENDOR"
+    ],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-014",
+    "schema_errors": [],
+    "terminal_state": "held",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

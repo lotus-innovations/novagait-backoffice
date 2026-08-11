@@ -20,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": "GR-FLOOR"
   },
   "notes": "Held-out case: Ferrowind Construction Group and this progress-invoice layout appear in no other fixture. $7,800.00 is the exact fixed fee on PO-2214 and the work period matches, but it is above the $5,000 hard-escalation floor: GR-FLOOR strips autonomy and a human must approve."

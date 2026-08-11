@@ -8,6 +8,7 @@ import {
   type ExtractedInvoice,
 } from "@novagait/agent";
 import type { PurchaseOrder, ReceivingRecord } from "@novagait/mock-backend";
+import { INVOICE_DATE_SENTINEL, INVOICE_NUMBER_SENTINEL } from "./parse";
 
 export interface MatchResult {
   matched: boolean;
@@ -28,6 +29,15 @@ export function matchInvoice(
   const minorExceptions: string[] = [];
   if (!extraction.po_reference) exceptions.push("missing_po_reference");
   if (extraction.currency !== "USD") exceptions.push("non_usd_currency");
+  // Sentinel-aware exceptions (spec 07 §5-6): a missing invoice number
+  // breaks dedupe and ledger uniqueness -> hard exception; an ambiguous or
+  // absent invoice date is the spec's "date ambiguity" minor exception.
+  if (extraction.invoice_number === INVOICE_NUMBER_SENTINEL) {
+    exceptions.push("missing_invoice_number");
+  }
+  if (extraction.invoice_date === INVOICE_DATE_SENTINEL) {
+    minorExceptions.push("date_ambiguity");
+  }
 
   if (!po) {
     if (extraction.po_reference) exceptions.push("po_not_found");

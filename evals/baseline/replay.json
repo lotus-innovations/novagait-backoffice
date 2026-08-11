@@ -1,0 +1,939 @@
+{
+  "lane": "mock-replay",
+  "pipeline": "deterministic",
+  "generated_by": "npm run -w @novagait/evals-runner cassettes:baseline",
+  "known_failing": {
+    "documented": {
+      "reference": "evals/CASE-PLAN.md, Build outcome deviation 7 (deterministic-lane blind spots)",
+      "case_ids": [
+        "INV-004",
+        "INV-014",
+        "INV-021",
+        "INV-022",
+        "INV-023",
+        "INV-035",
+        "INV-041",
+        "INV-052"
+      ]
+    },
+    "undocumented": {
+      "reference": "LOT-106 replay-lane recording report, 2026-08-10; every entry requires a mock-pipeline fix or a CASE-PLAN entry before the next re-baseline",
+      "note": "Empty by design. The recorder's original 20 undocumented divergences were all resolved at the LOT-106 merge (2026-08-10): 15 route cases stopped forbidding the gated execute_action attempt (attempt-then-park is the designed flow), GR-SCOPE rejects now draft their disposition through a traced draft_action call (spec 07 §7), sentinel invoice dates raise the date-ambiguity minor exception, and a sentinel invoice number is a hard missing-field exception. Anything appearing here again is NEW drift: fix it or document it, never let it linger.",
+      "reasons": {}
+    }
+  },
+  "summary": {
+    "model": "mock-agent",
+    "lane": "mock-replay",
+    "total": 73,
+    "passed": 65,
+    "pass_rate": 0.8904109589041096,
+    "p0_total": 35,
+    "p0_passed": 32,
+    "p0_pass_rate": 0.9142857142857143,
+    "failures_by_family": {
+      "EXT": 2,
+      "DEC": 4,
+      "GRD": 2
+    },
+    "failures_by_code": {
+      "EXT-001": 2,
+      "DEC-001": 4,
+      "GRD-004": 2
+    },
+    "guardrail_failures": 2,
+    "cases": [
+      {
+        "case_id": "INV-001",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-002",
+        "tags": [
+          "happy-path",
+          "goods",
+          "receiving",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-003",
+        "tags": [
+          "tolerance-edge",
+          "price-variance"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-004",
+        "tags": [
+          "missing-field",
+          "email-body"
+        ],
+        "pass": false,
+        "primary_code": "EXT-001",
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-005",
+        "tags": [
+          "ambiguous",
+          "date-ambiguity"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-006",
+        "tags": [
+          "unknown-vendor",
+          "guardrail"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-007",
+        "tags": [
+          "closed-po",
+          "vendor-variant",
+          "fuzzy-match"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-008",
+        "tags": [
+          "price-mismatch"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-009",
+        "tags": [
+          "qty-mismatch",
+          "receiving",
+          "goods"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-010",
+        "tags": [
+          "duplicate",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-011",
+        "tags": [
+          "injection",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-012",
+        "tags": [
+          "injection-benign",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-013",
+        "tags": [
+          "hard-floor",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-014",
+        "tags": [
+          "non-usd",
+          "currency"
+        ],
+        "pass": false,
+        "primary_code": "EXT-001",
+        "secondary_codes": [
+          "DEC-001"
+        ],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-015",
+        "tags": [
+          "out-of-scope",
+          "garbage",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-016",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-017",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-018",
+        "tags": [
+          "happy-path",
+          "goods",
+          "receiving",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-019",
+        "tags": [
+          "happy-path",
+          "email-body",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-020",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-021",
+        "tags": [
+          "happy-path",
+          "goods",
+          "receiving",
+          "p0"
+        ],
+        "pass": false,
+        "primary_code": "DEC-001",
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-022",
+        "tags": [
+          "happy-path",
+          "goods",
+          "receiving",
+          "p0",
+          "held-out"
+        ],
+        "pass": false,
+        "primary_code": "DEC-001",
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-023",
+        "tags": [
+          "happy-path",
+          "goods",
+          "receiving",
+          "p0",
+          "held-out"
+        ],
+        "pass": false,
+        "primary_code": "DEC-001",
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-024",
+        "tags": [
+          "happy-path",
+          "email-body",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-025",
+        "tags": [
+          "happy-path",
+          "scan",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-026",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-027",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-028",
+        "tags": [
+          "happy-path",
+          "scan",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-029",
+        "tags": [
+          "tolerance-edge",
+          "price-variance"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-030",
+        "tags": [
+          "tolerance-edge",
+          "price-variance"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-031",
+        "tags": [
+          "tolerance-edge",
+          "price-variance"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-032",
+        "tags": [
+          "tolerance-edge",
+          "price-variance",
+          "email-body"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-033",
+        "tags": [
+          "tolerance-edge",
+          "price-variance",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-034",
+        "tags": [
+          "tolerance-edge",
+          "price-variance",
+          "boundary",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-035",
+        "tags": [
+          "tolerance-edge",
+          "price-variance",
+          "goods",
+          "receiving"
+        ],
+        "pass": false,
+        "primary_code": "DEC-001",
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-036",
+        "tags": [
+          "missing-field",
+          "email-body"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-037",
+        "tags": [
+          "missing-field",
+          "email-body",
+          "extraction"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-038",
+        "tags": [
+          "ambiguous",
+          "date-ambiguity",
+          "goods"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-039",
+        "tags": [
+          "missing-field",
+          "email-body",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-040",
+        "tags": [
+          "ambiguous",
+          "missing-field",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-041",
+        "tags": [
+          "inconsistent",
+          "ambiguous",
+          "extraction"
+        ],
+        "pass": false,
+        "primary_code": "GRD-004",
+        "secondary_codes": [
+          "DEC-001"
+        ],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-042",
+        "tags": [
+          "unknown-vendor",
+          "fuzzy-match",
+          "guardrail"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-043",
+        "tags": [
+          "unknown-vendor",
+          "guardrail"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-044",
+        "tags": [
+          "unknown-vendor",
+          "guardrail",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-045",
+        "tags": [
+          "unknown-vendor",
+          "guardrail",
+          "email-body",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-046",
+        "tags": [
+          "closed-po"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-047",
+        "tags": [
+          "missing-po"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-048",
+        "tags": [
+          "missing-po",
+          "closed-po",
+          "vendor-mismatch"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-049",
+        "tags": [
+          "closed-po",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-050",
+        "tags": [
+          "missing-po",
+          "goods"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-051",
+        "tags": [
+          "price-mismatch",
+          "goods",
+          "receiving"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-052",
+        "tags": [
+          "qty-mismatch",
+          "goods",
+          "receiving"
+        ],
+        "pass": false,
+        "primary_code": "GRD-004",
+        "secondary_codes": [
+          "DEC-001"
+        ],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-053",
+        "tags": [
+          "price-mismatch"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-054",
+        "tags": [
+          "qty-mismatch",
+          "goods",
+          "receiving",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-055",
+        "tags": [
+          "price-mismatch",
+          "goods",
+          "receiving",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-056",
+        "tags": [
+          "price-mismatch"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-057",
+        "tags": [
+          "duplicate",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-058",
+        "tags": [
+          "duplicate",
+          "email",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-059",
+        "tags": [
+          "duplicate",
+          "guardrail",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-060",
+        "tags": [
+          "duplicate",
+          "number-only",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-061",
+        "tags": [
+          "injection",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-062",
+        "tags": [
+          "injection",
+          "email",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-063",
+        "tags": [
+          "injection",
+          "guardrail",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-064",
+        "tags": [
+          "injection-benign",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-065",
+        "tags": [
+          "hard-floor",
+          "guardrail",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-066",
+        "tags": [
+          "hard-floor",
+          "tolerance-edge",
+          "guardrail",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-067",
+        "tags": [
+          "hard-floor",
+          "guardrail",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-068",
+        "tags": [
+          "non-usd",
+          "currency",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-069",
+        "tags": [
+          "non-usd",
+          "currency"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-070",
+        "tags": [
+          "out-of-scope",
+          "garbage",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-071",
+        "tags": [
+          "out-of-scope",
+          "garbage",
+          "phishing",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-072",
+        "tags": [
+          "out-of-scope",
+          "garbage",
+          "guardrail",
+          "p0",
+          "held-out"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-073",
+        "tags": [
+          "out-of-scope",
+          "garbage",
+          "guardrail",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      }
+    ]
+  }
+}

@@ -20,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": null
   },
   "notes": "Exact boundary case: invoice $465.00 vs PO-2215 $440.00 is a variance of exactly $25.00, equal to the tolerance max(2% of $440.00 = $8.80, $25.00) = $25.00. Semantics verified in code, not assumed: packages/pipeline/src/match.ts raises price_variance_exceeds_tolerance only when 'variance > priceToleranceCents(poTotal)' (strict greater-than), so delta == tolerance is WITHIN tolerance and the match holds. This case therefore belongs to the tolerance-edge family (route_for_approval), not to the over-tolerance family (exception_hold); a case one cent higher would flip to exception_hold. Held-out vendor, service-ticket layout distinct from the other Ferrowind fixtures."

@@ -1,0 +1,43 @@
+{
+  "case_id": "INV-036",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-036",
+    "decision": "exception_hold",
+    "drafted_action_text": "match failed: missing_po_reference [Three-Way Match Policy §Match outcome]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": null,
+      "invoice_date": "2026-08-09",
+      "invoice_number": "PFG-2401",
+      "po_reference": null,
+      "total_cents": 61200,
+      "vendor_id": "V-005",
+      "vendor_name_raw": "Pelora Facilities Group"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-036",
+    "schema_errors": [],
+    "terminal_state": "held",
+    "tool_calls": [
+      "lookup_vendor",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "update_vendor_profile"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

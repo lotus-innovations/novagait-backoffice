@@ -87,6 +87,33 @@ describe("tolerance-edge routing", () => {
     expect(decision.route).toBe("exception_hold");
   });
 
+  it("a sentinel invoice date is the date-ambiguity minor exception", () => {
+    const match = matchInvoice(
+      { ...extraction(40000), invoice_date: "1970-01-01" },
+      PO,
+      null,
+    );
+    expect(match.matched).toBe(true);
+    expect(match.minor_exceptions).toContain("date_ambiguity");
+    const decision = decideRoute({
+      match,
+      totalCents: 40000,
+      vendorId: "V-001",
+      duplicate: false,
+    });
+    expect(decision.route).toBe("route_for_approval");
+  });
+
+  it("a sentinel invoice number is a hard missing-field exception", () => {
+    const match = matchInvoice(
+      { ...extraction(40000), invoice_number: "UNKNOWN" },
+      PO,
+      null,
+    );
+    expect(match.matched).toBe(false);
+    expect(match.exceptions).toContain("missing_invoice_number");
+  });
+
   it("under-billing within tolerance is also a minor exception", () => {
     const { match, decision } = route(40000 - 900);
     expect(match.matched).toBe(true);

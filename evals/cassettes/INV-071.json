@@ -1,0 +1,41 @@
+{
+  "case_id": "INV-071",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-071",
+    "decision": "reject",
+    "drafted_action_text": "Not an invoice-shaped document; no ERP contact (GR-SCOPE).",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": null,
+      "due_date": null,
+      "invoice_date": null,
+      "invoice_number": null,
+      "po_reference": null,
+      "total_cents": null,
+      "vendor_id": null,
+      "vendor_name_raw": null
+    },
+    "guardrails_fired": [
+      "GR-SCOPE"
+    ],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-071",
+    "schema_errors": [],
+    "terminal_state": "rejected",
+    "tool_calls": [
+      "draft_action"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

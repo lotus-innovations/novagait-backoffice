@@ -1,0 +1,31 @@
+name: Eval replay
+
+# Key-free and offline by design (spec 09 §4): the replay lane grades
+# committed cassettes with the committed graders and compares the summary to
+# evals/baseline/replay.json. No ANTHROPIC_API_KEY, no secrets, no network
+# beyond `npm ci`. Blocking: a harness change that moves the numbers has to
+# move the baseline in the same commit.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Harness drift: re-record every cassette into a scratch directory and
+      # compare against the committed ones before grading anything.
+      - name: Re-record cassettes and diff against the committed ones
+        run: npm run -w @novagait/evals-runner cassettes:check
+      - name: Replay cassettes against the committed baseline
+        run: npm run -w @novagait/evals-runner cassettes:replay

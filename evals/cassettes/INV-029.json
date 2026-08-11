@@ -1,0 +1,44 @@
+{
+  "case_id": "INV-029",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-029",
+    "decision": "route_for_approval",
+    "drafted_action_text": "minor exception: price_variance_within_tolerance [Price Variance Tolerance §Over-tolerance handling]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": "2026-10-08",
+      "invoice_date": "2026-09-08",
+      "invoice_number": "CB-2026-0908",
+      "po_reference": "PO-2201",
+      "total_cents": 45500,
+      "vendor_id": "V-001",
+      "vendor_name_raw": "Corvida Billing Partners"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-029",
+    "schema_errors": [],
+    "terminal_state": "awaiting_approval",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "execute_action"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

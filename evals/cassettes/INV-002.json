@@ -1,0 +1,46 @@
+{
+  "case_id": "INV-002",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-002",
+    "decision": "auto_approve",
+    "drafted_action_text": "full match under autonomy cap [Approval Authority and Autonomy Limits §What autonomy never covers]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "USD",
+      "due_date": null,
+      "invoice_date": "2026-08-04",
+      "invoice_number": "BCS-70891",
+      "po_reference": "PO-2204",
+      "total_cents": 32260,
+      "vendor_id": "V-004",
+      "vendor_name_raw": "Brightline Clinic Supply - Carson, CA"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-002",
+    "schema_errors": [],
+    "terminal_state": "executed",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "lookup_receiving",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "execute_action",
+      "update_vendor_profile"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

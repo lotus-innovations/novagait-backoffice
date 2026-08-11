@@ -1,0 +1,92 @@
+name: E2E
+
+# Key-free by design, like CI: the suite drives the PRODUCTION build with the
+# mock agent lane (MOCK_AGENT=1, no ANTHROPIC_API_KEY anywhere, not even as a
+# secret). Two blocking jobs: `e2e` (spec 12 §4 flows) and `axe` (WCAG 2.2
+# A/AA gate on every route with real data present).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Resolve Playwright version
+        id: playwright
+        run: |
+          echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: browsers
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium
+        if: steps.browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Chromium system deps (cached browser)
+        if: steps.browsers.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - run: npm run build -w web
+        env:
+          MOCK_AGENT: "1"
+      - run: npm run e2e -w web
+        env:
+          E2E_SKIP_BUILD: "1"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-e2e
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+
+  axe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Resolve Playwright version
+        id: playwright
+        run: |
+          echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: browsers
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium
+        if: steps.browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Chromium system deps (cached browser)
+        if: steps.browsers.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - run: npm run build -w web
+        env:
+          MOCK_AGENT: "1"
+      - run: npm run e2e:axe -w web
+        env:
+          E2E_SKIP_BUILD: "1"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-axe
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7

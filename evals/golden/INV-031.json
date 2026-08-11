@@ -20,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": null
   },
   "notes": "Invoice $1,264.00 vs PO-2203 $1,240.00: +$24.00 maintenance surcharge. Tolerance is max(2% of $1,240.00 = $24.80, $25.00) = $25.00, the point of this case: the percentage arm is the larger-looking one but the $25 floor still governs, and $24.00 is inside either way. Above the cap, so it routes for approval."

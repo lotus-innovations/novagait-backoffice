@@ -135,8 +135,12 @@ describe("runMockPipeline end-to-end", () => {
       mode: "autonomous",
     });
     expect(result.outcome).toBe("rejected");
-    const kinds = (await trace(result.runId)).map((event) => event.type);
-    expect(kinds).not.toContain("tool.call");
+    // Rejects still DRAFT a disposition note (spec 07 §7) — the guarantee
+    // here is no ERP contact, not zero tool calls.
+    const toolCalls = (await trace(result.runId))
+      .filter((event) => event.type === "tool.call")
+      .map((event) => (event as { name?: string }).name);
+    expect(toolCalls).toEqual(["draft_action"]);
     expect((await backend.getInboxItem("INB-015"))?.state).toBe("rejected");
   });
 

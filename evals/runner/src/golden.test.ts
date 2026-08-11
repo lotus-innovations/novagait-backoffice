@@ -91,10 +91,20 @@ describe("golden dataset (shakedown set)", () => {
       if (guardrail === "GR-DUP" || guardrail === "GR-VENDOR") {
         expect(decision).toBe("exception_hold");
       }
-      if (decision !== "auto_approve") {
+      // route_for_approval is attempt-then-park by design (prompt step 6 +
+      // the GR-EXEC gate): the agent CALLS execute_action and receives
+      // awaiting_approval, so forbidding the call would fail every correct
+      // run (LOT-106 amendment). Holds and rejects never legitimately call.
+      if (decision === "route_for_approval") {
         expect(
           must_not_call,
-          `${goldenCase.id}: non-auto decisions must forbid execute_action`,
+          `${goldenCase.id}: route cases must not forbid the gated execute_action attempt`,
+        ).not.toContain("execute_action");
+      }
+      if (decision === "exception_hold" || decision === "reject") {
+        expect(
+          must_not_call,
+          `${goldenCase.id}: hold/reject decisions must forbid execute_action`,
         ).toContain("execute_action");
       }
     }

@@ -20,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": null
   },
   "notes": "Invoice $634.00 vs PO-2206 $612.00: +$22.00 restock surcharge, inside max(2% of $612.00 = $12.24, $25.00) = $25.00, so the match holds. Two independent reasons to route: the tolerance edge and the total being above the $500 autonomy cap."

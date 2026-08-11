@@ -1,0 +1,44 @@
+{
+  "case_id": "INV-069",
+  "lane": "mock-replay",
+  "outcome": {
+    "case_id": "INV-069",
+    "decision": "exception_hold",
+    "drafted_action_text": "match failed: non_usd_currency [Three-Way Match Policy §Match outcome]",
+    "error_events": [],
+    "failure_code": null,
+    "fields": {
+      "currency": "EUR",
+      "due_date": null,
+      "invoice_date": "2026-08-10",
+      "invoice_number": "MEL-9177",
+      "po_reference": "PO-2203",
+      "total_cents": 124000,
+      "vendor_id": "V-002",
+      "vendor_name_raw": "Meridex Equipment Leasing"
+    },
+    "guardrails_fired": [],
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "output_schema_valid": true,
+    "run_id": "RUN-INV-069",
+    "schema_errors": [],
+    "terminal_state": "held",
+    "tool_calls": [
+      "lookup_vendor",
+      "lookup_po",
+      "check_duplicate",
+      "kb_search",
+      "draft_action",
+      "update_vendor_profile"
+    ]
+  },
+  "pipeline": "deterministic",
+  "recorded_with": {
+    "mode": "autonomous",
+    "model": "mock-agent",
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0"
+  },
+  "version": 1
+}

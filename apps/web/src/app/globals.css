@@ -6,7 +6,7 @@
   --line: #d9dde3;
   --accent: #1f5fbf;
   --good: #1e7d4f;
-  --warn: #b3651a;
+  --warn: #a05a17;
   --bad: #b02a37;
 }
 
@@ -142,7 +142,11 @@ details.event[open] > summary {
 details.event pre {
   margin: 0;
   padding: 10px 12px;
-  overflow-x: auto;
+  /* Wrap rather than scroll: a horizontally scrollable <pre> is a region
+     keyboard users cannot reach without a focusable handle (WCAG 2.1.1,
+     axe scrollable-region-focusable). */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-size: 0.82rem;
   background: var(--bg);
 }

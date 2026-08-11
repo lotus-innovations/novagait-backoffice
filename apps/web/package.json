@@ -6,17 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "e2e": "playwright test --grep-invert @axe",
+    "e2e:axe": "playwright test --grep @axe",
+    "e2e:all": "playwright test"
   },
   "dependencies": {
-    "next": "16.3.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
     "@novagait/agent": "*",
     "@novagait/mock-backend": "*",
-    "@novagait/pipeline": "*"
+    "@novagait/pipeline": "*",
+    "next": "16.3.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

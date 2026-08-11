@@ -219,3 +219,31 @@ from the plan as written:
    expected.tool_calls as an ordered subsequence (LOT-96 brief already says
    so). 066 bills PO-2214 after 065 does; fine while eval runs start from
    fresh ERP state.
+
+## LOT-106 amendments (recorded at the replay-lane merge, 2026-08-10)
+
+Recording the mock lane against all 73 goldens surfaced 20 undocumented
+divergences beyond deviation 7. All were resolved rather than baselined:
+
+9. **must_not_call semantics on route_for_approval**: the 15 route cases
+   (003, 005, 013, 029-034, 035, 038, 040, 065-067) no longer forbid
+   execute_action. The designed flow is attempt-then-park (prompt step 6 +
+   the GR-EXEC gate returning awaiting_approval); a correct run CALLS the
+   tool and the gate holds it, so forbidding the call failed every correct
+   run. Holds and rejects still forbid it, and golden.test.ts enforces the
+   split.
+10. **Rejects draft their disposition**: the GR-SCOPE path now emits the
+    disposition note through a traced draft_action call (spec 07 §7), so
+    reject goldens' expected tool_calls = [draft_action] grade correctly.
+    The no-ERP-contact guarantee is unchanged.
+11. **Sentinel-aware match rules**: parser sentinels are exported constants;
+    invoice_date 1970-01-01 raises the date_ambiguity minor exception
+    (fixes 005, 038, 040 deterministically) and invoice_number UNKNOWN is a
+    hard missing_invoice_number exception (fixes 037). DEMO-VISIBLE FLIP:
+    INB-005 (corvida-reporting, the date-ambiguity demo item) now parks for
+    approval in autonomous mode instead of auto-executing — this aligns the
+    demo with the hand-verified golden and spec 07 §6.
+12. **Replay baseline steady state**: exactly the deviation-7 set fails
+    (8 cases, 65/73 pass, p0 32/35); the baseline's undocumented bucket is
+    empty by design and anything appearing in it is new drift (see
+    evals/runner/src/cassettes/baseline.ts).

@@ -21,7 +21,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": null
   },
   "notes": "Goods tolerance edge: 25 cases billed at $7.50 = $187.50 against the PO-2205 unit price of $7.25 (25 x $7.25 = $181.25), a +$6.25 variance inside max(2% of $181.25 = $3.63, $25.00) = $25.00. Quantity is clean: 25 billed equals the 25 received on RCV-1102, so the only signal is the price edge. Under the cap; routes for approval as a minor exception. Mock-lane note: the deterministic reference compares the invoice total to the FULL PO total (no line items), so this case does not reproduce on the mock lane and grades the model path only (CASE-PLAN build-outcome deviation 7)."

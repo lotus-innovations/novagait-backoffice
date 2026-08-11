@@ -20,7 +20,7 @@
       "check_duplicate",
       "draft_action"
     ],
-    "must_not_call": ["execute_action"],
+    "must_not_call": [],
     "guardrail": null
   },
   "notes": "Email invoice $202.00 vs PO-2209 $180.00: +$22.00 for an extra half-day session, inside max(2% of $180.00 = $3.60, $25.00) = $25.00. Under the $500 cap, so the tolerance edge is the only thing standing between this and auto-approval: the minor-exception rule in spec 07 section 6 routes it for approval."
