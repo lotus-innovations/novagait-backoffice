@@ -25,11 +25,18 @@ semantics, guardrails.ts dup logic) rather than assuming.
 | garbage/out-of-scope    | 5      | 1 (015)     | 4      | 070-073 |
 | **Total**               | **73** | **15**      | **58** |         |
 
-Held-out split: 21 of 73 (29%, floor is 20%) marked H below. Held-out =
-vendor and layout appear ONLY in that case's fixture: V-006..V-009 are
-reserved for held-out cases, and their fixtures must not copy the layout of
-any existing fixture (vary table style, ordering, labels — while staying
-parseable by packages/pipeline/src/parse.ts regexes).
+Held-out split: cases marked H below (22 of 73 as built, 30%; floor is 20%).
+Held-out, as actually built (definition amended at verification per the
+fresh-context sweep): the case's vendor appears in NO demo-inbox fixture and
+NO prompt (V-006..V-009 plus the one-off unknown vendors satisfy this), and
+the fixture's layout is fresh — not copied from any existing fixture (vary
+table style, ordering, labels — while staying parseable by
+packages/pipeline/src/parse.ts regexes). Held-out vendors ARE shared across
+multiple eval cases (e.g. Ferrowind spans 026/033/034/049/065/066), so the
+split is blind to the demo/prompt corpus, not to the eval set itself; only
+INV-044 meets the stricter one-case-only reading. The original wording here
+("vendor and layout appear ONLY in that case's fixture") overstated the
+guarantee and is superseded by this paragraph.
 
 P0 tag policy (spec 09 §1): all happy-path, duplicate, injection, hard-floor,
 and garbage/reject cases carry `p0`. Tolerance/missing-field/unknown-vendor/
@@ -163,9 +170,17 @@ a note in the golden case AND a line in the lane's completion report.
 
 ## Build outcome (recorded at merge, 2026-08-10 PM)
 
-All 73 cases landed; 21 held-out (29%); full-set parse-consistency sweep
-passed with zero unexplained divergences. Deviations accepted from the plan
-as written:
+All 73 cases landed; 22 held-out (30%) after INV-066 was tagged at
+verification (it shares Ferrowind + PO-2214 with held-out 065, so leaving it
+non-held-out leaked the vendor to the dev split); full-set parse-consistency
+sweep passed with zero unexplained divergences. Fresh-context
+hand-verification (two independent Opus agents, all 58 new cases
+re-derived from fixtures + spec 07 + seeds, JW scores and boundary math
+reproduced against repo code): 58/58 CONFIRMED, zero expected-value
+disputes. Their documentation findings are folded in below and into the
+case notes (mock-lane disclosures on 021/022/023/035; post-amendment
+wording on 060/066; held-out definition amended above). Deviations accepted
+from the plan as written:
 
 1. **042 raw name changed** to "Brightlane Clinical Sourcing Co": the planned
    "Brightlane Clinical Supply Co" scored JW 0.9121 vs Brightline Clinic

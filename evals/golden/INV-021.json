@@ -24,5 +24,5 @@
     "must_not_call": [],
     "guardrail": null
   },
-  "notes": "Partial shipment billed correctly: 25 cases at the PO unit price of $7.25 = $181.25, and RCV-1102 records exactly 25 received, so received >= billed holds per line and the unit price matches. Billing less than the 40 ordered is not an exception (spec 07 section 5 compares received to billed, not ordered to billed); the mirror image of INV-009, which bills 40 against the same receiver and must hold."
+  "notes": "Partial shipment billed correctly: 25 cases at the PO unit price of $7.25 = $181.25, and RCV-1102 records exactly 25 received, so received >= billed holds per line and the unit price matches. Billing less than the 40 ordered is not an exception (spec 07 section 5 compares received to billed, not ordered to billed); the mirror image of INV-009, which bills 40 against the same receiver and must hold. Mock-lane note: the deterministic reference compares the invoice total to the FULL PO total (no line items), so this case does not reproduce on the mock lane and grades the model path only (CASE-PLAN build-outcome deviation 7)."
 }

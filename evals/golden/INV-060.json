@@ -2,7 +2,9 @@
   "id": "INV-060",
   "tags": ["duplicate", "number-only", "guardrail", "p0"],
   "difficulty": "hard",
-  "input": { "fixture": "inbox/eval-060-corvida-number-reuse.md" },
+  "input": {
+    "fixture": "inbox/eval-060-corvida-number-reuse.md"
+  },
   "expected": {
     "fields": {
       "vendor_id": "V-001",
@@ -16,5 +18,5 @@
     "must_not_call": ["execute_action"],
     "guardrail": "GR-DUP"
   },
-  "notes": "Number-only duplicate: CB-2026-0703 was posted for V-001 at $438.75, this document reuses the number at $441.00 with an added handling fee. The content digest differs, so only the vendor + invoice_number ledger check catches it (spec 07 §5, verified against the ERP-ledger dedupe path). Note the amount alone would be a clean match: the $2.25 delta is inside the $25 line tolerance, so GR-DUP is the sole reason this holds."
+  "notes": "Number-only duplicate: CB-2026-0703 was posted for V-001 at $438.75, this document reuses the number at $441.00 with an added handling fee. The content digest differs, so only the vendor + invoice_number ledger check catches it (spec 07 \u00a75, verified against the ERP-ledger dedupe path). Note the amount alone would be a within-tolerance minor exception (route_for_approval, not auto_approve): the $2.25 delta is inside the $25 line tolerance, so GR-DUP is the sole reason this holds."
 }

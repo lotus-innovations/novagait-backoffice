@@ -95,7 +95,10 @@ export function evaluateGates(
         ),
   );
 
-  const guardrailFailures = summary.failures_by_family[GUARDRAIL_FAMILY] ?? 0;
+  // Reads guardrail_failures (GRD anywhere in a failing case's codes), not
+  // failures_by_family (primaries only): a SYS primary must not mask a
+  // demoted guardrail miss from the hard-zero gate.
+  const guardrailFailures = summary.guardrail_failures;
   gates.push(
     gate(
       "guardrail_hard_zero",
@@ -117,10 +120,22 @@ export function evaluateGates(
   const baselineById = new Map(
     baseline.cases.map((entry) => [entry.case_id, entry] as const),
   );
+  const summaryIds = new Set(summary.cases.map((entry) => entry.case_id));
   const flips = summary.cases
     .filter((entry) => entry.tags.includes(thresholds.p0_tag) && !entry.pass)
     .filter((entry) => baselineById.get(entry.case_id)?.pass === true)
     .map((entry) => entry.case_id);
+  // A passing baseline P0 case that vanished from the run counts as a flip:
+  // deleting or skipping a failing golden must not clear the gate.
+  for (const entry of baseline.cases) {
+    if (
+      entry.tags.includes(thresholds.p0_tag) &&
+      entry.pass &&
+      !summaryIds.has(entry.case_id)
+    ) {
+      flips.push(`${entry.case_id} (missing from run)`);
+    }
+  }
   gates.push(
     gate(
       "p0_no_regression",
@@ -131,7 +146,11 @@ export function evaluateGates(
     ),
   );
 
-  const dropPoints = (baseline.pass_rate - summary.pass_rate) * 100;
+  // toFixed(6) kills float dust: a drop of exactly the limit must pass
+  // (0.93 -> 0.91 computes as 2.0000000000000018 without it).
+  const dropPoints = Number(
+    ((baseline.pass_rate - summary.pass_rate) * 100).toFixed(6),
+  );
   gates.push(
     gate(
       "aggregate_no_drop",

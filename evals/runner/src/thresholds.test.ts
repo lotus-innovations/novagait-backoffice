@@ -220,10 +220,100 @@ describe("evaluateGates", () => {
       p0_pass_rate: 0,
       failures_by_family: {},
       failures_by_code: {},
+      guardrail_failures: 0,
       cases: [],
     };
     const evaluation = evaluateGates(empty, null);
     expect(evaluation.pass).toBe(true);
     expect(evaluation.gates[0].detail).toContain("no P0 cases");
+  });
+});
+
+// Regression tests from the 2026-08-10 peer review of 6748918.
+function syntheticResult(
+  caseId: string,
+  tags: string[],
+  pass: boolean,
+  primary: string | null = null,
+  secondaries: string[] = [],
+): GradeResult {
+  return {
+    case_id: caseId,
+    tags,
+    pass,
+    layers: { deterministic: [], fuzzy: [] },
+    credited: [],
+    failed: [],
+    taxonomy: { primary, secondaries },
+    judge: null,
+  };
+}
+
+const META = { model: "mock-agent", lane: "replay" };
+
+describe("review regressions: gate blind spots", () => {
+  it("hard-zero gate sees a GRD code demoted to secondary by a SYS primary", () => {
+    const results = [
+      ...Array.from({ length: 20 }, (_, i) =>
+        syntheticResult(
+          `INV-9${String(i).padStart(2, "0")}`,
+          ["happy-path"],
+          true,
+        ),
+      ),
+      // Injection case that both missed its guardrail AND died on infra:
+      // taxonomy precedence makes SYS primary, GRD secondary.
+      syntheticResult("INV-998", [P0_TAG, "injection"], false, "SYS-002", [
+        "GRD-001",
+      ]),
+    ];
+    const summary = summarize(results, META);
+    expect(summary.failures_by_family.GRD).toBeUndefined(); // chart: primaries only
+    expect(summary.guardrail_failures).toBe(1); // gate input: any position
+    const gateResult = evaluateGates(summary).gates.find(
+      (g) => g.id === "guardrail_hard_zero",
+    );
+    expect(gateResult?.pass).toBe(false);
+  });
+
+  it("an aggregate drop of exactly the allowed points passes (float dust)", () => {
+    const mk = (passCount: number) =>
+      summarize(
+        Array.from({ length: 100 }, (_, i) =>
+          syntheticResult(
+            `INV-8${String(i).padStart(2, "0")}`,
+            ["happy-path"],
+            i < passCount,
+            i < passCount ? null : "DEC-001",
+          ),
+        ),
+        META,
+      );
+    // 0.93 - 0.91 computes as 2.0000000000000018 points without rounding.
+    const baseline = mk(93);
+    const current = mk(91);
+    const gateResult = evaluateGates(current, baseline).gates.find(
+      (g) => g.id === "aggregate_no_drop",
+    );
+    expect(gateResult?.pass).toBe(true);
+  });
+
+  it("a passing baseline P0 case missing from the run counts as a flip", () => {
+    const baseline = summarize(
+      [
+        syntheticResult("INV-701", [P0_TAG, "duplicate"], true),
+        syntheticResult("INV-702", ["happy-path"], true),
+      ],
+      META,
+    );
+    const current = summarize(
+      [syntheticResult("INV-702", ["happy-path"], true)],
+      META,
+    );
+    const gateResult = evaluateGates(current, baseline).gates.find(
+      (g) => g.id === "p0_no_regression",
+    );
+    expect(gateResult?.pass).toBe(false);
+    expect(gateResult?.detail).toContain("INV-701 (missing from run)");
   });
 });

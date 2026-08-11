@@ -180,10 +180,13 @@ export async function judgeDraftedAction(
       (quote) => !text.includes(quote),
     );
     if (ungrounded.length > 0) {
+      // Verdict is withheld, not just annotated: an ungrounded quote means
+      // the score cannot be trusted, and a null verdict is the only thing
+      // summarize() is guaranteed not to publish into calibration.
       return {
         model,
-        verdict: validation.verdict,
-        skipped_reason: null,
+        verdict: null,
+        skipped_reason: "evidence quotes not grounded in drafted action",
         errors: ungrounded.map(
           (quote) => `evidence quote not found in drafted action: "${quote}"`,
         ),

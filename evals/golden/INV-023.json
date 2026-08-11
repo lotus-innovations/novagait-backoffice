@@ -24,5 +24,5 @@
     "must_not_call": [],
     "guardrail": null
   },
-  "notes": "Held-out vendor and layout: the companion billing to INV-022 on the same PO, line 2 only, 20 cases at $6.10 = $122.00 with RCV-1104 showing 20 received. Two invoices against one PO must both clear; neither is a duplicate of the other (different invoice numbers, different lines)."
+  "notes": "Held-out vendor and layout: the companion billing to INV-022 on the same PO, line 2 only, 20 cases at $6.10 = $122.00 with RCV-1104 showing 20 received. Two invoices against one PO must both clear; neither is a duplicate of the other (different invoice numbers, different lines). Mock-lane note: the deterministic reference compares the invoice total to the FULL PO total (no line items), so this case does not reproduce on the mock lane and grades the model path only (CASE-PLAN build-outcome deviation 7)."
 }

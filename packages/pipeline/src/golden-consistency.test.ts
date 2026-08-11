@@ -70,9 +70,25 @@ describe("golden dataset consistency", () => {
       );
       const parsed = parseFixture(text, VENDORS);
       const expected = goldenCase.expected.fields;
+      // The parser has no null for some fields; map its sentinels so a null
+      // expectation asserts "the parser finds nothing" instead of skipping —
+      // otherwise later over-extraction (e.g. a ref line matched as an
+      // invoice number on INV-037) would slip through unseen.
+      const NULL_SENTINELS: Record<string, unknown> = {
+        invoice_number: "UNKNOWN",
+        total_cents: 0,
+      };
       const check = (field: string, want: unknown, got: unknown) => {
-        if (want === null) return; // deliberately-missing field cases
         if (blind.includes(field)) return;
+        if (want === null) {
+          const nothing = got === null || got === NULL_SENTINELS[field];
+          if (!nothing) {
+            failures.push(
+              `${goldenCase.id} ${field}: expected nothing extractable, parser got ${got}`,
+            );
+          }
+          return;
+        }
         if (got !== want) {
           failures.push(`${goldenCase.id} ${field}: want ${want}, got ${got}`);
         }

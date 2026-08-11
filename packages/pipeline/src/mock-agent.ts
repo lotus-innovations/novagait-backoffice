@@ -334,7 +334,9 @@ export async function runMockPipeline(
             ? "tolerance for price variance"
             : match.exceptions.length > 0
               ? "three-way match exceptions and holds"
-              : "autonomy cap and approval authority";
+              : match.minor_exceptions.length > 0
+                ? "tolerance for price variance"
+                : "autonomy cap and approval authority";
     const kbHits = await traceCall(
       "kb_search",
       1,

@@ -148,7 +148,7 @@ describe("judgeDraftedAction", () => {
     expect(result.errors[0]).toContain("no key configured");
   });
 
-  it("flags evidence quotes the drafted text does not contain", async () => {
+  it("withholds the verdict when evidence quotes are not grounded", async () => {
     const goldenCase = await loadCase("INV-001");
     const result = await judgeDraftedAction(
       goldenCase,
@@ -157,7 +157,11 @@ describe("judgeDraftedAction", () => {
         client: fakeClient({ ...VERDICT, evidence_quotes: ["never written"] }),
       },
     );
-    expect(result.verdict).not.toBeNull();
+    // An ungrounded quote poisons calibration, so no score may survive it.
+    expect(result.verdict).toBeNull();
+    expect(result.skipped_reason).toBe(
+      "evidence quotes not grounded in drafted action",
+    );
     expect(result.errors[0]).toContain("not found in drafted action");
   });
 });

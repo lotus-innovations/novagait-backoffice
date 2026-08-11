@@ -27,6 +27,10 @@ export interface EvalSummary {
   p0_pass_rate: number;
   failures_by_family: Record<string, number>;
   failures_by_code: Record<string, number>;
+  // Failing cases carrying a GRD code ANYWHERE (primary or secondary). The
+  // hard-zero gate reads this, not failures_by_family, so a guardrail miss
+  // cannot hide behind a SYS/FMT primary (review finding, 2026-08-10).
+  guardrail_failures: number;
   cases: CaseSummary[];
 }
 
@@ -56,14 +60,20 @@ export function summarize(
   const p0 = cases.filter((entry) => entry.tags.includes(p0Tag));
   const failuresByFamily: Record<string, number> = {};
   const failuresByCode: Record<string, number> = {};
-  // Only the primary code is counted: the taxonomy chart totals must equal
-  // the failing-case count (spec 09 §3), which secondaries would break.
+  let guardrailFailures = 0;
+  // Only the primary code is counted in the by-family/by-code charts: the
+  // taxonomy chart totals must equal the failing-case count (spec 09 §3),
+  // which secondaries would break. guardrail_failures is the exception:
+  // it scans secondaries too, because taxonomy precedence puts SYS above
+  // GRD and the hard-zero gate must still see a demoted guardrail miss.
   for (const entry of cases) {
     if (entry.pass || entry.primary_code === null) continue;
     failuresByCode[entry.primary_code] =
       (failuresByCode[entry.primary_code] ?? 0) + 1;
     const family = familyOf(entry.primary_code);
     failuresByFamily[family] = (failuresByFamily[family] ?? 0) + 1;
+    const codes = [entry.primary_code, ...entry.secondary_codes];
+    if (codes.some((code) => familyOf(code) === "GRD")) guardrailFailures += 1;
   }
 
   const passed = cases.filter((entry) => entry.pass).length;
@@ -80,6 +90,7 @@ export function summarize(
     p0_pass_rate: rate(p0Passed, p0.length),
     failures_by_family: failuresByFamily,
     failures_by_code: failuresByCode,
+    guardrail_failures: guardrailFailures,
     cases,
   };
 }
