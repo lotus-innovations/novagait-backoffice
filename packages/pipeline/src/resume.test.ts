@@ -36,6 +36,7 @@ describe("resumeRun", () => {
   it("approve executes the draft with ERP rows and a continued trace", async () => {
     const parked = await parkRun();
     const resumed = await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
       actor: "visitor:test",
       decision: "approve",
       reason: "looks right",
@@ -64,6 +65,7 @@ describe("resumeRun", () => {
   it("edit-then-approve applies GL and pay-date edits to the payment", async () => {
     const parked = await parkRun();
     await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
       actor: "visitor:test",
       decision: "edit_approve",
       reason: "recode to 6150",
@@ -80,16 +82,21 @@ describe("resumeRun", () => {
     });
   });
 
-  it("edit-then-approve drops malformed edits instead of executing them", async () => {
+  it("edit-then-approve REFUSES malformed edits instead of executing originals", async () => {
     const parked = await parkRun();
-    await resumeRun(store, backend, parked.runId, {
-      actor: "visitor:test",
-      decision: "edit_approve",
-      reason: "bad edits",
-      edits: { gl_code: "not-a-code", pay_date: "someday" },
-    });
-    const [payment] = await backend.paymentSchedule();
-    expect(payment.gl_code).toBe("6100"); // Corvida default
+    await expect(
+      resumeRun(store, backend, parked.runId, {
+        approvalId: parked.approvalId!,
+        actor: "visitor:test",
+        decision: "edit_approve",
+        reason: "bad edits",
+        edits: { gl_code: "not-a-code", pay_date: "someday" },
+      }),
+    ).rejects.toThrow(/invalid edit/);
+    // Nothing executed; the approval is still pending and decidable.
+    expect(await backend.paymentSchedule()).toHaveLength(0);
+    const approval = await getApprovalForRun(store, parked.runId);
+    expect(approval?.status).toBe("pending");
   });
 
   it("reject triggers exactly one revision, then a second reject holds", async () => {
@@ -98,6 +105,7 @@ describe("resumeRun", () => {
     // First reject: the reason re-enters the loop, a revised draft parks a
     // NEW approval instead of holding (spec 10 §3).
     const revised = await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
       actor: "visitor:test",
       decision: "reject",
       reason: "wrong PO",
@@ -129,6 +137,7 @@ describe("resumeRun", () => {
 
     // Second reject: revision exhausted, the run holds with the reason.
     const held = await resumeRun(store, backend, parked.runId, {
+      approvalId: revised.approvalId!,
       actor: "visitor:test",
       decision: "reject",
       reason: "still wrong",
@@ -144,12 +153,14 @@ describe("resumeRun", () => {
   it("a revised approval can be approved and executes", async () => {
     const parked = await parkRun();
     const revised = await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
       actor: "visitor:test",
       decision: "reject",
       reason: "recheck the period",
     });
     expect(revised.outcome).toBe("awaiting_approval");
     const final = await resumeRun(store, backend, parked.runId, {
+      approvalId: revised.approvalId!,
       actor: "visitor:test",
       decision: "approve",
       reason: "revision addresses it",
@@ -161,6 +172,7 @@ describe("resumeRun", () => {
   it("stamps the run mode on every trace event, including resumed segments", async () => {
     const parked = await parkRun();
     await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
       actor: "visitor:test",
       decision: "approve",
       reason: "ok",
@@ -172,6 +184,85 @@ describe("resumeRun", () => {
     }
   });
 
+  it("refuses a stale approval id after a revision (no sight-unseen approval)", async () => {
+    const parked = await parkRun();
+    const revised = await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
+      actor: "visitor:test",
+      decision: "reject",
+      reason: "wrong PO",
+    });
+    expect(revised.approvalId).not.toBe(parked.approvalId);
+    // A stale tab still holding the ORIGINAL approval id tries to approve.
+    await expect(
+      resumeRun(store, backend, parked.runId, {
+        approvalId: parked.approvalId!,
+        actor: "visitor:stale-tab",
+        decision: "approve",
+        reason: "approving what I saw earlier",
+      }),
+    ).rejects.toThrow(/superseded/);
+    expect(await backend.paymentSchedule()).toHaveLength(0);
+  });
+
+  it("concurrent decisions are single-winner (atomic claim)", async () => {
+    const parked = await parkRun();
+    const decide = () =>
+      resumeRun(store, backend, parked.runId, {
+        approvalId: parked.approvalId!,
+        actor: "visitor:test",
+        decision: "approve",
+        reason: "ok",
+      });
+    const results = await Promise.allSettled([decide(), decide()]);
+    const fulfilled = results.filter((r) => r.status === "fulfilled");
+    const rejected = results.filter((r) => r.status === "rejected");
+    expect(fulfilled).toHaveLength(1);
+    expect(rejected).toHaveLength(1);
+    expect(String((rejected[0] as PromiseRejectedResult).reason)).toMatch(
+      /already being decided|not awaiting|no pending/,
+    );
+    // Exactly one execution.
+    expect(await backend.paymentSchedule()).toHaveLength(1);
+    expect(
+      await backend
+        .ledgerEntries()
+        .then((l) => l.filter((e) => e.run_id === parked.runId)),
+    ).toHaveLength(1);
+  });
+
+  it("executor failure after approval ends the run honestly, not bricked", async () => {
+    const parked = await parkRun();
+    const brokenBackend = backend as unknown as {
+      postToLedger: () => Promise<void>;
+    };
+    brokenBackend.postToLedger = async () => {
+      throw new Error("ledger write refused");
+    };
+    const result = await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
+      actor: "visitor:test",
+      decision: "approve",
+      reason: "ok",
+    });
+    expect(result.outcome).toBe("error");
+    const events = await readTrace(store, parked.runId);
+    const end = events.at(-1);
+    expect(end?.type === "run.end" && end.outcome).toBe("error");
+    expect(end?.type === "run.end" && end.failure_code).toContain(
+      "ledger write refused",
+    );
+    const errorEvent = events.find((event) => event.type === "error");
+    expect(errorEvent?.type === "error" && errorEvent.scope).toBe(
+      "resume.execute",
+    );
+    // The audit trail is honest: the human DID approve; execution failed.
+    const approval = await getApprovalForRun(store, parked.runId);
+    expect(approval?.status).toBe("approved");
+    const machine = await RunStateMachine.load(store, parked.runId);
+    expect(machine?.state.step).toBe("error");
+  });
+
   it("refuses runs that are not awaiting approval and double decisions", async () => {
     const executed = await runMockPipeline({
       store,
@@ -181,6 +272,7 @@ describe("resumeRun", () => {
     });
     await expect(
       resumeRun(store, backend, executed.runId, {
+        approvalId: "APR-whatever",
         actor: "visitor:test",
         decision: "approve",
         reason: "x",
@@ -190,12 +282,14 @@ describe("resumeRun", () => {
     // Different document: INB-001 is now in the dedupe ledger.
     const parked = await parkRun("INB-005");
     await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
       actor: "visitor:test",
       decision: "approve",
       reason: "ok",
     });
     await expect(
       resumeRun(store, backend, parked.runId, {
+        approvalId: parked.approvalId!,
         actor: "visitor:test",
         decision: "approve",
         reason: "again",

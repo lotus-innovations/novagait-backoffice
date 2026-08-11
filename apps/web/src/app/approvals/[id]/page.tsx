@@ -24,12 +24,24 @@ interface MatchResult {
 // the evidence that produced it, and three decisions. This screen is the
 // human-in-the-loop gate at the material decision point; the gate itself is
 // code (GR-EXEC), so nothing executes until a decision lands here.
+const FORM_ERRORS: Record<string, string> = {
+  reason_required: "A reason is required for that decision.",
+  bad_gl_code: "GL code must be exactly 4 digits; nothing was executed.",
+  bad_pay_date: "Pay date must be YYYY-MM-DD; nothing was executed.",
+  superseded:
+    "That approval was superseded by a revision. Review the current draft below.",
+};
+
 export default async function ApprovalPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
+  const { error } = await searchParams;
+  const formError = error ? FORM_ERRORS[error] : null;
   const store = getStore();
   const approval = await getApproval(store, id);
   if (!approval) notFound();
@@ -65,6 +77,12 @@ export default async function ApprovalPage({
         policy in code and refused to proceed without you; approving here is the
         only way it executes.
       </p>
+
+      {formError ? (
+        <p role="alert" className="banner">
+          {formError}
+        </p>
+      ) : null}
 
       {!pending ? (
         <p role="status" className="banner">

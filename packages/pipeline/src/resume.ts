@@ -3,6 +3,14 @@
 // is re-entered, not bypassed: decideApproval writes the record, and
 // gateExecuteAction's approved/rejected short-circuits do the rest, so the
 // same code path that parked the run is the only thing that can finish it.
+//
+// Hardened at the milestone review (three independent findings):
+//  - the decision must name the approval it was made against; a stale id
+//    from before a revision is refused, never silently re-targeted
+//  - an atomic claim key makes concurrent decisions single-winner, so the
+//    executor cannot run twice
+//  - executor failure ends the run honestly (error event + run.end
+//    outcome "error") instead of bricking it behind a decided approval
 
 import {
   MAX_REVISIONS,
@@ -13,6 +21,7 @@ import {
   gateExecuteAction,
   getApprovalForRun,
   nodeIds,
+  traceKeys,
   type RunOutcome,
   type Store,
 } from "@novagait/agent";
@@ -20,6 +29,9 @@ import type { MockBackend } from "@novagait/mock-backend";
 import { buildExecutor, type DraftExecution } from "./execute";
 
 export interface ApprovalDecisionInput {
+  // The approval id the approver actually acted on (from the URL). Must
+  // match the run's current pending approval or the decision is refused.
+  approvalId: string;
   actor: string; // e.g. "visitor:01ABC..."
   decision: "approve" | "reject" | "edit_approve";
   reason: string;
@@ -35,6 +47,7 @@ export interface ResumeResult {
 
 const GL_CODE_RE = /^\d{4}$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const CLAIM_TTL_SECONDS = 24 * 60 * 60;
 
 export async function resumeRun(
   store: Store,
@@ -51,20 +64,45 @@ export async function resumeRun(
   if (!approval || approval.status !== "pending") {
     throw new Error(`run ${runId} has no pending approval`);
   }
+  if (approval.approval_id !== input.approvalId) {
+    throw new Error(
+      `approval ${input.approvalId} is superseded; the pending approval is ${approval.approval_id}`,
+    );
+  }
   const execution = machine.state.data.execution as DraftExecution | null;
   if (!execution) throw new Error(`run ${runId} has no stashed execution`);
 
-  const edits =
-    input.decision === "edit_approve"
-      ? {
-          ...(input.edits?.gl_code && GL_CODE_RE.test(input.edits.gl_code)
-            ? { gl_code: input.edits.gl_code }
-            : {}),
-          ...(input.edits?.pay_date && DATE_RE.test(input.edits.pay_date)
-            ? { pay_date: input.edits.pay_date }
-            : {}),
-        }
-      : undefined;
+  // Edits are validated, never silently dropped: a malformed edit refuses
+  // the decision so the approver can correct it.
+  let edits: { gl_code?: string; pay_date?: string } | undefined;
+  if (input.decision === "edit_approve") {
+    edits = {};
+    if (input.edits?.gl_code !== undefined) {
+      if (!GL_CODE_RE.test(input.edits.gl_code)) {
+        throw new Error(`invalid edit: gl_code must be 4 digits`);
+      }
+      edits.gl_code = input.edits.gl_code;
+    }
+    if (input.edits?.pay_date !== undefined) {
+      if (!DATE_RE.test(input.edits.pay_date)) {
+        throw new Error(`invalid edit: pay_date must be YYYY-MM-DD`);
+      }
+      edits.pay_date = input.edits.pay_date;
+    }
+  }
+
+  // Single-winner claim: concurrent decisions on the same approval lose
+  // here, before anything is persisted or executed.
+  const claims = await store.incrBy(
+    `approval:claim:${approval.approval_id}`,
+    1,
+    CLAIM_TTL_SECONDS,
+  );
+  if (claims > 1) {
+    throw new Error(
+      `approval ${approval.approval_id} is already being decided`,
+    );
+  }
 
   await decideApproval(store, approval.approval_id, {
     actor: input.actor,
@@ -74,7 +112,6 @@ export async function resumeRun(
   });
 
   const writer = await TraceWriter.resume(store, runId);
-  writer.mode = machine.state.mode;
   await writer.append({
     type: "approval.decided",
     node_id: nodeIds.approval(),
@@ -84,17 +121,24 @@ export async function resumeRun(
     reason: input.reason,
   });
 
+  // The parked segment's run.end zeroed nothing (mock lane costs are 0),
+  // but carry the recorded totals forward so a resumed run's final summary
+  // never erases what the first segment measured.
+  const summary = await store.hgetall(traceKeys.run(runId));
+  const priorCost = Number(summary?.total_cost_micro_usd ?? 0);
+  const priorIterations = Number(summary?.iteration_count ?? 0);
+
   const finish = async (outcome: RunOutcome): Promise<ResumeResult> => {
     await writer.append({
       type: "run.end",
       node_id: nodeIds.run(),
       outcome,
-      total_cost_micro_usd: 0,
+      total_cost_micro_usd: priorCost,
       input_tokens: 0,
       output_tokens: 0,
       cache_creation_input_tokens: 0,
       cache_read_input_tokens: 0,
-      iteration_count: 0,
+      iteration_count: priorIterations,
       failure_code: null,
     });
     return { runId, outcome };
@@ -176,9 +220,36 @@ export async function resumeRun(
     },
     buildExecutor({ backend, writer, execution: effective }),
   );
-  const outcome = await gate({ draft_ref: approval.draft_ref });
-  if (outcome.status !== "executed") {
-    throw new Error(`resume did not execute: ${outcome.status}`);
+  try {
+    const outcome = await gate({ draft_ref: approval.draft_ref });
+    if (outcome.status !== "executed") {
+      throw new Error(`gate did not execute: ${outcome.status}`);
+    }
+  } catch (error) {
+    // The human approved but execution failed: say exactly that. The
+    // approval record stays decided (that is what happened); the run ends
+    // as an error with the cause in the trace.
+    await writer.append({
+      type: "error",
+      node_id: nodeIds.error("resume.execute"),
+      scope: "resume.execute",
+      message: String(error),
+      recoverable: false,
+    });
+    await machine.transition("error", { message: String(error) });
+    await writer.append({
+      type: "run.end",
+      node_id: nodeIds.run(),
+      outcome: "error",
+      total_cost_micro_usd: priorCost,
+      input_tokens: 0,
+      output_tokens: 0,
+      cache_creation_input_tokens: 0,
+      cache_read_input_tokens: 0,
+      iteration_count: priorIterations,
+      failure_code: String(error).slice(0, 120),
+    });
+    return { runId, outcome: "error" };
   }
   await machine.transition("executed", {
     executed_with_edits: edits ?? null,

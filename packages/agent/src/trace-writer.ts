@@ -46,7 +46,20 @@ export class TraceWriter {
   static async resume(store: Store, runId: string): Promise<TraceWriter> {
     const events = await store.listRange(traceKeys.trace(runId), 0, -1);
     const writer = new TraceWriter(store, runId);
-    writer.seq = events.length;
+    // Continue from the last recorded seq (not the list length: robust if
+    // the list is ever trimmed), and carry the run's mode automatically.
+    const last = events.at(-1);
+    writer.seq = last
+      ? ((JSON.parse(last) as { seq?: number }).seq ?? events.length - 1) + 1
+      : 0;
+    const summary = await store.hgetall(traceKeys.run(runId));
+    if (
+      summary?.mode === "shadow" ||
+      summary?.mode === "assisted" ||
+      summary?.mode === "autonomous"
+    ) {
+      writer.mode = summary.mode;
+    }
     return writer;
   }
 
