@@ -26,7 +26,7 @@ import {
   type Store,
 } from "@novagait/agent";
 import type { MockBackend } from "@novagait/mock-backend";
-import { buildExecutor, type DraftExecution } from "./execute";
+import { buildExecutor, readExecution, type DraftExecution } from "./execute";
 
 export interface ApprovalDecisionInput {
   // The approval id the approver actually acted on (from the URL). Must
@@ -69,8 +69,10 @@ export async function resumeRun(
       `approval ${input.approvalId} is superseded; the pending approval is ${approval.approval_id}`,
     );
   }
-  const execution = machine.state.data.execution as DraftExecution | null;
-  if (!execution) throw new Error(`run ${runId} has no stashed execution`);
+  const execution = readExecution(machine.state.data.execution);
+  if (!execution) {
+    throw new Error(`run ${runId} has no valid stashed execution`);
+  }
 
   // Edits are validated, never silently dropped: a malformed edit refuses
   // the decision so the approver can correct it.

@@ -35,11 +35,16 @@ export function contentDigest(text: string): string {
     .slice(0, 16);
 }
 
+/** Canonical dedupe key; reset enumeration uses this exact builder. */
+export function dedupeKey(digest: string): string {
+  return `seen:${digest}`;
+}
+
 export class DedupeLedger {
   constructor(private store: Store) {}
 
   private key(digest: string): string {
-    return `seen:${digest}`;
+    return dedupeKey(digest);
   }
 
   /** Prior run_id for this digest, or null if unseen. */
@@ -80,11 +85,16 @@ const LAST_SEEN_RE = /^\d{4}-\d{2}-\d{2}$/;
 const GL_CODE_RE = /^\d{4}$/;
 const EXCEPTION_COUNT_CAP = 999;
 
+/** Canonical vendor-profile key; reset enumeration uses this exact builder. */
+export function vendorProfileKey(vendorId: string): string {
+  return `vendor:${vendorId}`;
+}
+
 export class VendorProfileStore {
   constructor(private store: Store) {}
 
   private key(vendorId: string): string {
-    return `vendor:${vendorId}`;
+    return vendorProfileKey(vendorId);
   }
 
   async get(vendorId: string): Promise<VendorProfile | null> {

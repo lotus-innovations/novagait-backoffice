@@ -17,6 +17,7 @@ import {
   traceKeys,
 } from "@novagait/agent";
 import { resetDemo } from "@novagait/pipeline";
+import { sameOriginViolation } from "@/lib/origin";
 import { getBackend, getStore } from "@/lib/runtime";
 
 export const dynamic = "force-dynamic";
@@ -31,9 +32,17 @@ function esc(value: unknown): string {
 
 function requireBasicAuth(request: NextRequest): NextResponse | null {
   const secret = process.env.ADMIN_KEY;
+  if (!secret) {
+    // Not-configured is a 503, not a 401: same convention as the
+    // maintenance route, and it cannot be confused with bad credentials.
+    return NextResponse.json(
+      { error: "admin disabled: ADMIN_KEY not configured" },
+      { status: 503 },
+    );
+  }
   const header = request.headers.get("authorization") ?? "";
   let ok = false;
-  if (secret && header.startsWith("Basic ")) {
+  if (header.startsWith("Basic ")) {
     try {
       const [user, ...rest] = Buffer.from(header.slice(6), "base64")
         .toString("utf8")
@@ -128,6 +137,9 @@ button{background:#0b5fff;color:#fff;border:0;border-radius:6px;padding:9px 18px
 }
 
 export async function POST(request: NextRequest) {
+  if (sameOriginViolation(request)) {
+    return NextResponse.json({ error: "cross-origin" }, { status: 403 });
+  }
   const denied = requireBasicAuth(request);
   if (denied) return denied;
 

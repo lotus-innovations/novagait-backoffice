@@ -5,7 +5,7 @@ import {
   getApproval,
   type ExtractedInvoice,
 } from "@novagait/agent";
-import type { DraftExecution } from "@novagait/pipeline";
+import { readExecution } from "@novagait/pipeline";
 import { getRunTrace } from "@/lib/runs";
 import { getStore } from "@/lib/runtime";
 
@@ -51,7 +51,7 @@ export default async function ApprovalPage({
   const data = machine.state.data;
   const extraction = data.extraction as ExtractedInvoice | undefined;
   const match = data.match as MatchResult | undefined;
-  const execution = data.execution as DraftExecution | null | undefined;
+  const execution = readExecution(data.execution);
   const policyLine = String(data.policy_line ?? "");
   const visitorNote =
     typeof data.visitor_note === "string" ? data.visitor_note : null;

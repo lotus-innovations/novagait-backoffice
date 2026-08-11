@@ -16,7 +16,11 @@ const DAY_MS = 24 * HOUR_MS;
 
 function limitOverride(name: string, fallback: number): number {
   const raw = process.env[name];
-  return raw ? Number(raw) : fallback;
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  // A malformed override must not fail OPEN: NaN comparisons are all false,
+  // which would silently remove the limit. Fall back to the policy value.
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 export interface LimitCheck {
@@ -47,7 +51,12 @@ async function slidingCount(
   return { weighted, currentKey };
 }
 
-/** 10/hr + 30/day per IP; counts only on allowed requests. */
+/**
+ * 10/hr + 30/day per IP. Increment-first (review fix): the old
+ * read-then-increment window let concurrent bursts overshoot the cap; now
+ * the slot is claimed atomically before the check, so a blocked burst
+ * request consumes a slot instead of slipping through.
+ */
 export async function checkIpLimit(
   store: Store,
   ip: string,
@@ -56,15 +65,15 @@ export async function checkIpLimit(
   const perHour = limitOverride("RATE_LIMIT_PER_HOUR", IP_LIMIT_PER_HOUR);
   const perDay = limitOverride("RATE_LIMIT_PER_DAY", IP_LIMIT_PER_DAY);
   const hour = await slidingCount(store, `rate:h:${ip}`, HOUR_MS, nowMs);
-  if (hour.weighted >= perHour) {
+  await store.incrBy(hour.currentKey, 1, 2 * 60 * 60);
+  if (hour.weighted + 1 > perHour) {
     return { allowed: false, reason: `hourly limit (${perHour} runs/hour)` };
   }
   const day = await slidingCount(store, `rate:d:${ip}`, DAY_MS, nowMs);
-  if (day.weighted >= perDay) {
+  await store.incrBy(day.currentKey, 1, 2 * 24 * 60 * 60);
+  if (day.weighted + 1 > perDay) {
     return { allowed: false, reason: `daily limit (${perDay} runs/day)` };
   }
-  await store.incrBy(hour.currentKey, 1, 2 * 60 * 60);
-  await store.incrBy(day.currentKey, 1, 2 * 24 * 60 * 60);
   return { allowed: true, reason: null };
 }
 

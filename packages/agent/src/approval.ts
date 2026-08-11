@@ -92,8 +92,8 @@ export interface ApprovalRecord {
 }
 
 const APPROVAL_TTL_SECONDS = 24 * 60 * 60;
-const approvalKey = (id: string) => `approval:${id}`;
-const runApprovalKey = (runId: string) => `approval:by-run:${runId}`;
+export const approvalKey = (id: string) => `approval:${id}`;
+export const runApprovalKey = (runId: string) => `approval:by-run:${runId}`;
 
 export async function createApproval(
   store: Store,

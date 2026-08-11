@@ -14,6 +14,7 @@ import {
   type RunMode,
 } from "@novagait/agent";
 import { isMockMode, runMockPipeline } from "@novagait/pipeline";
+import { sameOriginViolation } from "@/lib/origin";
 import { ensureSeeded, getBackend, getStore } from "@/lib/runtime";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +35,9 @@ function back(request: Request, error: string): NextResponse {
 }
 
 export async function POST(request: Request) {
+  if (sameOriginViolation(request)) {
+    return NextResponse.json({ error: "cross-origin" }, { status: 403 });
+  }
   const store = getStore();
   await ensureSeeded();
 

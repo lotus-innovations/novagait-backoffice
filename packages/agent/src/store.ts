@@ -111,8 +111,12 @@ export class InMemoryStore implements Store {
     ttlSeconds?: number,
   ): Promise<number> {
     const entry = this.live(key);
-    const current =
+    const parsed =
       entry && typeof entry.value === "string" ? Number(entry.value) : 0;
+    // Non-numeric residue must not poison the counter as NaN (a NaN budget
+    // counter silently disables the capacity breaker). Redis errors loudly
+    // on this; match by resetting to a clean base.
+    const current = Number.isFinite(parsed) ? parsed : 0;
     const next = current + delta;
     this.data.set(key, {
       value: String(next),

@@ -46,7 +46,19 @@ describe("checkIpLimit", () => {
       else expect(result.reason).toContain("daily");
       if ((i + 1) % 5 === 0) now += 60 * 60 * 1000;
     }
-    expect(allowed).toBeLessThanOrEqual(IP_LIMIT_PER_DAY);
+    // Exactly the cap: a weaker bound would also pass if the limiter
+    // blocked everything after the first request.
+    expect(allowed).toBe(IP_LIMIT_PER_DAY);
+  });
+
+  it("falls back to policy limits when an env override is malformed (fail closed)", async () => {
+    process.env.RATE_LIMIT_PER_HOUR = "not-a-number";
+    const store = new InMemoryStore();
+    let allowed = 0;
+    for (let i = 0; i < IP_LIMIT_PER_HOUR + 3; i++) {
+      if ((await checkIpLimit(store, "8.8.8.8", NOW)).allowed) allowed++;
+    }
+    expect(allowed).toBe(IP_LIMIT_PER_HOUR);
   });
 
   it("tracks IPs independently", async () => {

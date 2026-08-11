@@ -349,7 +349,7 @@ export async function runMockPipeline(
       const canonical = vendors.find(
         (v) => v.id === resolution,
       )?.canonical_name;
-      const { diff } = await traceCall(
+      const { diff, rejected } = await traceCall(
         "update_vendor_profile",
         3,
         { vendor_id: resolution, fields: fields as Record<string, unknown> },
@@ -359,6 +359,17 @@ export async function runMockPipeline(
             canonical_name: canonical,
           }),
       );
+      if (rejected.length > 0) {
+        // Out-of-schema fields were refused by the bounded store: that is
+        // working as designed, and it is recorded, not swallowed.
+        await writer.append({
+          type: "error",
+          node_id: nodeIds.error("memory.vendor_profile"),
+          scope: "memory.vendor_profile",
+          message: `profile update fields rejected: ${rejected.join(", ")}`,
+          recoverable: true,
+        });
+      }
       await traceMemoryWrite(
         MEMORY_STORE_NAMES.vendorProfiles,
         `vendor:${resolution}`,

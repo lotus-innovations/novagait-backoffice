@@ -14,9 +14,14 @@
 // reset visitor limits.
 
 import {
+  approvalKey,
   budgetKey,
   contentDigest,
+  dedupeKey,
+  runApprovalKey,
+  runStateKey,
   traceKeys,
+  vendorProfileKey,
   type Store,
 } from "@novagait/agent";
 import { FIXTURES, MockBackend, VENDORS } from "@novagait/mock-backend";
@@ -32,28 +37,27 @@ export async function resetDemo(store: Store): Promise<ResetSummary> {
   const runIds = await store.listRange(traceKeys.recent(), 0, -1);
   const keys: string[] = [];
   for (const runId of runIds) {
-    keys.push(
-      traceKeys.trace(runId),
-      traceKeys.run(runId),
-      `runstate:${runId}`,
-    );
-    const approvalId = await store.get(`approval:by-run:${runId}`);
-    if (approvalId) keys.push(`approval:${approvalId}`);
-    keys.push(`approval:by-run:${runId}`);
+    keys.push(traceKeys.trace(runId), traceKeys.run(runId), runStateKey(runId));
+    const approvalId = await store.get(runApprovalKey(runId));
+    if (approvalId) {
+      keys.push(approvalKey(approvalId), `approval:claim:${approvalId}`);
+    }
+    keys.push(runApprovalKey(runId));
   }
   keys.push(traceKeys.recent());
 
-  const vendorKeys = VENDORS.map((vendor) => `vendor:${vendor.id}`);
+  const vendorKeys = VENDORS.map((vendor) => vendorProfileKey(vendor.id));
   const dedupeKeys = [
     ...new Set(Object.values(FIXTURES).map((text) => contentDigest(text))),
-  ].map((digest) => `seen:${digest}`);
+  ].map((digest) => dedupeKey(digest));
 
   const budgetKeys = [budgetKey(), budgetKey(Date.now() - 24 * 60 * 60 * 1000)];
 
-  await store.del([...keys, ...vendorKeys, ...dedupeKeys, ...budgetKeys]);
-
+  // Seed FIRST (review fix): a mid-reset failure then leaves a seeded
+  // backend plus stale runs (browsable) instead of a wiped, unseeded demo.
   // seed() overwrites every backend key, including the failure toggle.
   await new MockBackend(store).seed();
+  await store.del([...keys, ...vendorKeys, ...dedupeKeys, ...budgetKeys]);
 
   return {
     runs_cleared: runIds.length,

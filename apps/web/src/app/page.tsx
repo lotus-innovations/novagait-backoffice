@@ -1,8 +1,11 @@
 import {
   DAILY_BUDGET_MICRO_USD,
   INTAKE_NOTE_MAX_CHARS,
+  IP_LIMIT_PER_DAY,
+  IP_LIMIT_PER_HOUR,
   MAX_ITERATIONS,
   MAX_RUN_COST_MICRO_USD,
+  RUN_WALL_CLOCK_MS,
   SESSION_RUN_CAP,
   isCapacityMode,
 } from "@novagait/agent";
@@ -15,7 +18,7 @@ const ERRORS: Record<string, string> = {
     "The demo hit its daily budget breaker and intake is paused until the nightly reset. Everything below stays browsable.",
   invalid: "Pick a document and a mode, then submit again.",
   note_too_long: `The note is capped at ${INTAKE_NOTE_MAX_CHARS} characters.`,
-  rate: "Rate limit reached for your address (10 runs/hour, 30/day). The viewer and tables stay open.",
+  rate: `Rate limit reached for your address (${IP_LIMIT_PER_HOUR} runs/hour, ${IP_LIMIT_PER_DAY}/day). The viewer and tables stay open.`,
   session: `Session cap reached (${SESSION_RUN_CAP} runs per visit). Browse the runs you made, or come back after the nightly reset.`,
   unavailable: "The live-model lane is not enabled; runs are paused.",
   run_failed: "That run failed to start. Pick a seeded document and try again.",
@@ -66,8 +69,9 @@ export default async function Home({
         prompt-injected around.
       </p>
       <p>
-        Every run is capped in code: {MAX_ITERATIONS} tool iterations, 90
-        seconds, ${(MAX_RUN_COST_MICRO_USD / 1_000_000).toFixed(2)} per run, $
+        Every run is capped in code: {MAX_ITERATIONS} tool iterations,{" "}
+        {RUN_WALL_CLOCK_MS / 1000} seconds, $
+        {(MAX_RUN_COST_MICRO_USD / 1_000_000).toFixed(2)} per run, $
         {(DAILY_BUDGET_MICRO_USD / 1_000_000).toFixed(2)} per day for the whole
         demo.
       </p>

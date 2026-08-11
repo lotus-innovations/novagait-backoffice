@@ -3,17 +3,31 @@
 // trace, and the toggle disarms itself. Gated by ADMIN_KEY; the /admin UI
 // (LOT-107) drives this route.
 
+import { sameOriginViolation } from "@/lib/origin";
 import { getBackend } from "@/lib/runtime";
 
 export const dynamic = "force-dynamic";
 
+function notConfigured(): Response | null {
+  if (!process.env.ADMIN_KEY) {
+    return Response.json(
+      { error: "admin disabled: ADMIN_KEY not configured" },
+      { status: 503 },
+    );
+  }
+  return null;
+}
+
 function authorized(request: Request): boolean {
   const secret = process.env.ADMIN_KEY;
-  if (!secret) return false;
-  return request.headers.get("authorization") === `Bearer ${secret}`;
+  return (
+    !!secret && request.headers.get("authorization") === `Bearer ${secret}`
+  );
 }
 
 export async function GET(request: Request) {
+  const disabled = notConfigured();
+  if (disabled) return disabled;
   if (!authorized(request)) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
@@ -21,6 +35,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const disabled = notConfigured();
+  if (disabled) return disabled;
+  if (sameOriginViolation(request)) {
+    return Response.json({ error: "cross-origin" }, { status: 403 });
+  }
   if (!authorized(request)) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }

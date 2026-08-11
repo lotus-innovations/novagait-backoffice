@@ -18,6 +18,24 @@ export interface DraftExecution {
   inbox_item_id: string;
 }
 
+/**
+ * Validate a run-state execution stash before it reaches the executor
+ * (review fix: the stash crosses a JSON boundary, so a bare cast could
+ * schedule a payment from a partially-shaped object).
+ */
+export function readExecution(value: unknown): DraftExecution | null {
+  if (!value || typeof value !== "object") return null;
+  const v = value as Record<string, unknown>;
+  const valid =
+    typeof v.vendor_id === "string" &&
+    typeof v.invoice_number === "string" &&
+    Number.isInteger(v.total_cents) &&
+    typeof v.gl_code === "string" &&
+    typeof v.pay_date === "string" &&
+    typeof v.inbox_item_id === "string";
+  return valid ? (value as DraftExecution) : null;
+}
+
 export function buildExecutor(deps: {
   backend: MockBackend;
   writer: TraceWriter;

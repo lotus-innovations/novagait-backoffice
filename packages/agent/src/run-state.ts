@@ -69,7 +69,8 @@ export interface RunStateRecord {
   data: Record<string, unknown>;
 }
 
-const stateKey = (runId: string) => `runstate:${runId}`;
+export const runStateKey = (runId: string) => `runstate:${runId}`;
+const stateKey = runStateKey;
 
 export class RunStateMachine {
   private constructor(
