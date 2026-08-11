@@ -64,8 +64,9 @@ export async function runMockPipeline(
   options: MockPipelineOptions,
 ): Promise<MockPipelineResult> {
   const { store, backend, mode } = options;
-  const item = await backend.getInboxItem(options.inboxItemId);
-  if (!item) throw new Error(`unknown inbox item: ${options.inboxItemId}`);
+  const found = await backend.getInboxItem(options.inboxItemId);
+  if (!found) throw new Error(`unknown inbox item: ${options.inboxItemId}`);
+  const item = found; // non-null type for the closures below
   const text = await backend.readFixture(item.fixture);
   const digest = contentDigest(text);
   const dedupe = new DedupeLedger(store);
@@ -90,366 +91,413 @@ export async function runMockPipeline(
     sdk_version: "mock",
   });
 
-  const traceGuardrail = async (result: GuardrailResult) => {
+  // Internal failures end the run honestly (error event + run.end
+  // outcome "error") instead of throwing a half-written trace away.
+  try {
+    return await runBody();
+  } catch (error) {
     await writer.append({
-      type: "guardrail.check",
-      node_id: nodeIds.guardrail(result.rule_id),
-      rule_id: result.rule_id,
-      input_digest: digest,
-      verdict: result.verdict,
-      action_taken: result.action_taken,
+      type: "error",
+      node_id: nodeIds.error("pipeline"),
+      scope: "pipeline",
+      message: String(error),
+      recoverable: false,
     });
-    return result;
-  };
-
-  const traceMemoryRead = async (
-    storeName: string,
-    key: string,
-    hit: boolean,
-  ) =>
-    writer.append({
-      type: "memory.read",
-      node_id: nodeIds.memory(storeName),
-      store: storeName,
-      key,
-      hit,
-    });
-
-  const traceMemoryWrite = async (
-    storeName: string,
-    key: string,
-    fieldDiff: Record<string, string>,
-  ) =>
-    writer.append({
-      type: "memory.write",
-      node_id: nodeIds.memory(storeName),
-      store: storeName,
-      key,
-      field_diff: fieldDiff,
-    });
-
-  const traceCall = async <T>(
-    name: string,
-    iteration: number,
-    args: Record<string, unknown>,
-    fn: () => Promise<T>,
-  ): Promise<T> => {
-    const started = Date.now();
-    const output = await fn();
-    await writer.append({
-      type: "tool.call",
-      node_id: nodeIds.tool(iteration, name),
-      name,
-      args: args as never,
-      result_summary: JSON.stringify(output).slice(0, 160),
-      duration_ms: Date.now() - started,
-      attempt: 1,
-    });
-    return output;
-  };
-
-  const finish = async (
-    outcome: RunOutcome,
-    route: string | null,
-    approvalId: string | null,
-  ): Promise<MockPipelineResult> => {
+    if (!machine.isTerminal) {
+      await machine.transition("error", { message: String(error) });
+    }
+    // The document was not processed; make it pickable again.
+    await backend.setInboxState(item.id, "new");
     await writer.append({
       type: "run.end",
       node_id: nodeIds.run(),
-      outcome,
+      outcome: "error",
       total_cost_micro_usd: 0,
       input_tokens: 0,
       output_tokens: 0,
       cache_creation_input_tokens: 0,
       cache_read_input_tokens: 0,
       iteration_count: 0,
-      failure_code: null,
+      failure_code: String(error).slice(0, 120),
     });
-    return { runId: writer.runId, outcome, route, approvalId };
-  };
-
-  // --- document screens (pre-model in the live lane) ---------------------
-  const scope = await traceGuardrail(checkScope(text));
-  if (scope.verdict === "block") {
-    await backend.saveDisposition({
-      id: `DSP-${writer.runId.slice(-6)}`,
-      run_id: writer.runId,
-      kind: "rejection_note",
-      summary: "Not an invoice-shaped document; no ERP contact (GR-SCOPE).",
-      created_at: new Date().toISOString(),
-    });
-    await machine.transition("rejected", { guardrail: "GR-SCOPE" });
-    await backend.setInboxState(item.id, "rejected");
-    return finish("rejected", "reject", null);
-  }
-  const injection = await traceGuardrail(checkInjection(text));
-  const noteScreen = options.note
-    ? await traceGuardrail(checkInjection(options.note))
-    : null;
-
-  // --- extraction + lookups (real executor logic, traced) ----------------
-  await machine.transition(
-    "extracted",
-    options.note ? { visitor_note: options.note } : {},
-  );
-  const vendors = await backend.listVendors();
-  const extraction = parseFixture(text, vendors);
-
-  const resolution = await traceCall(
-    "lookup_vendor",
-    0,
-    { name_raw: extraction.vendor_name_raw },
-    async () => extraction.vendor_id,
-  );
-
-  // Vendor profile read at match time (spec 07 §9): the second run for a
-  // vendor is visibly better-informed (learned GL code, history).
-  let profile: VendorProfile | null = null;
-  if (resolution) {
-    profile = await profiles.get(resolution);
-    await traceMemoryRead(
-      MEMORY_STORE_NAMES.vendorProfiles,
-      `vendor:${resolution}`,
-      profile !== null,
-    );
+    return {
+      runId: writer.runId,
+      outcome: "error",
+      route: null,
+      approvalId: null,
+    };
   }
 
-  const po = extraction.po_reference
-    ? await traceCall("lookup_po", 0, { po_id: extraction.po_reference }, () =>
-        backend.getPurchaseOrder(extraction.po_reference!),
-      )
-    : null;
-  const receiving =
-    po && po.type === "goods"
-      ? await traceCall("lookup_receiving", 0, { po_id: po.id }, () =>
-          backend.getReceivingForPo(po.id),
-        )
-      : null;
+  async function runBody(): Promise<MockPipelineResult> {
+    const traceGuardrail = async (result: GuardrailResult) => {
+      await writer.append({
+        type: "guardrail.check",
+        node_id: nodeIds.guardrail(result.rule_id),
+        rule_id: result.rule_id,
+        input_digest: digest,
+        verdict: result.verdict,
+        action_taken: result.action_taken,
+      });
+      return result;
+    };
 
-  const priorSeen = await dedupe.check(digest);
-  await traceMemoryRead(
-    MEMORY_STORE_NAMES.dedupe,
-    `seen:${digest}`,
-    priorSeen !== null,
-  );
-  const ledgerDup =
-    extraction.vendor_id !== null &&
-    (await backend.invoiceExists(
-      extraction.vendor_id,
-      extraction.invoice_number,
-    ));
-  const duplicateOf = priorSeen ?? (ledgerDup ? "erp-ledger" : null);
-  await traceCall(
-    "check_duplicate",
-    0,
-    {
-      vendor_id: extraction.vendor_id,
-      invoice_number: extraction.invoice_number,
-      content_digest: digest,
-    },
-    async () => ({ duplicate: duplicateOf !== null, prior: duplicateOf }),
-  );
-  await dedupe.record(digest, writer.runId);
-  await traceMemoryWrite(MEMORY_STORE_NAMES.dedupe, `seen:${digest}`, {
-    run_id: writer.runId,
-  });
+    const traceMemoryRead = async (
+      storeName: string,
+      key: string,
+      hit: boolean,
+    ) =>
+      writer.append({
+        type: "memory.read",
+        node_id: nodeIds.memory(storeName),
+        store: storeName,
+        key,
+        hit,
+      });
 
-  await machine.transition("matched");
-  const match = matchInvoice(extraction, po, receiving);
+    const traceMemoryWrite = async (
+      storeName: string,
+      key: string,
+      fieldDiff: Record<string, string>,
+    ) =>
+      writer.append({
+        type: "memory.write",
+        node_id: nodeIds.memory(storeName),
+        store: storeName,
+        key,
+        field_diff: fieldDiff,
+      });
 
-  // --- policy guardrails + route (code disposes) -------------------------
-  const guardrails = [
-    injection,
-    ...(noteScreen ? [noteScreen] : []),
-    await traceGuardrail(checkFloor(extraction.total_cents)),
-    await traceGuardrail(checkVendor(resolution)),
-    await traceGuardrail(checkDuplicate(duplicateOf)),
-  ];
-  const proposed = decideRoute({
-    match,
-    totalCents: extraction.total_cents,
-    vendorId: resolution,
-    duplicate: duplicateOf !== null,
-  });
-  const constrained = constrainRoute(proposed.route, guardrails);
-  const route = constrained.route;
+    const traceCall = async <T>(
+      name: string,
+      iteration: number,
+      args: Record<string, unknown>,
+      fn: () => Promise<T>,
+    ): Promise<T> => {
+      const started = Date.now();
+      const output = await fn();
+      await writer.append({
+        type: "tool.call",
+        node_id: nodeIds.tool(iteration, name),
+        name,
+        args: args as never,
+        result_summary: JSON.stringify(output).slice(0, 160),
+        duration_ms: Date.now() - started,
+        attempt: 1,
+      });
+      return output;
+    };
 
-  // Ground the policy line in the kb (LOT-94): one retrieval per run, the
-  // top excerpt's citation rides along to the approver.
-  const kbQuery =
-    duplicateOf !== null
-      ? "duplicate invoice resubmission handling"
-      : resolution === null
-        ? "unresolved vendor name resolution"
-        : match.exceptions.includes("price_variance_exceeds_tolerance")
-          ? "tolerance for price variance"
-          : match.exceptions.length > 0
-            ? "three-way match exceptions and holds"
-            : "autonomy cap and approval authority";
-  const kbHits = await traceCall("kb_search", 1, { query: kbQuery }, async () =>
-    searchKb(kbQuery, 1),
-  );
-  const citation = kbHits[0] ? ` [${kbHits[0].citation}]` : "";
+    const finish = async (
+      outcome: RunOutcome,
+      route: string | null,
+      approvalId: string | null,
+    ): Promise<MockPipelineResult> => {
+      await writer.append({
+        type: "run.end",
+        node_id: nodeIds.run(),
+        outcome,
+        total_cost_micro_usd: 0,
+        input_tokens: 0,
+        output_tokens: 0,
+        cache_creation_input_tokens: 0,
+        cache_read_input_tokens: 0,
+        iteration_count: 0,
+        failure_code: null,
+      });
+      return { runId: writer.runId, outcome, route, approvalId };
+    };
 
-  const policyLine =
-    (constrained.constrained_by.length > 0
-      ? `${proposed.reason}; constrained by ${constrained.constrained_by.join(", ")}`
-      : proposed.reason) + citation;
-
-  // Bounded profile write via tool call after a completed run (spec 07 §9):
-  // last_seen always, exception count on holds. Audited: tool.call +
-  // memory.write both land in the trace.
-  const writeVendorProfile = async (fields: VendorProfileUpdate) => {
-    if (!resolution) return;
-    const canonical = vendors.find((v) => v.id === resolution)?.canonical_name;
-    const { diff } = await traceCall(
-      "update_vendor_profile",
-      3,
-      { vendor_id: resolution, fields: fields as Record<string, unknown> },
-      () =>
-        profiles.applyUpdate(resolution, {
-          ...fields,
-          canonical_name: canonical,
-        }),
-    );
-    await traceMemoryWrite(
-      MEMORY_STORE_NAMES.vendorProfiles,
-      `vendor:${resolution}`,
-      diff,
-    );
-  };
-  const today = new Date().toISOString().slice(0, 10);
-
-  const draftRef = await traceCall(
-    "draft_action",
-    1,
-    { route, summary: policyLine },
-    async () => {
-      const ref = `DSP-${writer.runId.slice(-6)}`;
+    // --- document screens (pre-model in the live lane) ---------------------
+    const scope = await traceGuardrail(checkScope(text));
+    if (scope.verdict === "block") {
       await backend.saveDisposition({
-        id: ref,
+        id: `DSP-${writer.runId.slice(-6)}`,
         run_id: writer.runId,
-        kind:
-          route === "exception_hold"
-            ? "vendor_email_draft"
-            : route === "reject"
-              ? "rejection_note"
-              : "payment_draft",
-        summary: policyLine,
+        kind: "rejection_note",
+        summary: "Not an invoice-shaped document; no ERP contact (GR-SCOPE).",
         created_at: new Date().toISOString(),
       });
-      return ref;
-    },
-  );
-
-  // Stash everything the approver screen and a resume need (LOT-104):
-  // the full extraction (evidence with source spans), match result, and
-  // the execution essentials for the drafted payment.
-  const execution =
-    resolution !== null
-      ? {
-          vendor_id: resolution,
-          invoice_number: extraction.invoice_number,
-          total_cents: extraction.total_cents,
-          gl_code:
-            profile?.learned_gl_code ??
-            vendors.find((v) => v.id === resolution)!.default_gl_code,
-          pay_date:
-            extraction.due_date ?? new Date().toISOString().slice(0, 10),
-          inbox_item_id: item.id,
-        }
+      await machine.transition("rejected", { guardrail: "GR-SCOPE" });
+      await backend.setInboxState(item.id, "rejected");
+      return finish("rejected", "reject", null);
+    }
+    const injection = await traceGuardrail(checkInjection(text));
+    const noteScreen = options.note
+      ? await traceGuardrail(checkInjection(options.note))
       : null;
-  await machine.transition("decided", {
-    route,
-    policy_line: policyLine,
-    draft_ref: draftRef,
-    extraction,
-    match,
-    execution,
-    kb_citation: kbHits[0]?.citation ?? null,
-  });
 
-  if (route === "reject") {
-    await machine.transition("rejected");
-    await backend.setInboxState(item.id, "rejected");
-    return finish("rejected", route, null);
-  }
-  if (route === "exception_hold") {
-    await writeVendorProfile({ last_seen: today, exception_increment: 1 });
-    await machine.transition("held", { exceptions: match.exceptions });
-    await backend.setInboxState(item.id, "held");
-    return finish("held", route, null);
-  }
+    // --- extraction + lookups (real executor logic, traced) ----------------
+    await machine.transition(
+      "extracted",
+      options.note ? { visitor_note: options.note } : {},
+    );
+    const vendors = await backend.listVendors();
+    const extraction = parseFixture(text, vendors);
 
-  // --- approve routes: through the gate (GR-EXEC) ------------------------
-  // The gl_code / pay_date in `execution` already encode the learned-GL
-  // override and due-date policy; the executor is shared with the approval
-  // resume path (execute.ts) so first pass and resume can never drift.
-  const gate = gateExecuteAction(
-    {
-      store,
-      runId: writer.runId,
-      mode,
-      autonomy: {
-        route,
-        totalCents: extraction.total_cents,
-        vendorId: resolution,
-        guardrailBlocks: guardrails.filter((g) => g.verdict === "block"),
-        mode,
-      },
-    },
-    buildExecutor({ backend, writer, execution: execution! }),
-  );
-
-  const runGate = (): Promise<GateOutcome> =>
-    traceCall("execute_action", 2, { draft_ref: draftRef }, () =>
-      gate({ draft_ref: draftRef }),
+    const resolution = await traceCall(
+      "lookup_vendor",
+      0,
+      { name_raw: extraction.vendor_name_raw },
+      async () => extraction.vendor_id,
     );
 
-  let gateOutcome = await runGate();
+    // Vendor profile read at match time (spec 07 §9): the second run for a
+    // vendor is visibly better-informed (learned GL code, history).
+    let profile: VendorProfile | null = null;
+    if (resolution) {
+      profile = await profiles.get(resolution);
+      await traceMemoryRead(
+        MEMORY_STORE_NAMES.vendorProfiles,
+        `vendor:${resolution}`,
+        profile !== null,
+      );
+    }
 
-  if (gateOutcome.status === "awaiting_approval") {
-    await machine.transition("awaiting_approval", {
-      approval_id: gateOutcome.approval_id,
+    const po = extraction.po_reference
+      ? await traceCall(
+          "lookup_po",
+          0,
+          { po_id: extraction.po_reference },
+          () => backend.getPurchaseOrder(extraction.po_reference!),
+        )
+      : null;
+    const receiving =
+      po && po.type === "goods"
+        ? await traceCall("lookup_receiving", 0, { po_id: po.id }, () =>
+            backend.getReceivingForPo(po.id),
+          )
+        : null;
+
+    const priorSeen = await dedupe.check(digest);
+    await traceMemoryRead(
+      MEMORY_STORE_NAMES.dedupe,
+      `seen:${digest}`,
+      priorSeen !== null,
+    );
+    const ledgerDup =
+      extraction.vendor_id !== null &&
+      (await backend.invoiceExists(
+        extraction.vendor_id,
+        extraction.invoice_number,
+      ));
+    const duplicateOf = priorSeen ?? (ledgerDup ? "erp-ledger" : null);
+    await traceCall(
+      "check_duplicate",
+      0,
+      {
+        vendor_id: extraction.vendor_id,
+        invoice_number: extraction.invoice_number,
+        content_digest: digest,
+      },
+      async () => ({ duplicate: duplicateOf !== null, prior: duplicateOf }),
+    );
+    await dedupe.record(digest, writer.runId);
+    await traceMemoryWrite(MEMORY_STORE_NAMES.dedupe, `seen:${digest}`, {
+      run_id: writer.runId,
     });
-    await writer.append({
-      type: "approval.requested",
-      node_id: nodeIds.approval(),
-      approval_id: gateOutcome.approval_id,
+
+    await machine.transition("matched");
+    const match = matchInvoice(extraction, po, receiving);
+
+    // --- policy guardrails + route (code disposes) -------------------------
+    const guardrails = [
+      injection,
+      ...(noteScreen ? [noteScreen] : []),
+      await traceGuardrail(checkFloor(extraction.total_cents)),
+      await traceGuardrail(checkVendor(resolution)),
+      await traceGuardrail(checkDuplicate(duplicateOf)),
+    ];
+    const proposed = decideRoute({
+      match,
+      totalCents: extraction.total_cents,
+      vendorId: resolution,
+      duplicate: duplicateOf !== null,
+    });
+    const constrained = constrainRoute(proposed.route, guardrails);
+    const route = constrained.route;
+
+    // Ground the policy line in the kb (LOT-94): one retrieval per run, the
+    // top excerpt's citation rides along to the approver.
+    const kbQuery =
+      duplicateOf !== null
+        ? "duplicate invoice resubmission handling"
+        : resolution === null
+          ? "unresolved vendor name resolution"
+          : match.exceptions.includes("price_variance_exceeds_tolerance")
+            ? "tolerance for price variance"
+            : match.exceptions.length > 0
+              ? "three-way match exceptions and holds"
+              : "autonomy cap and approval authority";
+    const kbHits = await traceCall(
+      "kb_search",
+      1,
+      { query: kbQuery },
+      async () => searchKb(kbQuery, 1),
+    );
+    const citation = kbHits[0] ? ` [${kbHits[0].citation}]` : "";
+
+    const policyLine =
+      (constrained.constrained_by.length > 0
+        ? `${proposed.reason}; constrained by ${constrained.constrained_by.join(", ")}`
+        : proposed.reason) + citation;
+
+    // Bounded profile write via tool call after a completed run (spec 07 §9):
+    // last_seen always, exception count on holds. Audited: tool.call +
+    // memory.write both land in the trace.
+    const writeVendorProfile = async (fields: VendorProfileUpdate) => {
+      if (!resolution) return;
+      const canonical = vendors.find(
+        (v) => v.id === resolution,
+      )?.canonical_name;
+      const { diff } = await traceCall(
+        "update_vendor_profile",
+        3,
+        { vendor_id: resolution, fields: fields as Record<string, unknown> },
+        () =>
+          profiles.applyUpdate(resolution, {
+            ...fields,
+            canonical_name: canonical,
+          }),
+      );
+      await traceMemoryWrite(
+        MEMORY_STORE_NAMES.vendorProfiles,
+        `vendor:${resolution}`,
+        diff,
+      );
+    };
+    const today = new Date().toISOString().slice(0, 10);
+
+    const draftRef = await traceCall(
+      "draft_action",
+      1,
+      { route, summary: policyLine },
+      async () => {
+        const ref = `DSP-${writer.runId.slice(-6)}`;
+        await backend.saveDisposition({
+          id: ref,
+          run_id: writer.runId,
+          kind:
+            route === "exception_hold"
+              ? "vendor_email_draft"
+              : route === "reject"
+                ? "rejection_note"
+                : "payment_draft",
+          summary: policyLine,
+          created_at: new Date().toISOString(),
+        });
+        return ref;
+      },
+    );
+
+    // Stash everything the approver screen and a resume need (LOT-104):
+    // the full extraction (evidence with source spans), match result, and
+    // the execution essentials for the drafted payment.
+    const execution =
+      resolution !== null
+        ? {
+            vendor_id: resolution,
+            invoice_number: extraction.invoice_number,
+            total_cents: extraction.total_cents,
+            gl_code:
+              profile?.learned_gl_code ??
+              vendors.find((v) => v.id === resolution)!.default_gl_code,
+            pay_date:
+              extraction.due_date ?? new Date().toISOString().slice(0, 10),
+            inbox_item_id: item.id,
+          }
+        : null;
+    await machine.transition("decided", {
       route,
-      draft_digest: digest,
-      policy_line: gateOutcome.reason,
+      policy_line: policyLine,
+      draft_ref: draftRef,
+      extraction,
+      match,
+      execution,
+      kb_citation: kbHits[0]?.citation ?? null,
     });
-    if (options.approver === "script") {
-      await decideApproval(store, gateOutcome.approval_id, {
-        actor: "script",
-        decision: "approve",
-        reason: "scripted approver",
+
+    if (route === "reject") {
+      await machine.transition("rejected");
+      await backend.setInboxState(item.id, "rejected");
+      return finish("rejected", route, null);
+    }
+    if (route === "exception_hold") {
+      await writeVendorProfile({ last_seen: today, exception_increment: 1 });
+      await machine.transition("held", { exceptions: match.exceptions });
+      await backend.setInboxState(item.id, "held");
+      return finish("held", route, null);
+    }
+
+    // --- approve routes: through the gate (GR-EXEC) ------------------------
+    // The gl_code / pay_date in `execution` already encode the learned-GL
+    // override and due-date policy; the executor is shared with the approval
+    // resume path (execute.ts) so first pass and resume can never drift.
+    const gate = gateExecuteAction(
+      {
+        store,
+        runId: writer.runId,
+        mode,
+        autonomy: {
+          route,
+          totalCents: extraction.total_cents,
+          vendorId: resolution,
+          guardrailBlocks: guardrails.filter((g) => g.verdict === "block"),
+          mode,
+        },
+      },
+      buildExecutor({ backend, writer, execution: execution! }),
+    );
+
+    const runGate = (): Promise<GateOutcome> =>
+      traceCall("execute_action", 2, { draft_ref: draftRef }, () =>
+        gate({ draft_ref: draftRef }),
+      );
+
+    let gateOutcome = await runGate();
+
+    if (gateOutcome.status === "awaiting_approval") {
+      await machine.transition("awaiting_approval", {
+        approval_id: gateOutcome.approval_id,
       });
       await writer.append({
-        type: "approval.decided",
+        type: "approval.requested",
         node_id: nodeIds.approval(),
         approval_id: gateOutcome.approval_id,
-        actor: "script",
-        decision: "approve",
-        reason: "scripted approver",
+        route,
+        draft_digest: digest,
+        policy_line: gateOutcome.reason,
       });
-      gateOutcome = await runGate();
-    } else {
-      return finish("awaiting_approval", route, gateOutcome.approval_id);
+      if (options.approver === "script") {
+        await decideApproval(store, gateOutcome.approval_id, {
+          actor: "script",
+          decision: "approve",
+          reason: "scripted approver",
+        });
+        await writer.append({
+          type: "approval.decided",
+          node_id: nodeIds.approval(),
+          approval_id: gateOutcome.approval_id,
+          actor: "script",
+          decision: "approve",
+          reason: "scripted approver",
+        });
+        gateOutcome = await runGate();
+      } else {
+        return finish("awaiting_approval", route, gateOutcome.approval_id);
+      }
     }
-  }
 
-  if (gateOutcome.status === "executed") {
-    const approvalId =
-      machine.state.data.approval_id === undefined
-        ? null
-        : String(machine.state.data.approval_id);
-    await writeVendorProfile({ last_seen: today });
-    await machine.transition("executed");
-    return finish("executed", route, approvalId);
-  }
+    if (gateOutcome.status === "executed") {
+      const approvalId =
+        machine.state.data.approval_id === undefined
+          ? null
+          : String(machine.state.data.approval_id);
+      await writeVendorProfile({ last_seen: today });
+      await machine.transition("executed");
+      return finish("executed", route, approvalId);
+    }
 
-  await machine.transition("held", { approval_rejected: true });
-  return finish("held", route, null);
+    await machine.transition("held", { approval_rejected: true });
+    return finish("held", route, null);
+  }
 }

@@ -1,12 +1,21 @@
-// Trace event schema, FROZEN at trace_schema_version = 1 (spec 08).
+// Trace event schema, version 2 (spec 08; v1 frozen 2026-08-10).
 // Post-freeze changes bump the version and require a migration note in the
 // architecture doc. Unknown extra fields are allowed on read (forward
 // compatibility); missing required fields fail validation (the replay lane
 // depends on this).
+//
+// MIGRATION v1 -> v2 (2026-08-10, milestone review; full note in the arch
+// doc at LOT-110):
+//   - `error` event type ADDED. v1 had no way to represent a failure; every
+//     v2 writer records faults honestly (scope, message, recoverable).
+//   - `EventBase.mode` formalized (introduced additively-optional in late
+//     v1 traces; unchanged shape).
+//   Validation is type-driven, so v1 traces remain valid v2 reads; v2
+//   traces read by a v1-era validator fail only on `error` events.
 
 import type { Redactable } from "./redact";
 
-export const TRACE_SCHEMA_VERSION = 1;
+export const TRACE_SCHEMA_VERSION = 2;
 
 export type RunMode = "shadow" | "assisted" | "autonomous";
 
@@ -75,6 +84,15 @@ export type TraceEvent = EventBase &
         result_summary: string;
         duration_ms: number;
         attempt: number;
+      }
+    | {
+        type: "error";
+        // Where it broke, e.g. "execute.payment_schedule", "pipeline".
+        scope: string;
+        message: string;
+        // true: handled and the run continued (e.g. a retried write);
+        // false: the failure ended the run (expect run.end outcome "error").
+        recoverable: boolean;
       }
     | { type: "memory.read"; store: string; key: string; hit: boolean }
     | {
@@ -151,6 +169,7 @@ const REQUIRED_BY_TYPE: Record<string, string[]> = {
     "latency_ms",
   ],
   "tool.call": ["name", "args", "result_summary", "duration_ms", "attempt"],
+  error: ["scope", "message", "recoverable"],
   "memory.read": ["store", "key", "hit"],
   "memory.write": ["store", "key", "field_diff"],
   "approval.requested": ["approval_id", "route", "draft_digest", "policy_line"],
@@ -207,5 +226,6 @@ export const nodeIds = {
   memory: (store: string) => `memory[${store}]`,
   approval: () => "approval",
   execute: (step: string) => `execute[${step}]`,
+  error: (scope: string) => `error[${scope}]`,
   run: () => "run",
 } as const;

@@ -9,6 +9,7 @@ import {
   checkSessionCap,
   isCapacityMode,
   recordRunCost,
+  refundSessionRun,
   ulid,
   type RunMode,
 } from "@novagait/agent";
@@ -82,6 +83,12 @@ export async function POST(request: Request) {
       approver: form?.get("approver") === "script" ? "script" : "none",
     });
     await recordRunCost(store, 0); // mock lane: measured cost is zero
+    if (result.outcome === "error") {
+      // The pipeline recorded the failure honestly (error event + run.end);
+      // the visitor still gets the trace, but the failed run does not
+      // count against their session cap.
+      await refundSessionRun(store, sessionId);
+    }
     const response = NextResponse.redirect(
       new URL(`/runs/${result.runId}`, request.url),
       303,
@@ -95,7 +102,11 @@ export async function POST(request: Request) {
       });
     }
     return response;
-  } catch {
+  } catch (error) {
+    // Pre-run failures only (unknown item, malformed store state): nothing
+    // was traced, so refund the session slot and say what happened.
+    console.error("intake failed before a run could start:", error);
+    await refundSessionRun(store, sessionId);
     return back(request, "run_failed");
   }
 }

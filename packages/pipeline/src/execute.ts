@@ -57,17 +57,30 @@ export function buildExecutor(deps: {
     if (!simulated) {
       try {
         await backend.schedulePayment(paymentRow);
-      } catch {
-        // Transient failure (failure toggle): alert lands in the trace,
-        // one retry, success. The "integration is real" beat.
+      } catch (firstError) {
+        // Transient failure (failure toggle): record the REAL error, retry
+        // once. The "integration is real" beat - honestly this time.
         await writer.append({
-          type: "backend.write",
-          node_id: nodeIds.execute("payment_schedule"),
-          table: "payment_schedule",
-          row_id: "(transient failure, retrying)",
-          simulated,
+          type: "error",
+          node_id: nodeIds.error("execute.payment_schedule"),
+          scope: "execute.payment_schedule",
+          message: String(firstError),
+          recoverable: true,
         });
-        await backend.schedulePayment(paymentRow);
+        try {
+          await backend.schedulePayment(paymentRow);
+        } catch (retryError) {
+          // Retry failed: surface it. The ledger row is already posted;
+          // the caller ends the run as an error and the trace says why.
+          await writer.append({
+            type: "error",
+            node_id: nodeIds.error("execute.payment_schedule"),
+            scope: "execute.payment_schedule",
+            message: `retry failed: ${String(retryError)}; ledger row ${ledgerRow.id} posted without a payment row`,
+            recoverable: false,
+          });
+          throw retryError;
+        }
       }
       await backend.setInboxState(execution.inbox_item_id, "processed");
     }

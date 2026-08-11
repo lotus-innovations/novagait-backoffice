@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { computeCostMicroUsd, pricingFor } from "./pricing";
 import { digestText, redactToolArgs } from "./redact";
 import { InMemoryStore } from "./store";
-import { validateTraceEvent } from "./trace";
+import { TRACE_SCHEMA_VERSION, validateTraceEvent } from "./trace";
 import {
   RECENT_RUNS_CAP,
   TraceWriter,
@@ -83,7 +83,7 @@ describe("validateTraceEvent", () => {
     node_id: "ingest",
     ts: "2026-08-10T12:00:00.000-07:00",
     seq: 0,
-    trace_schema_version: 1,
+    trace_schema_version: TRACE_SCHEMA_VERSION,
   };
 
   it("accepts a complete run.start", () => {
@@ -174,7 +174,7 @@ describe("TraceWriter", () => {
     expect(events.map((event) => event.seq)).toEqual([0, 1, 2, 3]);
     for (const event of events) {
       expect(event.run_id).toBe(writer.runId);
-      expect(event.trace_schema_version).toBe(1);
+      expect(event.trace_schema_version).toBe(TRACE_SCHEMA_VERSION);
       expect(event.ts).toBeTruthy();
     }
   });

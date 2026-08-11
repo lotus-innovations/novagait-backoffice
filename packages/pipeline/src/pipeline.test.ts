@@ -162,7 +162,7 @@ describe("runMockPipeline end-to-end", () => {
     expect(await backend.paymentSchedule()).toHaveLength(1); // only the original
   });
 
-  it("failure toggle: transient payment failure retries and succeeds, visible in trace", async () => {
+  it("failure toggle: transient payment failure records the real error, retries, succeeds", async () => {
     await backend.setFailureToggle(true);
     const result = await runMockPipeline({
       store,
@@ -172,13 +172,54 @@ describe("runMockPipeline end-to-end", () => {
     });
     expect(result.outcome).toBe("executed");
     expect(await backend.paymentSchedule()).toHaveLength(1);
-    const paymentWrites = (await trace(result.runId)).filter(
+    const events = await trace(result.runId);
+    const errors = events.filter((event) => event.type === "error");
+    expect(errors).toHaveLength(1);
+    expect(
+      errors[0].type === "error" &&
+        errors[0].recoverable &&
+        errors[0].scope === "execute.payment_schedule" &&
+        errors[0].message.length > 0,
+    ).toBe(true);
+    // Exactly one payment backend.write: the one that actually happened.
+    const paymentWrites = events.filter(
       (event) =>
         event.type === "backend.write" &&
         "table" in event &&
         event.table === "payment_schedule",
     );
-    expect(paymentWrites).toHaveLength(2); // failed attempt + success
+    expect(paymentWrites).toHaveLength(1);
+  });
+
+  it("internal pipeline failure ends the run honestly: error event, run.end error, doc re-pickable", async () => {
+    // Force a mid-run failure: break the ledger read the duplicate check
+    // depends on.
+    const brokenBackend = backend as unknown as {
+      invoiceExists: () => Promise<boolean>;
+    };
+    brokenBackend.invoiceExists = async () => {
+      throw new Error("synthetic store outage");
+    };
+    const result = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    expect(result.outcome).toBe("error");
+    const events = await trace(result.runId);
+    const kinds = events.map((event) => event.type);
+    expect(kinds.at(-1)).toBe("run.end");
+    const end = events.at(-1);
+    expect(end?.type === "run.end" && end.outcome).toBe("error");
+    expect(end?.type === "run.end" && end.failure_code).toContain(
+      "synthetic store outage",
+    );
+    const errorEvent = events.find((event) => event.type === "error");
+    expect(errorEvent?.type === "error" && errorEvent.recoverable).toBe(false);
+    const machine = await RunStateMachine.load(store, result.runId);
+    expect(machine?.state.step).toBe("error");
+    expect((await backend.getInboxItem("INB-001"))?.state).toBe("new");
   });
 
   it("memory stores: traced reads/writes, profile accrues, citation lands (LOT-94)", async () => {

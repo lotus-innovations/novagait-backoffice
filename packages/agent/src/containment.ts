@@ -88,6 +88,20 @@ export async function checkSessionCap(
   return { allowed: true, reason: null };
 }
 
+/**
+ * Give a session run back (LOT-103 review fix): a run that ended in an
+ * internal error completed nothing for the visitor, so it must not count
+ * against the cap. IP counters are deliberately NOT refunded (abuse margin).
+ */
+export async function refundSessionRun(
+  store: Store,
+  sessionId: string,
+): Promise<void> {
+  const key = `session:${sessionId}:runs`;
+  const current = Number((await store.get(key)) ?? 0);
+  if (current > 0) await store.incrBy(key, -1);
+}
+
 /** UTC day stamp for the budget counter key. */
 export function budgetKey(nowMs = Date.now()): string {
   return `budget:${new Date(nowMs).toISOString().slice(0, 10)}`;
