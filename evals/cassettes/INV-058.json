@@ -10,7 +10,7 @@
     "fields": {
       "currency": "USD",
       "due_date": null,
-      "invoice_date": "1970-01-01",
+      "invoice_date": null,
       "invoice_number": "CN-33471",
       "po_reference": "PO-2202",
       "total_cents": 32900,

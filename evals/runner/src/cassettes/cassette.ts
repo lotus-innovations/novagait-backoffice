@@ -6,6 +6,10 @@
 // files, so every volatile value is normalized or excluded at this boundary
 // (see evals/cassettes/README.md for the full list).
 
+import {
+  INVOICE_DATE_SENTINEL,
+  INVOICE_NUMBER_SENTINEL,
+} from "@novagait/pipeline";
 import type { RunOutcome } from "../outcome";
 
 export const CASSETTE_LANE = "mock-replay";
@@ -29,14 +33,16 @@ export interface Cassette extends CassetteProvenance {
   outcome: RunOutcome;
 }
 
-// The mock parser has no null: a total it cannot find is 0 and an invoice
-// number it cannot find is "UNKNOWN" (packages/pipeline/src/parse.ts). The
-// golden dataset expresses both as null, and the parse-consistency test in
-// packages/pipeline maps the same two sentinels, so the mapping happens here
-// too rather than being re-litigated per grader.
+// The mock parser has no null: a total it cannot find is 0, an invoice
+// number it cannot find is INVOICE_NUMBER_SENTINEL, and a date it cannot
+// normalize is INVOICE_DATE_SENTINEL (packages/pipeline/src/parse.ts). The
+// golden dataset expresses missing values as null, and the parse-consistency
+// test in packages/pipeline maps the same sentinels, so the mapping happens
+// here too rather than being re-litigated per grader.
 export const PARSER_NULL_SENTINELS = {
-  invoice_number: "UNKNOWN",
+  invoice_number: INVOICE_NUMBER_SENTINEL,
   total_cents: 0,
+  invoice_date: INVOICE_DATE_SENTINEL,
 } as const;
 
 // Run ids are ULIDs: the one genuinely volatile field inside RunOutcome.
@@ -52,6 +58,9 @@ export function normalizeOutcome(
   }
   if (fields.total_cents === PARSER_NULL_SENTINELS.total_cents) {
     fields.total_cents = null;
+  }
+  if (fields.invoice_date === PARSER_NULL_SENTINELS.invoice_date) {
+    fields.invoice_date = null;
   }
   return {
     ...outcome,

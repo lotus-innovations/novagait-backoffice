@@ -4,13 +4,13 @@
   "outcome": {
     "case_id": "INV-038",
     "decision": "route_for_approval",
-    "drafted_action_text": "minor exception: date_ambiguity [Price Variance Tolerance §Over-tolerance handling]",
+    "drafted_action_text": "minor exception: date_ambiguity [Payment Terms and Scheduling §Pay date selection]",
     "error_events": [],
     "failure_code": null,
     "fields": {
       "currency": "USD",
       "due_date": null,
-      "invoice_date": "1970-01-01",
+      "invoice_date": null,
       "invoice_number": "BCS-71230",
       "po_reference": "PO-2208",
       "total_cents": 9500,
