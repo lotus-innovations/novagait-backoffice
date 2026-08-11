@@ -55,7 +55,9 @@ async function slidingCount(
  * 10/hr + 30/day per IP. Increment-first (review fix): the old
  * read-then-increment window let concurrent bursts overshoot the cap; now
  * the slot is claimed atomically before the check, so a blocked burst
- * request consumes a slot instead of slipping through.
+ * request consumes a slot instead of slipping through. Deliberate
+ * consequence: hammering while blocked extends the block (penalize-on-
+ * block), a stricter stance than "count only allowed" and the one we want.
  */
 export async function checkIpLimit(
   store: Store,
@@ -101,6 +103,8 @@ export async function checkSessionCap(
  * Give a session run back (LOT-103 review fix): a run that ended in an
  * internal error completed nothing for the visitor, so it must not count
  * against the cap. IP counters are deliberately NOT refunded (abuse margin).
+ * Read-then-incr is knowingly non-atomic: the worst case is a small
+ * over-credit on a cap of 5, and only for a visitor whose runs are failing.
  */
 export async function refundSessionRun(
   store: Store,

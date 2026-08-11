@@ -22,6 +22,7 @@ import {
   gateExecuteAction,
   nodeIds,
   searchKb,
+  traceKeys,
   type GateOutcome,
   type GuardrailResult,
   type RunMode,
@@ -106,18 +107,24 @@ export async function runMockPipeline(
     if (!machine.isTerminal) {
       await machine.transition("error", { message: String(error) });
     }
-    // The document was not processed; make it pickable again.
-    await backend.setInboxState(item.id, "new");
+    // Reviewer-gate fix: only re-open the document if nothing landed in the
+    // ERP. A run that posted a ledger row before failing (payment retry
+    // exhausted) needs a human, not a rerun.
+    const partiallyExecuted = (await backend.ledgerEntries()).some(
+      (entry) => entry.run_id === writer.runId,
+    );
+    await backend.setInboxState(item.id, partiallyExecuted ? "held" : "new");
+    const summary = await store.hgetall(traceKeys.run(writer.runId));
     await writer.append({
       type: "run.end",
       node_id: nodeIds.run(),
       outcome: "error",
-      total_cost_micro_usd: 0,
+      total_cost_micro_usd: Number(summary?.total_cost_micro_usd ?? 0),
       input_tokens: 0,
       output_tokens: 0,
       cache_creation_input_tokens: 0,
       cache_read_input_tokens: 0,
-      iteration_count: 0,
+      iteration_count: Number(summary?.iteration_count ?? 0),
       failure_code: String(error).slice(0, 120),
     });
     return {
