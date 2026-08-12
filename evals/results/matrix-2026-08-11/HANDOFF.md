@@ -18,6 +18,28 @@ Read this instead of the thread.
 - **Judge and latency failures are isolated too.** Either can fail without discarding lane results; the README says so.
 - **Stalled batches** are cancelled and resubmitted after 45 minutes, bounded at 3 retries, then the lane fails loudly.
 
+## How to tell the run is healthy
+
+**Watch the ledger, not `request_counts`.** Batch counts stay at zero for a
+batch's whole life and then jump to final, so they tell you nothing while a
+batch is in flight. The signal that matters is `totals.cost_usd` and
+`totals.entries` in `evals/results/spend-ledger-2026-08-11.json` moving as
+rounds land:
+
+```sh
+watch -n 60 "python3 -c \"import json;t=json.load(open('evals/results/spend-ledger-2026-08-11.json'))['totals'];print(t['cost_usd'],t['entries'])\""
+```
+
+A **flat ledger while batches keep ending is an alarm**, not a quiet period.
+That exact condition is what a bad stall heuristic looked like from the
+outside for about an hour before I recognised it, and it is the cheapest
+health check available. Rounds should add tens of entries at a time.
+
+Resubmission is now a **rare backstop**: 45 minutes of elapsed wall clock with
+no `ended` status, bounded at 3 attempts. If you see resubmissions happening
+routinely rather than occasionally, something is wrong again; do not raise the
+retry count to paper over it.
+
 ## To finish
 
 ```sh
@@ -94,8 +116,18 @@ earlier optimism from the thread.
    completions, which is what healthy batches look like, so it cancelled
    batches mid-flight: repeatedly `succeeded: 13, canceled: 3`, billing 13
    requests whose results were discarded, while the ledger sat flat. Fixed to
-   elapsed-time-only at 45 minutes. The billed-but-discarded requests are what
-   `MATRIX_SWEEP=1` recovers.
+   elapsed-time-only at 45 minutes.
+
+   **Assume some of those cancels killed healthy batches.** The 72-minute
+   batch that started the whole investigation was cancelled by me before it
+   could finish, so it may have been slow rather than stuck; several 16-request
+   chunks demonstrably were about to complete when they were cancelled. The
+   `unrecorded:swept` ledger lines that `MATRIX_SWEEP=1` produces ARE the
+   honest accounting of that: money spent on requests that completed and were
+   billed but whose results the driver never read. Publish them as such rather
+   than netting them out, and do not describe those batches as "stuck" in the
+   README when "cancelled by an incorrect heuristic" is what actually
+   happened.
 
 What is actually carrying the run: **checkpoints, lane isolation, and
 elapsed-time stall retry**. Not chunking.
