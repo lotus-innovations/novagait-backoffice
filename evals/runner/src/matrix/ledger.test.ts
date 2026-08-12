@@ -7,6 +7,7 @@ import {
   EnvelopeExceeded,
   SpendLedger,
   costUsd,
+  pricingAlias,
   type LedgerFile,
 } from "./ledger";
 
@@ -146,5 +147,55 @@ describe("SpendLedger", () => {
       1.0,
       10,
     );
+  });
+});
+
+describe("pricingAlias", () => {
+  it("resolves the dated snapshot a batch result echoes to its pricing alias", () => {
+    expect(pricingAlias("claude-haiku-4-5-20251001")).toBe("claude-haiku-4-5");
+  });
+
+  it("leaves an alias untouched", () => {
+    expect(pricingAlias("claude-opus-5")).toBe("claude-opus-5");
+  });
+
+  it("prices a dated snapshot identically to its alias", () => {
+    const usage = {
+      input_tokens: 1000,
+      output_tokens: 100,
+      cache_creation_input_tokens: 0,
+      cache_read_input_tokens: 0,
+    };
+    expect(
+      costUsd({
+        model: "claude-haiku-4-5-20251001",
+        usage,
+        channel: "batch",
+        writeTtl: null,
+      }),
+    ).toBe(
+      costUsd({
+        model: "claude-haiku-4-5",
+        usage,
+        channel: "batch",
+        writeTtl: null,
+      }),
+    );
+  });
+
+  it("refuses an unknown model rather than pricing it as something else", () => {
+    expect(() =>
+      costUsd({
+        model: "claude-not-a-model-20251001",
+        usage: {
+          input_tokens: 1,
+          output_tokens: 1,
+          cache_creation_input_tokens: 0,
+          cache_read_input_tokens: 0,
+        },
+        channel: "batch",
+        writeTtl: null,
+      }),
+    ).toThrow(/no pricing/);
   });
 });

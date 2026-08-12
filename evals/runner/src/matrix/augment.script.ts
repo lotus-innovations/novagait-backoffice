@@ -27,7 +27,7 @@ import {
   renderCacheSection,
   renderSpendSection,
 } from "./accounting";
-import { costUsd, type LedgerFile } from "./ledger";
+import { costUsd, pricingAlias, type LedgerFile } from "./ledger";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "../../../..");
@@ -65,7 +65,15 @@ async function sweepUnrecordedSpend(ledger: LedgerFile): Promise<number> {
       };
       if (result.type !== "succeeded" || !result.message?.usage) continue;
       const usage = result.message.usage;
-      const model = result.message.model ?? "claude-haiku-4-5";
+      // The echoed model is a dated snapshot; store the alias so a swept entry
+      // groups with the lane that paid for it. No default: a result with no
+      // model is unattributable, and guessing one would misreport the envelope.
+      if (result.message.model === undefined) {
+        throw new Error(
+          `sweep: batch ${batch.id} result ${row.custom_id} has no model`,
+        );
+      }
+      const model = pricingAlias(result.message.model);
       const tokens = {
         input_tokens: usage.input_tokens ?? 0,
         output_tokens: usage.output_tokens ?? 0,

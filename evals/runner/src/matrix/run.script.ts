@@ -22,7 +22,14 @@ import { JUDGE_MODEL, PUBLISHED_JUDGE_MODEL } from "../graders/judge";
 import { LIVE_MATRIX_MODELS } from "../live-lane";
 import type { RunOutcome } from "../outcome";
 import { CONTINGENCY, PRICING_VERIFIED_ON } from "../spend/cost";
-import { anthropicBatchClient, runLane, type CaseRunRecord } from "./batch";
+import {
+  DEFAULT_MAX_WAIT_MS,
+  DEFAULT_STALL_RETRIES,
+  DEFAULT_STALL_TIMEOUT_MS,
+  anthropicBatchClient,
+  runLane,
+  type CaseRunRecord,
+} from "./batch";
 import { buildCalibration } from "./calibration";
 import { runJudgeBatch, type JudgeTarget } from "./judge-batch";
 import { runLatencyPass } from "./latency";
@@ -61,6 +68,34 @@ const SMOKE = process.env.MATRIX_SMOKE === "1";
 const CASE_LIMIT = Number(process.env.MATRIX_CASE_LIMIT ?? "0");
 const LANE_FILTER = process.env.MATRIX_LANES ?? "";
 const SKIP_LATENCY = process.env.MATRIX_SKIP_LATENCY === "1";
+/**
+ * Judge and latency are skippable so the expensive lanes can be driven in
+ * separate invocations without re-paying for the cheap stages each time. A
+ * lane-only pass sets both; the final pass sets neither and resumes every
+ * completed lane from its checkpoint at zero cost.
+ */
+const SKIP_JUDGE = process.env.MATRIX_SKIP_JUDGE === "1";
+/**
+ * Stall handling, overridable per invocation.
+ *
+ * Measured 2026-08-12: haiku and opus batches end in 2-3 minutes, but
+ * sonnet-5 batches of the same shape took 2.5 and 6 HOURS to end - and ended
+ * with all 16 requests succeeded. The 45-minute default therefore cancelled
+ * healthy sonnet work four times per lane and failed both sonnet lanes, which
+ * is the same class of mistake as the completion-count heuristic it replaced:
+ * a threshold set inside the range of normal completion times. Per-model
+ * cadence is not knowable in advance, so it is an input rather than a
+ * constant, and the ledger stays the real guard.
+ */
+const numberEnv = (name: string, fallback: number): number => {
+  const raw = process.env[name];
+  if (raw === undefined || raw === "") return fallback;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    throw new Error(`${name} must be a non-negative number, got ${raw}`);
+  }
+  return parsed;
+};
 const RESULTS_TARGET = SMOKE ? `${RESULTS_DIR}-smoke` : RESULTS_DIR;
 
 /** Worst case for one complete case, per model, from the committed estimate. */
@@ -140,6 +175,12 @@ test("LOT-105 live matrix", async () => {
         client: batchClient,
         ledger,
         worstCasePerCaseUsd: bounds[lane.model] ?? 0,
+        stallTimeoutMs: numberEnv(
+          "MATRIX_STALL_TIMEOUT_MS",
+          DEFAULT_STALL_TIMEOUT_MS,
+        ),
+        stallRetries: numberEnv("MATRIX_STALL_RETRIES", DEFAULT_STALL_RETRIES),
+        maxWaitMs: numberEnv("MATRIX_MAX_WAIT_MS", DEFAULT_MAX_WAIT_MS),
         log,
       });
     } catch (error) {
@@ -220,12 +261,12 @@ test("LOT-105 live matrix", async () => {
     }
   };
 
-  const working = await judgeSafely("working", JUDGE_MODEL, 0.01);
-  const publishedJudge = await judgeSafely(
-    "published",
-    PUBLISHED_JUDGE_MODEL,
-    0.02,
-  );
+  const working = SKIP_JUDGE
+    ? null
+    : await judgeSafely("working", JUDGE_MODEL, 0.01);
+  const publishedJudge = SKIP_JUDGE
+    ? null
+    : await judgeSafely("published", PUBLISHED_JUDGE_MODEL, 0.02);
   log(
     `judge: working $${(working?.cost_usd ?? 0).toFixed(4)}, ` +
       `published $${(publishedJudge?.cost_usd ?? 0).toFixed(4)}`,

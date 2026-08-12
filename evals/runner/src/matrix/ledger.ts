@@ -50,8 +50,24 @@ export const EMPTY_USAGE: UsageTokens = {
   cache_read_input_tokens: 0,
 };
 
+/**
+ * Resolves a dated snapshot id to the pricing alias.
+ *
+ * The driver records the alias it submitted (`claude-haiku-4-5`), but a batch
+ * result's `message.model` echoes the resolved snapshot
+ * (`claude-haiku-4-5-20251001`). MATRIX_SWEEP prices from that echoed field, so
+ * without this the sweep throws instead of recording billed-but-unread spend -
+ * exactly the entries the envelope most needs. Only an 8-digit date suffix is
+ * stripped, and the stripped id must still be a known model: an unrecognised
+ * model must fail loudly rather than be priced as something it is not.
+ */
+export function pricingAlias(model: string): string {
+  const undated = model.replace(/-\d{8}$/, "");
+  return undated in PRICING ? undated : model;
+}
+
 function ratesFor(model: string): { input: number; output: number } {
-  const entry = PRICING[model as keyof typeof PRICING];
+  const entry = PRICING[pricingAlias(model) as keyof typeof PRICING];
   if (entry === undefined) {
     throw new Error(`ledger: no pricing for model ${model}`);
   }
