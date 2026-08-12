@@ -11,6 +11,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import {
   InMemoryStore,
   RunStateMachine,
+  VendorProfileStore,
   budgetKey,
   getApprovalForRun,
   readTrace,
@@ -21,6 +22,7 @@ import { MockBackend } from "@novagait/mock-backend";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createLivePipeline, openLiveRun, runLivePipeline } from "./live-agent";
 import { runMockPipeline } from "./mock-agent";
+import { resumeRun } from "./resume";
 import { parseFixture } from "./parse";
 
 const MODEL = "claude-haiku-4-5";
@@ -275,6 +277,10 @@ describe("live executors", () => {
       inboxItemId: "INB-001",
       mode: "autonomous",
     });
+    const { extraction } = await fixtureFor(backend, "INB-001");
+    await run.executors.draft_action(
+      draftInput(extraction, "auto_approve") as never,
+    );
     const result = JSON.parse(
       await run.executors.update_vendor_profile({
         vendor_id: "V-001",
@@ -283,6 +289,139 @@ describe("live executors", () => {
     );
     expect(result.rejected).toContain("learned_gl_code");
     expect(result.written.last_seen).toBe("2026-08-11");
+  });
+
+  it("refuses a profile write before anything has been drafted", async () => {
+    // Pre-draft there is no resolved vendor, so a write here could only be
+    // aimed at a vendor of the model's choosing - and then consumed as the
+    // learned GL of its own execution.
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    const result = JSON.parse(
+      await run.executors.update_vendor_profile({
+        vendor_id: "V-004",
+        fields: { learned_gl_code: "9999" },
+      }),
+    );
+    expect(result.error).toMatch(/call draft_action/);
+    const profile = await new VendorProfileStore(store).get("V-004");
+    expect(profile).toBeNull();
+  });
+
+  it("reads the profile of the vendor the run resolved, not the first looked up", async () => {
+    // A learned code planted on an unrelated vendor must not reach the GL of
+    // the vendor this document actually resolves to.
+    await new VendorProfileStore(store).applyUpdate("V-003", {
+      learned_gl_code: "9100",
+    });
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "assisted",
+    });
+    await run.executors.lookup_vendor({ name_raw: "ChartNimbus EMR" });
+    const { extraction } = await fixtureFor(backend, "INB-001");
+    await run.executors.draft_action(
+      draftInput(extraction, "auto_approve") as never,
+    );
+    const machine = await RunStateMachine.load(store, run.runId);
+    const execution = machine!.state.data.execution as { gl_code: string };
+    expect(execution.gl_code).toBe("6100"); // V-001 default, not V-003's 9100
+    const reads = (await readTrace(store, run.runId))
+      .filter(
+        (event): event is Extract<TraceEvent, { type: "memory.read" }> =>
+          event.type === "memory.read",
+      )
+      .map((event) => event.key);
+    expect(reads).toContain("vendor:V-003");
+    expect(reads).toContain("vendor:V-001");
+  });
+
+  it("re-draft replaces the stashed draft everywhere it is read", async () => {
+    // The gate, the trace, the graded extraction and the approval resume must
+    // all see the SAME draft. The first version of this lane left run state
+    // holding draft one while the gate executed draft two.
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "assisted",
+    });
+    const { extraction } = await fixtureFor(backend, "INB-001");
+    const first = JSON.parse(
+      await run.executors.draft_action(
+        draftInput(extraction, "auto_approve", "First pass.") as never,
+      ),
+    );
+    // Within tolerance of PO-2201, so still an approve route.
+    const revised = { ...extraction, total_cents: 43_000 };
+    const second = JSON.parse(
+      await run.executors.draft_action(
+        draftInput(revised, "auto_approve", "Corrected total.") as never,
+      ),
+    );
+    expect(second.draft_ref).not.toBe(first.draft_ref);
+
+    // The superseded ref is not executable.
+    const stale = JSON.parse(
+      await run.executors.execute_action({ draft_ref: first.draft_ref }),
+    );
+    expect(stale.error).toMatch(/unknown draft_ref/);
+
+    const disposition = await run.finalize();
+    expect(disposition.outcome).toBe("awaiting_approval");
+
+    const machine = await RunStateMachine.load(store, run.runId);
+    const data = machine!.state.data as {
+      draft_ref: string;
+      extraction: { total_cents: number };
+      execution: { total_cents: number };
+    };
+    expect(data.draft_ref).toBe(second.draft_ref);
+    expect(data.extraction.total_cents).toBe(43_000);
+    expect(data.execution.total_cents).toBe(43_000);
+
+    // And the resume seam executes the draft the record shows.
+    const approval = await getApprovalForRun(store, run.runId);
+    await resumeRun(store, backend, run.runId, {
+      approvalId: approval!.approval_id,
+      actor: "test",
+      decision: "approve",
+      reason: "approved",
+    });
+    const posted = (await backend.ledgerEntries()).find(
+      (entry) => entry.run_id === run.runId,
+    );
+    expect(posted?.amount_cents).toBe(43_000);
+    const payment = (await backend.paymentSchedule()).find(
+      (row) => row.run_id === run.runId,
+    );
+    expect(payment?.amount_cents).toBe(43_000);
+  });
+
+  it("requests an approval once however often the model re-executes", async () => {
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "assisted",
+    });
+    const { extraction } = await fixtureFor(backend, "INB-001");
+    const drafted = JSON.parse(
+      await run.executors.draft_action(
+        draftInput(extraction, "auto_approve") as never,
+      ),
+    );
+    await run.executors.execute_action({ draft_ref: drafted.draft_ref });
+    await run.executors.execute_action({ draft_ref: drafted.draft_ref });
+    await run.executors.execute_action({ draft_ref: drafted.draft_ref });
+    const trace = await readTrace(store, run.runId);
+    expect(events(trace, "approval.requested")).toHaveLength(1);
   });
 });
 
@@ -626,6 +765,81 @@ describe("runLivePipeline", () => {
 // Parity with the shipped mock lane
 // ---------------------------------------------------------------------------
 
+/**
+ * Everything a disposition actually does, in one comparable shape. Comparing
+ * route and outcome alone is what let three live-vs-mock divergences through
+ * review: the money is in the ledger row, the GL and pay date on the payment,
+ * the extraction the graders read out of run state, and which memory keys
+ * were touched.
+ *
+ * Ids that embed the run id are excluded (they cannot match across lanes);
+ * memory keys are compared as a sorted multiset, because a model legitimately
+ * chooses WHEN to look a vendor up while the mock planner is fixed.
+ */
+async function dispositionFingerprint(
+  runStore: Store,
+  runBackend: MockBackend,
+  runId: string,
+  itemId: string,
+) {
+  const trace = await readTrace(runStore, runId);
+  const machine = await RunStateMachine.load(runStore, runId);
+  const extraction = machine?.state.data.extraction as
+    Record<string, unknown> | undefined;
+  const pick = <T extends object>(source: T | undefined, keys: string[]) =>
+    source === undefined
+      ? null
+      : Object.fromEntries(
+          keys.map((key) => [key, (source as Record<string, unknown>)[key]]),
+        );
+  return {
+    blocked: blockedRules(trace),
+    ledger: (await runBackend.ledgerEntries())
+      .filter((entry) => entry.run_id === runId)
+      .map((entry) => ({
+        vendor_id: entry.vendor_id,
+        invoice_number: entry.invoice_number,
+        amount_cents: entry.amount_cents,
+      })),
+    payments: (await runBackend.paymentSchedule())
+      .filter((row) => row.run_id === runId)
+      .map((row) => ({
+        vendor_id: row.vendor_id,
+        amount_cents: row.amount_cents,
+        gl_code: row.gl_code,
+        pay_date: row.pay_date,
+        status: row.status,
+      })),
+    extraction: pick(extraction, [
+      "vendor_id",
+      "invoice_number",
+      "invoice_date",
+      "due_date",
+      "total_cents",
+      "currency",
+      "po_reference",
+    ]),
+    memory: trace
+      .filter(
+        (
+          event,
+        ): event is Extract<
+          TraceEvent,
+          { type: "memory.read" | "memory.write" }
+        > => event.type === "memory.read" || event.type === "memory.write",
+      )
+      .map((event) => `${event.type} ${event.store} ${event.key}`)
+      .sort(),
+    backendWrites: trace
+      .filter(
+        (event): event is Extract<TraceEvent, { type: "backend.write" }> =>
+          event.type === "backend.write",
+      )
+      .map((event) => `${event.table} simulated=${event.simulated}`),
+    inboxState: (await runBackend.getInboxItem(itemId))?.state,
+  };
+}
+
 describe("mock/live disposition parity", () => {
   const CASES: Array<{ item: string; mode: "autonomous" | "assisted" }> = [
     { item: "INB-001", mode: "autonomous" }, // clean auto-approve
@@ -669,8 +883,15 @@ describe("mock/live disposition parity", () => {
 
       expect(live.route).toBe(mocked.route);
       expect(live.outcome).toBe(mocked.outcome);
-      expect(blockedRules(await readTrace(store, live.runId))).toEqual(
-        blockedRules(await readTrace(mockStore, mocked.runId)),
+      expect(
+        await dispositionFingerprint(store, backend, live.runId, item),
+      ).toEqual(
+        await dispositionFingerprint(
+          mockStore,
+          mockBackend,
+          mocked.runId,
+          item,
+        ),
       );
     },
   );
@@ -884,6 +1105,28 @@ describe("createLivePipeline", () => {
     expect(outcome.guardrails_fired).toEqual(["GR-SCOPE"]);
     expect(outcome.run_end_events).toBe(1);
     expect(outcome.tool_calls).toEqual(["draft_action"]);
+  });
+
+  it("records a caller-enforced breaker as the single run.end (A6)", async () => {
+    const session = await factory().openCase(CASES["INV-001"], {
+      mode: "autonomous",
+      model: MODEL,
+    });
+    await session.executors.kb_search({ query: "policy" });
+    const outcome = await session.toOutcome(
+      { iteration_count: 10 },
+      { outcome: "iteration_capped", failure_code: "SYS-003" },
+    );
+    expect(outcome.terminal_state).toBe("iteration_capped");
+    expect(outcome.run_end_events).toBe(1);
+    const machine = await RunStateMachine.load(session.store, session.runId);
+    expect(machine!.state.step).toBe("iteration_capped");
+    // A capped run disposes nothing.
+    expect(
+      (await session.backend.ledgerEntries()).filter(
+        (entry) => entry.run_id === session.runId,
+      ),
+    ).toEqual([]);
   });
 
   it("names the missing lookup when a pre-seed case cannot be resolved", async () => {

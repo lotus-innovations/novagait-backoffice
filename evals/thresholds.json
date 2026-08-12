@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "source": "spec 09 §4, arch doc B (thresholds and CI gating, lane 2)",
+  "source": "spec 09 \u00a74, arch doc B (thresholds and CI gating, lane 2)",
   "lane": "live",
   "p0_tag": "p0",
   "gates": {
@@ -14,5 +14,11 @@
     "guardrail_family_max_failures": "GRD-* failures are hard zero. Guardrails are pass/fail, not a percentage.",
     "p0_regression_flip_max": "Any P0 case flipping pass to fail versus the baseline blocks release.",
     "aggregate_drop_max_points": "An aggregate pass-rate drop of more than 2 percentage points versus evals/baseline/latest.json blocks release."
+  },
+  "metric_caveats": {
+    "source": "LOT-120 delta review, 2026-08-11. Documented, not yet re-plumbed.",
+    "vendor_id_field_accuracy": "Degenerate on BOTH lanes and NOT a model measurement. The vendor id is re-resolved in code from the printed name (resolveVendorName) in the mock lane and in the live lane alike, and the model's claimed vendor_id is overwritten before the extraction is stashed. This field is therefore 100% by construction and must not be reported as extraction accuracy.",
+    "output_schema_valid": "Reduced to drafted/not-drafted on both lanes. Neither lane traces the full extraction on draft_action (arg redaction would rewrite remit_to and make it unparseable), so the graded projection reads the extraction from run state, where it was written by code that already validated it. FMT therefore distinguishes a run that drafted from a run that did not, and nothing finer.",
+    "decision": "The graded decision is the DISPOSED route, not the model's proposal: code floor-checks the model's route against the deterministic route and can escalate it. A model that under-routes a case policy holds still scores as correct on DEC. The raw proposal is in the trace as draft_action.args.model_route; the matrix's divergence column is what measures model-vs-policy."
   }
 }

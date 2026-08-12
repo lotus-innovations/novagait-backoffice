@@ -260,8 +260,12 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
   // --- mutable run context -------------------------------------------------
   const poCache = new Map<string, PurchaseOrder>();
   const receivingCache = new Map<string, ReceivingRecord | null>();
-  let profileRead = false;
-  let profile: VendorProfile | null = null;
+  // Keyed by vendor id, not a single latch: the model may look up several
+  // vendors, and the profile that decides the GL code must be the one
+  // belonging to the vendor the run actually resolved (the mock lane reads
+  // exactly that profile). A shared latch let the first vendor looked up
+  // poison the execution of a different, correctly resolved vendor.
+  const profileCache = new Map<string, VendorProfile | null>();
   let dedupeState: { priorRunId: string | null } | null = null;
   let kbCitation: string | null = null;
   let screensTraced = false;
@@ -278,6 +282,7 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
   } | null = null;
   let gateRun = false;
   let lastGateOutcome: GateOutcome | null = null;
+  const approvalsRequested = new Set<string>();
   let settled: LiveDisposition | null = null;
 
   const traceScreens = async () => {
@@ -288,19 +293,21 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
     if (noteScreen) await traceGuardrail(noteScreen);
   };
 
-  /** Vendor profile read, traced once per run (mock reads it at match time). */
+  /** Vendor profile read, traced once per vendor (mock reads it at match time). */
   const readProfile = async (
     vendorId: string | null,
   ): Promise<VendorProfile | null> => {
-    if (!vendorId || profileRead) return profile;
-    profileRead = true;
-    profile = await profiles.get(vendorId);
+    if (!vendorId) return null;
+    const cached = profileCache.get(vendorId);
+    if (cached !== undefined) return cached;
+    const found = await profiles.get(vendorId);
+    profileCache.set(vendorId, found);
     await traceMemoryRead(
       MEMORY_STORE_NAMES.vendorProfiles,
       `vendor:${vendorId}`,
-      profile !== null,
+      found !== null,
     );
-    return profile;
+    return found;
   };
 
   /**
@@ -350,8 +357,14 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
     return { diff, rejected };
   };
 
+  // First draft keeps the mock lane's id exactly; a re-draft gets its own, so
+  // a stale draft_ref cannot be executed and the dispositions record shows
+  // both drafts.
+  let draftCount = 0;
   const saveDisposition = async (route: Decision, summary: string) => {
-    const ref = `DSP-${writer.runId.slice(-6)}`;
+    const base = `DSP-${writer.runId.slice(-6)}`;
+    const ref = draftCount === 0 ? base : `${base}-r${draftCount}`;
+    draftCount += 1;
     await backend.saveDisposition({
       id: ref,
       run_id: writer.runId,
@@ -470,19 +483,24 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
     },
 
     update_vendor_profile: async ({ vendor_id, fields }) => {
-      // Bounded write surface, and bounded to THIS run's vendor: a model may
-      // not edit a profile the run never resolved.
+      // Bounded write surface, bounded to THIS run's resolved vendor, and
+      // bounded in time. Before draft_action there is no resolved vendor, so
+      // there is no legitimate target: allowing the model's own vendor_id
+      // there let it plant a learned_gl_code on any seeded vendor and then
+      // consume it in its own execution. The mock lane writes profiles only
+      // after the decision, and so does this.
       const resolved = drafted?.resolution ?? null;
-      const target = resolved ?? vendor_id;
-      if (resolved !== null && vendor_id !== resolved) {
+      if (resolved === null) {
+        return refuse(
+          "no resolved vendor yet: call draft_action before writing a vendor profile",
+        );
+      }
+      if (vendor_id !== resolved) {
         return refuse(
           `vendor ${vendor_id} is not the vendor resolved for this run (${resolved})`,
         );
       }
-      if (!vendors.some((v) => v.id === target)) {
-        return refuse(`unknown vendor: ${vendor_id}`);
-      }
-      const { diff, rejected } = await applyProfileUpdate(target, fields);
+      const { diff, rejected } = await applyProfileUpdate(resolved, fields);
       return JSON.stringify({ written: diff, rejected });
     },
 
@@ -511,7 +529,7 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
           recoverable: true,
         });
       }
-      await readProfile(resolvedId);
+      const resolvedProfile = await readProfile(resolvedId);
 
       // PO / receiving: fetched by the reference the extraction carries, from
       // cache when the model already looked them up. Identical inputs to the
@@ -584,7 +602,9 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
               vendor_id: resolvedId,
               invoice_number: extraction.invoice_number,
               total_cents: extraction.total_cents,
-              gl_code: profile?.learned_gl_code ?? vendorRecord.default_gl_code,
+              gl_code:
+                resolvedProfile?.learned_gl_code ??
+                vendorRecord.default_gl_code,
               pay_date:
                 extraction.due_date ?? new Date().toISOString().slice(0, 10),
               inbox_item_id: item.id,
@@ -603,19 +623,26 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
         summary,
       };
 
+      // Run state must carry the SAME draft the gate and the trace carry. On a
+      // re-draft the machine is already at `decided`, so the stash is patched
+      // in place: leaving the first draft there would let resume.ts execute
+      // one draft's amount and GL against the record of another.
+      const stash = {
+        route,
+        policy_line: policyLine,
+        draft_ref: draftRef,
+        extraction: drafted.extraction,
+        match,
+        execution,
+        kb_citation: kbCitation,
+        model_route: modelRoute,
+        model_payment: input.payment ?? null,
+        vendor_email_draft: input.vendor_email_draft ?? null,
+      };
       if (machine.state.step === "matched") {
-        await machine.transition("decided", {
-          route,
-          policy_line: policyLine,
-          draft_ref: draftRef,
-          extraction: drafted.extraction,
-          match,
-          execution,
-          kb_citation: kbCitation,
-          model_route: modelRoute,
-          model_payment: input.payment ?? null,
-          vendor_email_draft: input.vendor_email_draft ?? null,
-        });
+        await machine.transition("decided", stash);
+      } else if (!machine.isTerminal) {
+        await machine.patch(stash);
       }
 
       return JSON.stringify({
@@ -686,14 +713,19 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
           approval_id: outcome.approval_id,
         });
       }
-      await writer.append({
-        type: "approval.requested",
-        node_id: nodeIds.approval(),
-        approval_id: outcome.approval_id,
-        route: drafted.route,
-        draft_digest: digest,
-        policy_line: outcome.reason,
-      });
+      // Once per approval: a model that re-calls execute_action while parked
+      // must not stack identical approval.requested events on the trace.
+      if (!approvalsRequested.has(outcome.approval_id)) {
+        approvalsRequested.add(outcome.approval_id);
+        await writer.append({
+          type: "approval.requested",
+          node_id: nodeIds.approval(),
+          approval_id: outcome.approval_id,
+          route: drafted.route,
+          draft_digest: digest,
+          policy_line: outcome.reason,
+        });
+      }
       if (options.approver === "script") {
         await decideApproval(store, outcome.approval_id, {
           actor: "script",
@@ -948,10 +980,18 @@ export interface LivePipelineResult {
 /**
  * The live sibling of runMockPipeline: a real model drives the real tools.
  *
- * Cost is recorded against the daily budget counter here (containment.ts,
- * `budget:{UTC-day}`) so every caller of the live lane pays into the same
- * breaker; the per-run cost cap and the iteration/wall-clock caps are
- * runWorkflow's.
+ * Containment, stated precisely, because the counter and the breaker are not
+ * the same thing:
+ *  - The per-run cost cap, the iteration cap and the wall clock are enforced
+ *    by runWorkflow, and they are the only limits that stop a run in flight.
+ *  - This function ACCUMULATES measured cost into the daily counter
+ *    (containment.ts, `budget:{UTC-day}`). It does not consult it. Consulting
+ *    it is the caller's job, because only the caller knows whether its store
+ *    is the shared one: `isCapacityMode` is checked by /api/intake and by the
+ *    dev route's live branch, where a process-wide store makes the counter
+ *    meaningful. The eval matrix gives every case its own store, so its
+ *    counter is structurally near-zero by design and its containment is the
+ *    lane ledger and the hard stop in the driver, not this counter.
  */
 export async function runLivePipeline(
   options: LivePipelineOptions,
@@ -1094,12 +1134,32 @@ export interface CreateLivePipelineOptions<TOutcome> {
   preSeed?: Readonly<Record<string, readonly string[]>>;
 }
 
+/**
+ * A breaker the caller enforced itself. The eval driver re-implements the
+ * iteration cap (batching splits the loop), so it needs a way to say "this
+ * run ended on my cap, not on a disposition" and still get exactly one
+ * run.end from the product. Without it the driver writes run.end itself and
+ * the projection stops being identical to every other path's.
+ */
+export interface CaseTerminalOverride {
+  outcome: Extract<RunOutcome, "cost_capped" | "iteration_capped" | "error">;
+  failure_code: string | null;
+}
+
 export interface LiveCaseSession<TOutcome> extends LiveRun {
   backend: MockBackend;
   /** True when GR-SCOPE ended the run before the model: DO NOT call the model. */
   shortCircuited: boolean;
-  /** Finalize, write run.end, then project. Idempotent. */
-  toOutcome(totals?: CaseUsageTotals): Promise<TOutcome>;
+  /**
+   * Finalize the disposition, write the single run.end, then project.
+   * Idempotent. Pass `terminal` when the CALLER's breaker ended the run:
+   * the business disposition is then not completed (nothing is executed on a
+   * capped run) and run.end records the breaker outcome.
+   */
+  toOutcome(
+    totals?: CaseUsageTotals,
+    terminal?: CaseTerminalOverride,
+  ): Promise<TOutcome>;
 }
 
 export interface LiveCasePipeline<TOutcome> {
@@ -1173,24 +1233,49 @@ export function createLivePipeline<TOutcome>(
         ...run,
         backend,
         shortCircuited: run.shortCircuit !== null,
-        async toOutcome(totals: CaseUsageTotals = {}) {
+        async toOutcome(
+          totals: CaseUsageTotals = {},
+          terminal?: CaseTerminalOverride,
+        ) {
           if (projected !== null) return projected;
-          const disposition = run.shortCircuit ?? (await run.finalize());
-          if (!run.shortCircuit) {
+          let route: Decision | null = null;
+          let outcome: RunOutcome;
+
+          if (run.shortCircuit) {
+            // Already complete, boundaries already written.
+            route = run.shortCircuit.route;
+            outcome = run.shortCircuit.outcome;
+          } else if (terminal) {
+            // A capped run disposes nothing: settle the machine on the abort
+            // step and record the breaker, exactly as runLivePipeline does.
+            const loaded = await RunStateMachine.load(store, run.runId);
+            if (loaded && !loaded.isTerminal) {
+              await loaded.transition(terminal.outcome, {
+                failure_code: terminal.failure_code,
+              });
+            }
+            route = (loaded?.state.data.route as Decision | undefined) ?? null;
+            outcome = terminal.outcome;
+            await run.writeRunEnd({ ...terminal, ...totals });
+          } else {
             // terminal_state is read from run.end; on this path the driver
             // owns the loop, so this is the only thing that writes it.
+            const disposition = await run.finalize();
+            route = disposition.route;
+            outcome = disposition.outcome;
             await run.writeRunEnd({
               outcome: disposition.outcome,
               failure_code: disposition.failureCode,
               ...totals,
             });
           }
+
           projected = await options.toOutcome({
             runId: run.runId,
             store,
             backend,
-            route: disposition.route,
-            outcome: disposition.outcome,
+            route,
+            outcome,
           });
           return projected;
         },

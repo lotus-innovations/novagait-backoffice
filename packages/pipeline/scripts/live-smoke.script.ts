@@ -27,7 +27,21 @@ import { MockBackend } from "@novagait/mock-backend";
 import { expect, it } from "vitest";
 import { runLivePipeline } from "../src/live-agent";
 
-const ABORT_MICRO_USD = 100_000; // $0.10 per run, hard stop
+// Honest containment for this script, in the order the limits actually bind:
+//
+//  1. The PRODUCT breaker (MAX_RUN_COST_MICRO_USD, $0.03) is what stops a
+//     single expensive run, and it stops it by ending the run `cost_capped`.
+//     A per-run threshold above it could therefore never fire first - the old
+//     $0.10 check was dead code dressed as a safety limit. So the per-run
+//     rule here is: if the breaker fired, the smoke stops.
+//  2. LANE_ABORT_MICRO_USD bounds the whole script, which the product knows
+//     nothing about.
+//
+// Both set `aborted`, which every subsequent case checks BEFORE spending:
+// throwing inside one `it` does not stop the ones after it.
+const LANE_ABORT_MICRO_USD = 150_000; // $0.15 for the whole smoke
+let aborted: string | null = null;
+let spent = 0;
 const MODEL = "claude-haiku-4-5";
 const usd = (micro: number) => `$${(micro / 1_000_000).toFixed(5)}`;
 
@@ -44,6 +58,7 @@ interface Row {
 const rows: Row[] = [];
 
 async function live(label: string, item: string) {
+  if (aborted) throw new Error(`smoke aborted before ${item}: ${aborted}`);
   const store = new InMemoryStore();
   const backend = new MockBackend(store);
   await backend.seed();
@@ -79,11 +94,13 @@ async function live(label: string, item: string) {
     tools: tools.join(" > "),
     guardrails: guardrails.join(",") || "-",
   });
-  if (result.totalCostMicroUsd > ABORT_MICRO_USD) {
-    throw new Error(
-      `ABORT: ${item} cost ${usd(result.totalCostMicroUsd)} > $0.10`,
-    );
+  spent += result.totalCostMicroUsd;
+  if (result.outcome === "cost_capped") {
+    aborted = `${item} hit the per-run cost breaker at ${usd(result.totalCostMicroUsd)}`;
+  } else if (spent > LANE_ABORT_MICRO_USD) {
+    aborted = `cumulative spend ${usd(spent)} exceeded the lane cap`;
   }
+  if (aborted) throw new Error(`ABORT: ${aborted}`);
   return { result, store, backend, trace, tools, guardrails };
 }
 

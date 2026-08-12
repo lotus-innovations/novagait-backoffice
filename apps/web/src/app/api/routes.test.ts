@@ -5,7 +5,12 @@
 
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { InMemoryStore, getApprovalForRun } from "@novagait/agent";
+import {
+  DAILY_BUDGET_MICRO_USD,
+  InMemoryStore,
+  budgetKey,
+  getApprovalForRun,
+} from "@novagait/agent";
 import { POST as intakePost } from "./intake/route";
 import { POST as devRunPost } from "./dev/run/route";
 import { POST as approvalPost } from "./approvals/[id]/route";
@@ -317,13 +322,22 @@ describe("POST /api/dev/run lane gating", () => {
     expect(response.status).toBe(403);
   });
 
-  it("refuses a model the pricing table cannot price", async () => {
+  it("refuses the live lane once the daily budget breaker has tripped", async () => {
     process.env.LIVE_AGENT = "1";
     process.env.ANTHROPIC_API_KEY = "sk-ant-not-real";
+    // Trip capacity mode on the shared store the route uses.
+    await getStore().incrBy(budgetKey(), DAILY_BUDGET_MICRO_USD);
     const response = await devRunPost(
-      devRequest({ item: "INB-001", lane: "live", model: "claude-imaginary" }),
+      devRequest({ item: "INB-001", lane: "live" }),
     );
-    expect(response.status).toBe(400);
-    expect((await response.json()).error).toMatch(/No pricing entry/);
+    expect(response.status).toBe(503);
+    expect((await response.json()).error).toMatch(/capacity mode/);
+  });
+
+  it("leaves the mock lane running in capacity mode", async () => {
+    delete process.env.ANTHROPIC_API_KEY;
+    await getStore().incrBy(budgetKey(), DAILY_BUDGET_MICRO_USD);
+    const response = await devRunPost(devRequest({ item: "INB-001" }));
+    expect(response.status).toBe(200);
   });
 });

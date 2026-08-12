@@ -123,6 +123,26 @@ export class RunStateMachine {
     );
   }
 
+  /**
+   * Merge working data WITHOUT moving the step. A stage that legitimately
+   * recomputes its own output (the live lane re-drafting after a second
+   * draft_action) must be able to correct what it stashed; the alternative -
+   * leaving the first draft in run state while the gate and the trace carry
+   * the second - pays one draft's amount against another draft's record.
+   * Terminal runs are frozen: a settled run's data is the audit record.
+   */
+  async patch(data: Record<string, unknown>): Promise<RunStateRecord> {
+    if (TERMINAL_STEPS.includes(this.record.step)) {
+      throw new Error(
+        `run ${this.record.run_id} is terminal at '${this.record.step}'`,
+      );
+    }
+    this.record.data = { ...this.record.data, ...data };
+    this.record.updated_at = new Date().toISOString();
+    await this.persist();
+    return this.state;
+  }
+
   async transition(
     to: RunStep,
     patch: Record<string, unknown> = {},

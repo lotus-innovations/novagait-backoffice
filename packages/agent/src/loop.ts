@@ -252,6 +252,65 @@ export interface RunWorkflowResult {
   totalCostMicroUsd: number;
 }
 
+/**
+ * Wrap executors so every tool call is traced identically wherever the loop
+ * is driven from. runWorkflow uses this; so does any caller that drives the
+ * executors itself (the eval matrix batches one model turn at a time and
+ * cannot use runWorkflow). Exported so that path reuses this code instead of
+ * mirroring it - a second copy drifts, and the trace is the graded record.
+ */
+export function traceToolExecutors(params: {
+  writer: TraceWriter;
+  executors: ToolExecutors;
+  /** Current loop iteration, read at call time for the node id. */
+  iteration: () => number;
+  traceArgs?: (
+    name: ToolName,
+    input: Record<string, unknown>,
+  ) => Record<string, Redactable>;
+}): ToolExecutors {
+  const attempts = new Map<string, number>();
+  const projectArgs = (name: ToolName, input: unknown): Record<string, never> =>
+    (params.traceArgs
+      ? params.traceArgs(name, (input ?? {}) as Record<string, unknown>)
+      : input) as Record<string, never>;
+
+  return Object.fromEntries(
+    TOOL_NAMES.map((name) => [
+      name,
+      async (input: never) => {
+        const attempt = (attempts.get(name) ?? 0) + 1;
+        attempts.set(name, attempt);
+        const started = Date.now();
+        try {
+          const output = await params.executors[name](input);
+          await params.writer.append({
+            type: "tool.call",
+            node_id: nodeIds.tool(params.iteration(), name),
+            name,
+            args: projectArgs(name, input),
+            result_summary: String(output).slice(0, 160),
+            duration_ms: Date.now() - started,
+            attempt,
+          });
+          return output;
+        } catch (error) {
+          await params.writer.append({
+            type: "tool.call",
+            node_id: nodeIds.tool(params.iteration(), name),
+            name,
+            args: projectArgs(name, input),
+            result_summary: `error: ${String(error)}`.slice(0, 160),
+            duration_ms: Date.now() - started,
+            attempt,
+          });
+          throw error;
+        }
+      },
+    ]),
+  ) as unknown as ToolExecutors;
+}
+
 export async function runWorkflow(
   options: RunWorkflowOptions,
 ): Promise<RunWorkflowResult> {
@@ -293,46 +352,13 @@ export async function runWorkflow(
   });
 
   // Wrap executors once so every driver traces tool calls identically.
-  const attempts = new Map<string, number>();
-  const projectArgs = (name: ToolName, input: unknown): Record<string, never> =>
-    (options.traceArgs
-      ? options.traceArgs(name, (input ?? {}) as Record<string, unknown>)
-      : input) as Record<string, never>;
   let currentIteration = 0;
-  const tracedExecutors = Object.fromEntries(
-    TOOL_NAMES.map((name) => [
-      name,
-      async (input: never) => {
-        const attempt = (attempts.get(name) ?? 0) + 1;
-        attempts.set(name, attempt);
-        const started = Date.now();
-        try {
-          const output = await options.executors[name](input);
-          await writer.append({
-            type: "tool.call",
-            node_id: nodeIds.tool(currentIteration, name),
-            name,
-            args: projectArgs(name, input),
-            result_summary: String(output).slice(0, 160),
-            duration_ms: Date.now() - started,
-            attempt,
-          });
-          return output;
-        } catch (error) {
-          await writer.append({
-            type: "tool.call",
-            node_id: nodeIds.tool(currentIteration, name),
-            name,
-            args: projectArgs(name, input),
-            result_summary: `error: ${String(error)}`.slice(0, 160),
-            duration_ms: Date.now() - started,
-            attempt,
-          });
-          throw error;
-        }
-      },
-    ]),
-  ) as unknown as ToolExecutors;
+  const tracedExecutors = traceToolExecutors({
+    writer,
+    executors: options.executors,
+    iteration: () => currentIteration,
+    traceArgs: options.traceArgs,
+  });
 
   const runStarted = Date.now();
   const driver = DRIVERS[driverName]({
