@@ -36,6 +36,7 @@ import { VERSION as SDK_VERSION } from "@anthropic-ai/sdk/version";
 import {
   DEFAULT_MODEL,
   DedupeLedger,
+  InMemoryStore,
   MEMORY_STORE_NAMES,
   PROMPT_VERSION,
   RunStateMachine,
@@ -73,12 +74,13 @@ import {
   type VendorProfile,
   type VendorProfileUpdate,
 } from "@novagait/agent";
-import type {
+import {
   MockBackend,
-  PurchaseOrder,
-  ReceivingRecord,
+  type PurchaseOrder,
+  type ReceivingRecord,
 } from "@novagait/mock-backend";
 import { buildExecutor, type DraftExecution } from "./execute";
+import { runMockPipeline } from "./mock-agent";
 import { decideRoute, matchInvoice, type MatchResult } from "./match";
 
 /** Route severity, mirroring guardrails.ts. Code may escalate, never soften. */
@@ -848,12 +850,25 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
     return parsed.success ? parsed.data : null;
   };
 
+  // A short-circuited run is already complete and its run.end is written. If
+  // a driver calls the model anyway, the executors must not append events
+  // after the end of the trace.
+  const guarded: ToolExecutors = shortCircuit
+    ? (Object.fromEntries(
+        Object.keys(executors).map((name) => [
+          name,
+          async () =>
+            refuse("run already terminated by GR-SCOPE before the model ran"),
+        ]),
+      ) as unknown as ToolExecutors)
+    : executors;
+
   return {
     runId: writer.runId,
     store,
     writer,
     machine,
-    executors,
+    executors: guarded,
     userMessage: buildUserMessage(item.fixture, text, options.note),
     model,
     inputRef: item.fixture,
@@ -1021,5 +1036,165 @@ export async function runLivePipeline(
     model: run.model,
     iterations: result.iterations,
     totalCostMicroUsd: result.totalCostMicroUsd,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Eval seam (LOT-105). The matrix driver batches one model turn at a time, so
+// it cannot use runWorkflow; it drives the executors itself. This factory
+// gives it a per-case session with the run boundaries already handled.
+//
+// The graded projection is INJECTED rather than implemented here: it lives in
+// evals/runner/src/outcome.ts, the product cannot depend on the eval package,
+// and a second copy in the product is exactly the drift that would make live
+// results incomparable to the replay cassettes.
+// ---------------------------------------------------------------------------
+
+/** The shape of a golden case this module needs. `GoldenCase` satisfies it. */
+export interface LiveCaseInput {
+  id: string;
+  input: { fixture: string };
+}
+
+export interface LiveOutcomeContext {
+  runId: string;
+  store: Store;
+  backend: MockBackend;
+  /** The disposed route, for the caller's GR-SCOPE `decision` fallback. */
+  route: Decision | null;
+  outcome: RunOutcome;
+}
+
+export interface CaseUsageTotals {
+  total_cost_micro_usd?: number;
+  input_tokens?: number;
+  output_tokens?: number;
+  cache_creation_input_tokens?: number;
+  cache_read_input_tokens?: number;
+  iteration_count?: number;
+}
+
+/**
+ * Cases whose expected behaviour depends on a PRIOR run's ERP state, mirroring
+ * cassettes/record.ts PRE_SEED_RUNS. INV-010 holds on GR-DUP only because
+ * INV-001 posted its invoice to the ledger first; the predecessor is set-up,
+ * not measurement, so it runs through the deterministic pipeline.
+ */
+export const LIVE_PRE_SEED_RUNS: Readonly<Record<string, readonly string[]>> = {
+  "INV-010": ["INV-001"],
+};
+
+export interface CreateLivePipelineOptions<TOutcome> {
+  /** Seed the ERP and enqueue each case's fixture. Default true. */
+  seedFixtures?: boolean;
+  /** Project the finished run into the caller's graded view. */
+  toOutcome: (context: LiveOutcomeContext) => Promise<TOutcome>;
+  /** Resolve a pre-seed predecessor id to its case. Required for A5 ordering. */
+  resolveCase?: (caseId: string) => LiveCaseInput | undefined;
+  preSeed?: Readonly<Record<string, readonly string[]>>;
+}
+
+export interface LiveCaseSession<TOutcome> extends LiveRun {
+  backend: MockBackend;
+  /** True when GR-SCOPE ended the run before the model: DO NOT call the model. */
+  shortCircuited: boolean;
+  /** Finalize, write run.end, then project. Idempotent. */
+  toOutcome(totals?: CaseUsageTotals): Promise<TOutcome>;
+}
+
+export interface LiveCasePipeline<TOutcome> {
+  openCase(
+    goldenCase: LiveCaseInput,
+    options: { mode: RunMode; model: string },
+  ): Promise<LiveCaseSession<TOutcome>>;
+}
+
+const EVAL_ENQUEUED_AT = "2026-08-10T00:00:00.000Z";
+const evalItemId = (caseId: string) => `EVAL-${caseId}`;
+
+export function createLivePipeline<TOutcome>(
+  options: CreateLivePipelineOptions<TOutcome>,
+): LiveCasePipeline<TOutcome> {
+  const preSeed = options.preSeed ?? LIVE_PRE_SEED_RUNS;
+  const seed = options.seedFixtures !== false;
+
+  return {
+    async openCase(goldenCase, caseOptions) {
+      // A store per case, exactly as the recorder does. Lanes run dozens of
+      // cases concurrently; one shared store would leak the dedupe ledger and
+      // the ERP ledger across cases and fire GR-DUP on cases that are not
+      // duplicates.
+      const store: Store = new InMemoryStore();
+      const backend = new MockBackend(store);
+      if (seed) await backend.seed();
+
+      for (const predecessorId of preSeed[goldenCase.id] ?? []) {
+        const predecessor = options.resolveCase?.(predecessorId);
+        if (!predecessor) {
+          throw new Error(
+            `${goldenCase.id}: pre-seed case ${predecessorId} could not be resolved; ` +
+              "pass resolveCase to createLivePipeline",
+          );
+        }
+        await backend.enqueueInboxItem({
+          id: evalItemId(predecessor.id),
+          fixture: predecessor.input.fixture,
+          received_at: EVAL_ENQUEUED_AT,
+        });
+        await runMockPipeline({
+          store,
+          backend,
+          inboxItemId: evalItemId(predecessor.id),
+          mode: "autonomous",
+        });
+      }
+
+      await backend.enqueueInboxItem({
+        id: evalItemId(goldenCase.id),
+        fixture: goldenCase.input.fixture,
+        received_at: EVAL_ENQUEUED_AT,
+      });
+
+      const run = await openLiveRun({
+        store,
+        backend,
+        inboxItemId: evalItemId(goldenCase.id),
+        mode: caseOptions.mode,
+        model: caseOptions.model,
+      });
+
+      // run.start belongs to the run, not to the driver: without runWorkflow
+      // nothing else would write it. The short-circuit path wrote its own
+      // boundaries already.
+      if (!run.shortCircuit) await run.writeRunStart();
+      let projected: TOutcome | null = null;
+
+      return {
+        ...run,
+        backend,
+        shortCircuited: run.shortCircuit !== null,
+        async toOutcome(totals: CaseUsageTotals = {}) {
+          if (projected !== null) return projected;
+          const disposition = run.shortCircuit ?? (await run.finalize());
+          if (!run.shortCircuit) {
+            // terminal_state is read from run.end; on this path the driver
+            // owns the loop, so this is the only thing that writes it.
+            await run.writeRunEnd({
+              outcome: disposition.outcome,
+              failure_code: disposition.failureCode,
+              ...totals,
+            });
+          }
+          projected = await options.toOutcome({
+            runId: run.runId,
+            store,
+            backend,
+            route: disposition.route,
+            outcome: disposition.outcome,
+          });
+          return projected;
+        },
+      };
+    },
   };
 }

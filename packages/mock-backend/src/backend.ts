@@ -203,6 +203,33 @@ export class MockBackend {
     return items.find((item) => item.id === id) ?? null;
   }
 
+  /**
+   * Append one document to the inbox index. The demo inbox is seeded, so
+   * nothing in the product enqueues; the eval lanes do, one fixture per
+   * case, and they should not be reaching around the backend to write
+   * `inbox:items` by hand to do it. Duplicate ids are refused so a
+   * mis-ordered pre-seed fails loudly instead of shadowing a case.
+   */
+  async enqueueInboxItem(item: {
+    id: string;
+    fixture: string;
+    received_at?: string;
+  }): Promise<InboxItem> {
+    const items = (await this.readJson<InboxItem[]>(KEYS.inbox)) ?? [];
+    if (items.some((candidate) => candidate.id === item.id)) {
+      throw new Error(`inbox item already enqueued: ${item.id}`);
+    }
+    const enqueued: InboxItem = {
+      id: item.id,
+      fixture: item.fixture,
+      received_at: item.received_at ?? new Date().toISOString(),
+      state: "new",
+    };
+    items.push(enqueued);
+    await this.writeJson(KEYS.inbox, items);
+    return enqueued;
+  }
+
   async setInboxState(id: string, state: InboxItem["state"]): Promise<void> {
     await this.friction();
     const items = (await this.readJson<InboxItem[]>(KEYS.inbox)) ?? [];

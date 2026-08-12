@@ -19,7 +19,7 @@ import {
 } from "@novagait/agent";
 import { MockBackend } from "@novagait/mock-backend";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openLiveRun, runLivePipeline } from "./live-agent";
+import { createLivePipeline, openLiveRun, runLivePipeline } from "./live-agent";
 import { runMockPipeline } from "./mock-agent";
 import { parseFixture } from "./parse";
 
@@ -724,5 +724,178 @@ describe("mock lane isolation", () => {
     expect(result.outcome).toBe("executed");
     expect(fetchSpy).not.toHaveBeenCalled();
     fetchSpy.mockRestore();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The LOT-105 eval seam
+// ---------------------------------------------------------------------------
+
+describe("createLivePipeline", () => {
+  const CASES = {
+    "INV-001": {
+      id: "INV-001",
+      input: { fixture: "inbox/2026-08-03-corvida-monthly.md" },
+    },
+    "INV-010": {
+      id: "INV-010",
+      input: { fixture: "inbox/2026-08-08-corvida-monthly-dup.md" },
+    },
+    "INV-015": {
+      id: "INV-015",
+      input: { fixture: "inbox/2026-08-10-wellness-newsletter.md" },
+    },
+  } as const;
+
+  // Stands in for the driver's projection: the fields A3 calls load-bearing,
+  // read the way evals/runner/src/outcome.ts reads them.
+  const project = async (context: {
+    runId: string;
+    store: Store;
+    route: string | null;
+    outcome: string;
+  }) => {
+    const trace = await readTrace(context.store, context.runId);
+    const end = trace.find((event) => event.type === "run.end") as
+      Extract<TraceEvent, { type: "run.end" }> | undefined;
+    const draft = trace.find(
+      (event) => event.type === "tool.call" && event.name === "draft_action",
+    ) as Extract<TraceEvent, { type: "tool.call" }> | undefined;
+    return {
+      run_id: context.runId,
+      decision: (draft?.args.route as string | null) ?? context.route,
+      guardrails_fired: blockedRules(trace),
+      terminal_state: end?.outcome ?? "error",
+      run_end_events: trace.filter((event) => event.type === "run.end").length,
+      tool_calls: toolNames(trace),
+    };
+  };
+
+  const factory = () =>
+    createLivePipeline({
+      seedFixtures: true,
+      toOutcome: project,
+      resolveCase: (id) => CASES[id as keyof typeof CASES],
+    });
+
+  it("gives every case its own store and seeded backend", async () => {
+    const pipeline = factory();
+    const a = await pipeline.openCase(CASES["INV-001"], {
+      mode: "autonomous",
+      model: MODEL,
+    });
+    const b = await pipeline.openCase(CASES["INV-001"], {
+      mode: "autonomous",
+      model: MODEL,
+    });
+    expect(a.store).not.toBe(b.store);
+    expect(a.runId).not.toBe(b.runId);
+    // Case A claims the digest; case B must still see itself as first.
+    await a.executors.check_duplicate({
+      vendor_id: "V-001",
+      invoice_number: "CB-2026-0803",
+      content_digest: "x",
+    });
+    const seen = JSON.parse(
+      await b.executors.check_duplicate({
+        vendor_id: "V-001",
+        invoice_number: "CB-2026-0803",
+        content_digest: "x",
+      }),
+    );
+    expect(seen.duplicate).toBe(false);
+  });
+
+  it("pre-seeds the predecessor run so GR-DUP has ledger history (A5)", async () => {
+    const session = await factory().openCase(CASES["INV-010"], {
+      mode: "autonomous",
+      model: MODEL,
+    });
+    // The predecessor posted to the ERP before this case opened.
+    expect((await session.backend.ledgerEntries()).length).toBeGreaterThan(0);
+    const { extraction } = await (async () => {
+      const text = await session.backend.readFixture(
+        CASES["INV-010"].input.fixture,
+      );
+      const vendors = await session.backend.listVendors();
+      return { extraction: parseFixture(text, vendors) };
+    })();
+    await session.executors.draft_action(
+      draftInput(extraction, "auto_approve") as never,
+    );
+    const outcome = await session.toOutcome();
+    expect(outcome.guardrails_fired).toContain("GR-DUP");
+    expect(outcome.decision).toBe("exception_hold");
+    expect(outcome.terminal_state).toBe("held");
+  });
+
+  it("writes run.start and exactly one run.end around the driver's loop (A3)", async () => {
+    const session = await factory().openCase(CASES["INV-001"], {
+      mode: "assisted",
+      model: MODEL,
+    });
+    const text = await session.backend.readFixture(
+      CASES["INV-001"].input.fixture,
+    );
+    const extraction = parseFixture(text, await session.backend.listVendors());
+    await session.executors.draft_action(
+      draftInput(extraction, "auto_approve") as never,
+    );
+    const outcome = await session.toOutcome({
+      total_cost_micro_usd: 12_345,
+      iteration_count: 4,
+    });
+    expect(outcome.terminal_state).toBe("awaiting_approval");
+    expect(outcome.run_end_events).toBe(1);
+    const trace = await readTrace(session.store, session.runId);
+    const start = trace.find((event) => event.type === "run.start") as Extract<
+      TraceEvent,
+      { type: "run.start" }
+    >;
+    expect(start.model).toBe(MODEL);
+    const end = trace.find((event) => event.type === "run.end") as Extract<
+      TraceEvent,
+      { type: "run.end" }
+    >;
+    expect(end.total_cost_micro_usd).toBe(12_345);
+    expect(end.iteration_count).toBe(4);
+    // Idempotent: a second call must not append a second run.end.
+    await session.toOutcome();
+    expect(
+      (await readTrace(session.store, session.runId)).filter(
+        (event) => event.type === "run.end",
+      ),
+    ).toHaveLength(1);
+  });
+
+  it("marks a GR-SCOPE case short-circuited and refuses its executors", async () => {
+    const session = await factory().openCase(CASES["INV-015"], {
+      mode: "autonomous",
+      model: MODEL,
+    });
+    expect(session.shortCircuited).toBe(true);
+    const refusal = JSON.parse(
+      await session.executors.kb_search({ query: "anything" }),
+    );
+    expect(refusal.error).toMatch(/GR-SCOPE/);
+    const outcome = await session.toOutcome();
+    expect(outcome.decision).toBe("reject");
+    expect(outcome.terminal_state).toBe("rejected");
+    expect(outcome.guardrails_fired).toEqual(["GR-SCOPE"]);
+    expect(outcome.run_end_events).toBe(1);
+    expect(outcome.tool_calls).toEqual(["draft_action"]);
+  });
+
+  it("names the missing lookup when a pre-seed case cannot be resolved", async () => {
+    const pipeline = createLivePipeline({
+      seedFixtures: true,
+      toOutcome: project,
+    });
+    await expect(
+      pipeline.openCase(CASES["INV-010"], {
+        mode: "autonomous",
+        model: MODEL,
+      }),
+    ).rejects.toThrow(/pass resolveCase/);
   });
 });
