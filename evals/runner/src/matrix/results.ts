@@ -111,7 +111,9 @@ export function laneDivergence(args: {
   fallback?: (runId: string) => string | null;
 }): number | null {
   const decisions = new Map(
-    args.outcomes.map((outcome) => [outcome.case_id, outcome.decision] as const),
+    args.outcomes.map(
+      (outcome) => [outcome.case_id, outcome.decision] as const,
+    ),
   );
   const proposals = args.records
     .filter((record) => record.lane === args.lane)
@@ -235,14 +237,18 @@ export function renderMatrixTable(rows: MatrixRow[]): string {
     .map(
       (row) =>
         `- **OUTPUT CAP, \`${row.model}\` ${row.mode}: ${row.output_capped_runs} of ` +
-        `${row.cases} runs ended on the output-token cap** with no completed ` +
-        "`draft_action`. Those runs grade as failures for running out of room, " +
-        "not for judgement, so this row measures the model UNDER THAT CAP and " +
-        "is not a clean capability comparison against a row that did not truncate.",
+        `${row.cases} runs ended on the output-token cap.** A capped run is cut ` +
+        "off mid-turn, and one cut off inside its `draft_action` reaches no " +
+        "disposition at all, so it grades as a failure for running out of room " +
+        "rather than for judgement. This row measures the model UNDER THAT CAP " +
+        "and is not a clean capability comparison against a row that did not " +
+        "truncate.",
     );
-  return [...header, ...body, ...(capped.length > 0 ? ["", ...capped] : [])].join(
-    "\n",
-  );
+  return [
+    ...header,
+    ...body,
+    ...(capped.length > 0 ? ["", ...capped] : []),
+  ].join("\n");
 }
 
 export async function loadBaseline(path: string): Promise<EvalSummary | null> {

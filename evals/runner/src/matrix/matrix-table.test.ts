@@ -26,7 +26,7 @@ const row = (over: Partial<MatrixRow> = {}): MatrixRow => ({
 test("a truncated lane carries the output-cap caveat with the table", () => {
   const rendered = renderMatrixTable([row()]);
   expect(rendered).toContain("OUTPUT CAP");
-  expect(rendered).toContain("27 of 73 runs ended on the output-token cap");
+  expect(rendered).toContain("27 of 73 runs ended on the output-token cap.");
   expect(rendered.indexOf("OUTPUT CAP")).toBeGreaterThan(
     rendered.indexOf("claude-opus-5"),
   );

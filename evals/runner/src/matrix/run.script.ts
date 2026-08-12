@@ -348,12 +348,17 @@ test("LOT-105 live matrix", async () => {
     const capped = laneRecords.filter(
       (record) => record.stop_reason === "max_tokens",
     ).length;
+    const shortCircuit = laneRecords.filter(
+      (record) => record.short_circuit,
+    ).length;
     notes.push(
       `${key}: ${captured} of ${laneRecords.length} cases carry a traced model ` +
         `proposal, so the divergence figure is a measurement over ${captured} ` +
-        `cases, not over the lane. ${undisposed} run(s) reached no disposition ` +
-        `at all and ${capped} ended on the ${DEFAULT_MAX_TOKENS}-token output ` +
-        "cap, which is where most of the missing proposals went.",
+        "cases, not over the lane. Of the rest, " +
+        `${shortCircuit} short-circuited before any model turn (GR-SCOPE), ` +
+        `${undisposed} reached no disposition at all, and ${capped} ended on ` +
+        `the ${DEFAULT_MAX_TOKENS}-token output cap. Those groups overlap; ` +
+        "they are counted, not apportioned.",
     );
   }
 
@@ -422,6 +427,25 @@ test("LOT-105 live matrix", async () => {
   // placeholder carries zeroes, and rendering it unconditionally published the
   // sentence "breaker lifted to $0.00 and wall clock to 0s" - a measurement
   // claim about a lane that never executed.
+  // A partial matrix must announce itself in the artifact, not only in a
+  // hand-written log beside it. Both stops this run hit (credit exhaustion,
+  // then a workspace usage limit) left lanes missing, and a reader who opens
+  // README.md and sees three tidy rows has no way to know six were intended.
+  const expectedLanes = lanes.map(laneKey);
+  const presentLanes = expectedLanes.filter((key) => outcomesByLane.has(key));
+  if (presentLanes.length < expectedLanes.length) {
+    notes.push(
+      `INCOMPLETE MATRIX: ${presentLanes.length} of ${expectedLanes.length} ` +
+        "lanes are present. Missing: " +
+        expectedLanes
+          .filter((key) => !presentLanes.includes(key))
+          .map((key) => `\`${key}\``)
+          .join(", ") +
+        ". This is not a release verdict, and no cross-tier comparison here " +
+        "is complete. RUN-LOG.md says why each lane is absent.",
+    );
+  }
+
   notes.push(
     latency.samples.length > 0
       ? `Latency overrides: per-run breaker lifted to $${(latency.overrides.max_cost_micro_usd / 1_000_000).toFixed(2)} ` +

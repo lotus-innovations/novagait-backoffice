@@ -20,7 +20,8 @@
       "p50_latency_ms": null,
       "p95_latency_ms": null,
       "mean_iterations": 5.794520547945205,
-      "model_policy_divergence": 0
+      "model_policy_divergence": 0,
+      "output_capped_runs": 0
     },
     {
       "model": "claude-haiku-4-5",
@@ -35,7 +36,8 @@
       "p50_latency_ms": null,
       "p95_latency_ms": null,
       "mean_iterations": 5.397260273972603,
-      "model_policy_divergence": 0
+      "model_policy_divergence": 4,
+      "output_capped_runs": 1
     },
     {
       "model": "claude-opus-5",
@@ -50,7 +52,8 @@
       "p50_latency_ms": null,
       "p95_latency_ms": null,
       "mean_iterations": 4.958904109589041,
-      "model_policy_divergence": 0
+      "model_policy_divergence": 4,
+      "output_capped_runs": 30
     }
   ],
   "lanes": [
@@ -3085,24 +3088,26 @@
     "pricing_verified_on": "2026-08-11",
     "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
     "totals": {
-      "cost_usd": 19.025789400000008,
+      "cost_usd": 20.028559900000015,
       "by_lane": {
         "claude-haiku-4-5:uncached": 3.8054560000000053,
         "claude-haiku-4-5:cached": 2.222765399999999,
         "claude-sonnet-5:uncached": 0.19199800000000003,
         "claude-opus-5:uncached": 9.810469999999993,
-        "claude-opus-5:cached": 1.5238105,
-        "unrecorded:swept": 1.4712895
+        "claude-opus-5:cached": 2.5224840000000004,
+        "unrecorded:swept": 1.4753735000000001,
+        "credit-probe": 0.000013
       },
       "by_model": {
-        "claude-haiku-4-5": 6.044637400000014,
-        "claude-sonnet-5": 1.3563835,
-        "claude-opus-5": 11.6247685
+        "claude-haiku-4-5": 6.044650400000014,
+        "claude-sonnet-5": 1.3604675000000002,
+        "claude-opus-5": 12.623441999999997
       },
       "by_channel": {
-        "batch": 19.025789400000008
+        "batch": 20.028546900000016,
+        "interactive": 0.000013
       },
-      "entries": 2440
+      "entries": 2595
     },
     "entries": [
       {
@@ -44584,6 +44589,2641 @@
         },
         "cost_usd": 0.0311525,
         "recorded_at": "2026-08-12T20:46:03.549Z"
+      },
+      {
+        "key": "credit-probe-2026-08-12",
+        "lane": "credit-probe",
+        "model": "claude-haiku-4-5",
+        "channel": "interactive",
+        "write_ttl": null,
+        "case_id": null,
+        "round": null,
+        "usage": {
+          "input_tokens": 8,
+          "output_tokens": 1,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.000013,
+        "recorded_at": "2026-08-12T00:00:00.000Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-005",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-005",
+        "round": 0,
+        "usage": {
+          "input_tokens": 268,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003833,
+        "recorded_at": "2026-08-12T21:45:07.765Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-002",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-002",
+        "round": 0,
+        "usage": {
+          "input_tokens": 375,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004113,
+        "recorded_at": "2026-08-12T21:45:07.786Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-007",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-007",
+        "round": 0,
+        "usage": {
+          "input_tokens": 253,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0038205,
+        "recorded_at": "2026-08-12T21:45:07.796Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-016",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-016",
+        "round": 0,
+        "usage": {
+          "input_tokens": 384,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004123,
+        "recorded_at": "2026-08-12T21:45:07.817Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-014",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-014",
+        "round": 0,
+        "usage": {
+          "input_tokens": 261,
+          "output_tokens": 147,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0039155,
+        "recorded_at": "2026-08-12T21:45:07.823Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-017",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-017",
+        "round": 0,
+        "usage": {
+          "input_tokens": 390,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004138,
+        "recorded_at": "2026-08-12T21:45:07.830Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-010",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-010",
+        "round": 0,
+        "usage": {
+          "input_tokens": 368,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004083,
+        "recorded_at": "2026-08-12T21:45:07.834Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-012",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-012",
+        "round": 0,
+        "usage": {
+          "input_tokens": 347,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004043,
+        "recorded_at": "2026-08-12T21:45:07.838Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-008",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-008",
+        "round": 0,
+        "usage": {
+          "input_tokens": 293,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0038955,
+        "recorded_at": "2026-08-12T21:45:07.841Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-003",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-003",
+        "round": 0,
+        "usage": {
+          "input_tokens": 305,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0039255,
+        "recorded_at": "2026-08-12T21:45:07.844Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-011",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-011",
+        "round": 0,
+        "usage": {
+          "input_tokens": 331,
+          "output_tokens": 174,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004428,
+        "recorded_at": "2026-08-12T21:45:07.847Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-013",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-013",
+        "round": 0,
+        "usage": {
+          "input_tokens": 281,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0038655,
+        "recorded_at": "2026-08-12T21:45:07.850Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-004",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-004",
+        "round": 0,
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 181,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0043705,
+        "recorded_at": "2026-08-12T21:45:07.853Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-006",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-006",
+        "round": 0,
+        "usage": {
+          "input_tokens": 265,
+          "output_tokens": 146,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003913,
+        "recorded_at": "2026-08-12T21:45:07.857Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-001",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-001",
+        "round": 0,
+        "usage": {
+          "input_tokens": 394,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004148,
+        "recorded_at": "2026-08-12T21:45:07.859Z"
+      },
+      {
+        "key": "msgbatch_01KaXqAYHC1qTu3PuBkJExeS:INV-009",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-009",
+        "round": 0,
+        "usage": {
+          "input_tokens": 262,
+          "output_tokens": 142,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0038555,
+        "recorded_at": "2026-08-12T21:45:07.862Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-028",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-028",
+        "round": 0,
+        "usage": {
+          "input_tokens": 318,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003958,
+        "recorded_at": "2026-08-12T21:47:30.870Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-024",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-024",
+        "round": 0,
+        "usage": {
+          "input_tokens": 366,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004078,
+        "recorded_at": "2026-08-12T21:47:30.886Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-023",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-023",
+        "round": 0,
+        "usage": {
+          "input_tokens": 450,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004313,
+        "recorded_at": "2026-08-12T21:47:30.895Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-022",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-022",
+        "round": 0,
+        "usage": {
+          "input_tokens": 451,
+          "output_tokens": 149,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0044155,
+        "recorded_at": "2026-08-12T21:47:30.903Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-019",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-019",
+        "round": 0,
+        "usage": {
+          "input_tokens": 370,
+          "output_tokens": 137,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004063,
+        "recorded_at": "2026-08-12T21:47:30.913Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-025",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-025",
+        "round": 0,
+        "usage": {
+          "input_tokens": 340,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040255,
+        "recorded_at": "2026-08-12T21:47:30.919Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-027",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-027",
+        "round": 0,
+        "usage": {
+          "input_tokens": 410,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004213,
+        "recorded_at": "2026-08-12T21:47:30.922Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-026",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-026",
+        "round": 0,
+        "usage": {
+          "input_tokens": 423,
+          "output_tokens": 148,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004333,
+        "recorded_at": "2026-08-12T21:47:30.926Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-018",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-018",
+        "round": 0,
+        "usage": {
+          "input_tokens": 354,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040605,
+        "recorded_at": "2026-08-12T21:47:30.929Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-032",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-032",
+        "round": 0,
+        "usage": {
+          "input_tokens": 370,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004088,
+        "recorded_at": "2026-08-12T21:47:30.932Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-031",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-031",
+        "round": 0,
+        "usage": {
+          "input_tokens": 441,
+          "output_tokens": 147,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0043655,
+        "recorded_at": "2026-08-12T21:47:30.935Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-030",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-030",
+        "round": 0,
+        "usage": {
+          "input_tokens": 304,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003923,
+        "recorded_at": "2026-08-12T21:47:30.938Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-033",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-033",
+        "round": 0,
+        "usage": {
+          "input_tokens": 428,
+          "output_tokens": 148,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0043455,
+        "recorded_at": "2026-08-12T21:47:30.941Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-029",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-029",
+        "round": 0,
+        "usage": {
+          "input_tokens": 427,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0042305,
+        "recorded_at": "2026-08-12T21:47:30.943Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-020",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-020",
+        "round": 0,
+        "usage": {
+          "input_tokens": 394,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004148,
+        "recorded_at": "2026-08-12T21:47:30.946Z"
+      },
+      {
+        "key": "msgbatch_019phZA8W1ULcaRgAa7WQ7Gb:INV-021",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-021",
+        "round": 0,
+        "usage": {
+          "input_tokens": 399,
+          "output_tokens": 194,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004848,
+        "recorded_at": "2026-08-12T21:47:30.948Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-041",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-041",
+        "round": 0,
+        "usage": {
+          "input_tokens": 314,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003948,
+        "recorded_at": "2026-08-12T21:49:13.791Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-043",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-043",
+        "round": 0,
+        "usage": {
+          "input_tokens": 308,
+          "output_tokens": 151,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004083,
+        "recorded_at": "2026-08-12T21:49:13.805Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-036",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-036",
+        "round": 0,
+        "usage": {
+          "input_tokens": 364,
+          "output_tokens": 150,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0042105,
+        "recorded_at": "2026-08-12T21:49:13.817Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-038",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-038",
+        "round": 0,
+        "usage": {
+          "input_tokens": 334,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040105,
+        "recorded_at": "2026-08-12T21:49:13.825Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-049",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-049",
+        "round": 0,
+        "usage": {
+          "input_tokens": 340,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040255,
+        "recorded_at": "2026-08-12T21:49:13.830Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-035",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-035",
+        "round": 0,
+        "usage": {
+          "input_tokens": 421,
+          "output_tokens": 242,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.005503,
+        "recorded_at": "2026-08-12T21:49:13.835Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-037",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-037",
+        "round": 0,
+        "usage": {
+          "input_tokens": 344,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004048,
+        "recorded_at": "2026-08-12T21:49:13.839Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-046",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-046",
+        "round": 0,
+        "usage": {
+          "input_tokens": 315,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0039755,
+        "recorded_at": "2026-08-12T21:49:13.843Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-040",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-040",
+        "round": 0,
+        "usage": {
+          "input_tokens": 328,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004008,
+        "recorded_at": "2026-08-12T21:49:13.846Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-047",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-047",
+        "round": 0,
+        "usage": {
+          "input_tokens": 282,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003868,
+        "recorded_at": "2026-08-12T21:49:13.849Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-045",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-045",
+        "round": 0,
+        "usage": {
+          "input_tokens": 332,
+          "output_tokens": 155,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004193,
+        "recorded_at": "2026-08-12T21:49:13.852Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-042",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-042",
+        "round": 0,
+        "usage": {
+          "input_tokens": 358,
+          "output_tokens": 145,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004133,
+        "recorded_at": "2026-08-12T21:49:13.855Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-048",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-048",
+        "round": 0,
+        "usage": {
+          "input_tokens": 300,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003913,
+        "recorded_at": "2026-08-12T21:49:13.858Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-039",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-039",
+        "round": 0,
+        "usage": {
+          "input_tokens": 380,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004138,
+        "recorded_at": "2026-08-12T21:49:13.861Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-044",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-044",
+        "round": 0,
+        "usage": {
+          "input_tokens": 342,
+          "output_tokens": 210,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0049055,
+        "recorded_at": "2026-08-12T21:49:13.863Z"
+      },
+      {
+        "key": "msgbatch_01ReN9NZi1Bhj9wY2wtsAxyh:INV-034",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-034",
+        "round": 0,
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 148,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0043955,
+        "recorded_at": "2026-08-12T21:49:13.866Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-063",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-063",
+        "round": 0,
+        "usage": {
+          "input_tokens": 401,
+          "output_tokens": 165,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0044905,
+        "recorded_at": "2026-08-12T21:51:57.346Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-054",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-054",
+        "round": 0,
+        "usage": {
+          "input_tokens": 364,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004098,
+        "recorded_at": "2026-08-12T21:51:57.362Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-061",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-061",
+        "round": 0,
+        "usage": {
+          "input_tokens": 341,
+          "output_tokens": 234,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.005203,
+        "recorded_at": "2026-08-12T21:51:57.374Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-060",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-060",
+        "round": 0,
+        "usage": {
+          "input_tokens": 422,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004218,
+        "recorded_at": "2026-08-12T21:51:57.382Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-052",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-052",
+        "round": 0,
+        "usage": {
+          "input_tokens": 353,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004058,
+        "recorded_at": "2026-08-12T21:51:57.386Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-062",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-062",
+        "round": 0,
+        "usage": {
+          "input_tokens": 379,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004123,
+        "recorded_at": "2026-08-12T21:51:57.391Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-065",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-065",
+        "round": 0,
+        "usage": {
+          "input_tokens": 342,
+          "output_tokens": 148,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0041305,
+        "recorded_at": "2026-08-12T21:51:57.394Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-058",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-058",
+        "round": 0,
+        "usage": {
+          "input_tokens": 331,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0039905,
+        "recorded_at": "2026-08-12T21:51:57.398Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-057",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-057",
+        "round": 0,
+        "usage": {
+          "input_tokens": 417,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0042305,
+        "recorded_at": "2026-08-12T21:51:57.402Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-056",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-056",
+        "round": 0,
+        "usage": {
+          "input_tokens": 337,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040305,
+        "recorded_at": "2026-08-12T21:51:57.405Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-051",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-051",
+        "round": 0,
+        "usage": {
+          "input_tokens": 393,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004158,
+        "recorded_at": "2026-08-12T21:51:57.408Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-059",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-059",
+        "round": 0,
+        "usage": {
+          "input_tokens": 351,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040405,
+        "recorded_at": "2026-08-12T21:51:57.411Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-053",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-053",
+        "round": 0,
+        "usage": {
+          "input_tokens": 293,
+          "output_tokens": 145,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0039705,
+        "recorded_at": "2026-08-12T21:51:57.413Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-064",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-064",
+        "round": 0,
+        "usage": {
+          "input_tokens": 482,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004368,
+        "recorded_at": "2026-08-12T21:51:57.417Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-055",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-055",
+        "round": 0,
+        "usage": {
+          "input_tokens": 393,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0041705,
+        "recorded_at": "2026-08-12T21:51:57.421Z"
+      },
+      {
+        "key": "msgbatch_01MJ1pEFkBvjtGPnUm4cboAZ:INV-050",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-050",
+        "round": 0,
+        "usage": {
+          "input_tokens": 348,
+          "output_tokens": 145,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004108,
+        "recorded_at": "2026-08-12T21:51:57.423Z"
+      },
+      {
+        "key": "msgbatch_01D73LV6R16ShXfNfNVgQnD6:INV-068",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-068",
+        "round": 0,
+        "usage": {
+          "input_tokens": 373,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0041205,
+        "recorded_at": "2026-08-12T21:53:19.429Z"
+      },
+      {
+        "key": "msgbatch_01D73LV6R16ShXfNfNVgQnD6:INV-066",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-066",
+        "round": 0,
+        "usage": {
+          "input_tokens": 315,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003963,
+        "recorded_at": "2026-08-12T21:53:19.442Z"
+      },
+      {
+        "key": "msgbatch_01D73LV6R16ShXfNfNVgQnD6:INV-067",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-067",
+        "round": 0,
+        "usage": {
+          "input_tokens": 303,
+          "output_tokens": 142,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003958,
+        "recorded_at": "2026-08-12T21:53:19.454Z"
+      },
+      {
+        "key": "msgbatch_01D73LV6R16ShXfNfNVgQnD6:INV-069",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-069",
+        "round": 0,
+        "usage": {
+          "input_tokens": 264,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.003848,
+        "recorded_at": "2026-08-12T21:53:19.461Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-007",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-007",
+        "round": 1,
+        "usage": {
+          "input_tokens": 706,
+          "output_tokens": 271,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006578,
+        "recorded_at": "2026-08-12T21:56:23.235Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-006",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-006",
+        "round": 1,
+        "usage": {
+          "input_tokens": 985,
+          "output_tokens": 227,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0067255,
+        "recorded_at": "2026-08-12T21:56:23.253Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-002",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-002",
+        "round": 1,
+        "usage": {
+          "input_tokens": 869,
+          "output_tokens": 241,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0066105,
+        "recorded_at": "2026-08-12T21:56:23.272Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-003",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-003",
+        "round": 1,
+        "usage": {
+          "input_tokens": 743,
+          "output_tokens": 312,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007183,
+        "recorded_at": "2026-08-12T21:56:23.277Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-016",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-016",
+        "round": 1,
+        "usage": {
+          "input_tokens": 819,
+          "output_tokens": 264,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006773,
+        "recorded_at": "2026-08-12T21:56:23.281Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-004",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-004",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1044,
+          "output_tokens": 168,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0061355,
+        "recorded_at": "2026-08-12T21:56:23.285Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-014",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-014",
+        "round": 1,
+        "usage": {
+          "input_tokens": 645,
+          "output_tokens": 183,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0053255,
+        "recorded_at": "2026-08-12T21:56:23.289Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-010",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-010",
+        "round": 1,
+        "usage": {
+          "input_tokens": 869,
+          "output_tokens": 230,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006473,
+        "recorded_at": "2026-08-12T21:56:23.292Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-013",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-013",
+        "round": 1,
+        "usage": {
+          "input_tokens": 720,
+          "output_tokens": 232,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0061255,
+        "recorded_at": "2026-08-12T21:56:23.296Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-012",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-012",
+        "round": 1,
+        "usage": {
+          "input_tokens": 763,
+          "output_tokens": 217,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0060455,
+        "recorded_at": "2026-08-12T21:56:23.299Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-011",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-011",
+        "round": 1,
+        "usage": {
+          "input_tokens": 807,
+          "output_tokens": 254,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006618,
+        "recorded_at": "2026-08-12T21:56:23.301Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-017",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-017",
+        "round": 1,
+        "usage": {
+          "input_tokens": 825,
+          "output_tokens": 254,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006663,
+        "recorded_at": "2026-08-12T21:56:23.305Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-008",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-008",
+        "round": 1,
+        "usage": {
+          "input_tokens": 731,
+          "output_tokens": 270,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006628,
+        "recorded_at": "2026-08-12T21:56:23.309Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-001",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-001",
+        "round": 1,
+        "usage": {
+          "input_tokens": 829,
+          "output_tokens": 238,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006473,
+        "recorded_at": "2026-08-12T21:56:23.312Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-005",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-005",
+        "round": 1,
+        "usage": {
+          "input_tokens": 702,
+          "output_tokens": 240,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0061805,
+        "recorded_at": "2026-08-12T21:56:23.314Z"
+      },
+      {
+        "key": "msgbatch_01VsKe4K1ssaH3UjwouGoNAp:INV-009",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-009",
+        "round": 1,
+        "usage": {
+          "input_tokens": 679,
+          "output_tokens": 218,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.005848,
+        "recorded_at": "2026-08-12T21:56:23.317Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-023",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-023",
+        "round": 1,
+        "usage": {
+          "input_tokens": 914,
+          "output_tokens": 245,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006773,
+        "recorded_at": "2026-08-12T21:59:06.632Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-028",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-028",
+        "round": 1,
+        "usage": {
+          "input_tokens": 753,
+          "output_tokens": 229,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0061705,
+        "recorded_at": "2026-08-12T21:59:06.649Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-031",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-031",
+        "round": 1,
+        "usage": {
+          "input_tokens": 890,
+          "output_tokens": 276,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0071005,
+        "recorded_at": "2026-08-12T21:59:06.657Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-033",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-033",
+        "round": 1,
+        "usage": {
+          "input_tokens": 877,
+          "output_tokens": 241,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0066305,
+        "recorded_at": "2026-08-12T21:59:06.668Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-026",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-026",
+        "round": 1,
+        "usage": {
+          "input_tokens": 872,
+          "output_tokens": 319,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007593,
+        "recorded_at": "2026-08-12T21:59:06.673Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-021",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-021",
+        "round": 1,
+        "usage": {
+          "input_tokens": 966,
+          "output_tokens": 246,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0069155,
+        "recorded_at": "2026-08-12T21:59:06.678Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-029",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-029",
+        "round": 1,
+        "usage": {
+          "input_tokens": 862,
+          "output_tokens": 283,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007118,
+        "recorded_at": "2026-08-12T21:59:06.683Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-024",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-024",
+        "round": 1,
+        "usage": {
+          "input_tokens": 801,
+          "output_tokens": 249,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0065405,
+        "recorded_at": "2026-08-12T21:59:06.687Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-032",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-032",
+        "round": 1,
+        "usage": {
+          "input_tokens": 804,
+          "output_tokens": 332,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0075855,
+        "recorded_at": "2026-08-12T21:59:06.690Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-018",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-018",
+        "round": 1,
+        "usage": {
+          "input_tokens": 770,
+          "output_tokens": 204,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0059005,
+        "recorded_at": "2026-08-12T21:59:06.694Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-022",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-022",
+        "round": 1,
+        "usage": {
+          "input_tokens": 923,
+          "output_tokens": 259,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0069705,
+        "recorded_at": "2026-08-12T21:59:06.697Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-025",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-025",
+        "round": 1,
+        "usage": {
+          "input_tokens": 782,
+          "output_tokens": 250,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0065055,
+        "recorded_at": "2026-08-12T21:59:06.700Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-030",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-030",
+        "round": 1,
+        "usage": {
+          "input_tokens": 742,
+          "output_tokens": 250,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0064055,
+        "recorded_at": "2026-08-12T21:59:06.703Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-020",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-020",
+        "round": 1,
+        "usage": {
+          "input_tokens": 828,
+          "output_tokens": 263,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006783,
+        "recorded_at": "2026-08-12T21:59:06.706Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-019",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-019",
+        "round": 1,
+        "usage": {
+          "input_tokens": 802,
+          "output_tokens": 226,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0062555,
+        "recorded_at": "2026-08-12T21:59:06.709Z"
+      },
+      {
+        "key": "msgbatch_01LwtPxyo9wGVPfsAxi7ZnUd:INV-027",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-027",
+        "round": 1,
+        "usage": {
+          "input_tokens": 854,
+          "output_tokens": 361,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.008073,
+        "recorded_at": "2026-08-12T21:59:06.711Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-034",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-034",
+        "round": 1,
+        "usage": {
+          "input_tokens": 897,
+          "output_tokens": 247,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0067555,
+        "recorded_at": "2026-08-12T22:02:10.522Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-039",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-039",
+        "round": 1,
+        "usage": {
+          "input_tokens": 824,
+          "output_tokens": 219,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006223,
+        "recorded_at": "2026-08-12T22:02:10.539Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-038",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-038",
+        "round": 1,
+        "usage": {
+          "input_tokens": 750,
+          "output_tokens": 308,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0071505,
+        "recorded_at": "2026-08-12T22:02:10.548Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-048",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-048",
+        "round": 1,
+        "usage": {
+          "input_tokens": 741,
+          "output_tokens": 296,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006978,
+        "recorded_at": "2026-08-12T22:02:10.556Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-037",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-037",
+        "round": 1,
+        "usage": {
+          "input_tokens": 787,
+          "output_tokens": 224,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006193,
+        "recorded_at": "2026-08-12T22:02:10.562Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-044",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-044",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1534,
+          "output_tokens": 164,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0073105,
+        "recorded_at": "2026-08-12T22:02:10.566Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-035",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-035",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1419,
+          "output_tokens": 347,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0093105,
+        "recorded_at": "2026-08-12T22:02:10.569Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-036",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-036",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1147,
+          "output_tokens": 238,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007268,
+        "recorded_at": "2026-08-12T22:02:10.574Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-046",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-046",
+        "round": 1,
+        "usage": {
+          "input_tokens": 762,
+          "output_tokens": 246,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0064055,
+        "recorded_at": "2026-08-12T22:02:10.578Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-042",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-042",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1158,
+          "output_tokens": 251,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007458,
+        "recorded_at": "2026-08-12T22:02:10.581Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-041",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-041",
+        "round": 1,
+        "usage": {
+          "input_tokens": 749,
+          "output_tokens": 284,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006848,
+        "recorded_at": "2026-08-12T22:02:10.585Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-047",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-047",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1241,
+          "output_tokens": 270,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007903,
+        "recorded_at": "2026-08-12T22:02:10.588Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-049",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-049",
+        "round": 1,
+        "usage": {
+          "input_tokens": 781,
+          "output_tokens": 216,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006078,
+        "recorded_at": "2026-08-12T22:02:10.592Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-043",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-043",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1155,
+          "output_tokens": 183,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0066005,
+        "recorded_at": "2026-08-12T22:02:10.595Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-045",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-045",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1061,
+          "output_tokens": 251,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0072155,
+        "recorded_at": "2026-08-12T22:02:10.598Z"
+      },
+      {
+        "key": "msgbatch_01Cv2HJT6H9FmPB4SEbrPo4D:INV-040",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-040",
+        "round": 1,
+        "usage": {
+          "input_tokens": 772,
+          "output_tokens": 280,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0068555,
+        "recorded_at": "2026-08-12T22:02:10.601Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-054",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-054",
+        "round": 1,
+        "usage": {
+          "input_tokens": 784,
+          "output_tokens": 223,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006173,
+        "recorded_at": "2026-08-12T22:05:54.759Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-051",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-051",
+        "round": 1,
+        "usage": {
+          "input_tokens": 887,
+          "output_tokens": 301,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0074055,
+        "recorded_at": "2026-08-12T22:05:54.771Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-059",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-059",
+        "round": 1,
+        "usage": {
+          "input_tokens": 786,
+          "output_tokens": 241,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006403,
+        "recorded_at": "2026-08-12T22:05:54.786Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-061",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-061",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1319,
+          "output_tokens": 259,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0079605,
+        "recorded_at": "2026-08-12T22:05:54.793Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-050",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-050",
+        "round": 1,
+        "usage": {
+          "input_tokens": 1129,
+          "output_tokens": 236,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007198,
+        "recorded_at": "2026-08-12T22:05:54.798Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-058",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-058",
+        "round": 1,
+        "usage": {
+          "input_tokens": 766,
+          "output_tokens": 246,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0064155,
+        "recorded_at": "2026-08-12T22:05:54.803Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-055",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-055",
+        "round": 1,
+        "usage": {
+          "input_tokens": 857,
+          "output_tokens": 296,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007268,
+        "recorded_at": "2026-08-12T22:05:54.807Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-065",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-065",
+        "round": 1,
+        "usage": {
+          "input_tokens": 792,
+          "output_tokens": 313,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007318,
+        "recorded_at": "2026-08-12T22:05:54.811Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-052",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-052",
+        "round": 1,
+        "usage": {
+          "input_tokens": 769,
+          "output_tokens": 253,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0065105,
+        "recorded_at": "2026-08-12T22:05:54.815Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-053",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-053",
+        "round": 1,
+        "usage": {
+          "input_tokens": 737,
+          "output_tokens": 275,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0067055,
+        "recorded_at": "2026-08-12T22:05:54.818Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-056",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-056",
+        "round": 1,
+        "usage": {
+          "input_tokens": 780,
+          "output_tokens": 290,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0070005,
+        "recorded_at": "2026-08-12T22:05:54.821Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-062",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-062",
+        "round": 1,
+        "usage": {
+          "input_tokens": 815,
+          "output_tokens": 236,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006413,
+        "recorded_at": "2026-08-12T22:05:54.824Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-060",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-060",
+        "round": 1,
+        "usage": {
+          "input_tokens": 857,
+          "output_tokens": 246,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006643,
+        "recorded_at": "2026-08-12T22:05:54.827Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-063",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-063",
+        "round": 1,
+        "usage": {
+          "input_tokens": 869,
+          "output_tokens": 247,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0066855,
+        "recorded_at": "2026-08-12T22:05:54.830Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-064",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-064",
+        "round": 1,
+        "usage": {
+          "input_tokens": 917,
+          "output_tokens": 312,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.007618,
+        "recorded_at": "2026-08-12T22:05:54.833Z"
+      },
+      {
+        "key": "msgbatch_01VYjtSb4CcrDny7CfovkuQg:INV-057",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-057",
+        "round": 1,
+        "usage": {
+          "input_tokens": 860,
+          "output_tokens": 230,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0064505,
+        "recorded_at": "2026-08-12T22:05:54.835Z"
+      },
+      {
+        "key": "msgbatch_01Vhc4qCaUD1D7qzPPbwRQxx:INV-067",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-067",
+        "round": 1,
+        "usage": {
+          "input_tokens": 743,
+          "output_tokens": 244,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006333,
+        "recorded_at": "2026-08-12T22:10:39.949Z"
+      },
+      {
+        "key": "msgbatch_01Vhc4qCaUD1D7qzPPbwRQxx:INV-066",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-066",
+        "round": 1,
+        "usage": {
+          "input_tokens": 757,
+          "output_tokens": 254,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006493,
+        "recorded_at": "2026-08-12T22:10:39.969Z"
+      },
+      {
+        "key": "msgbatch_01Vhc4qCaUD1D7qzPPbwRQxx:INV-068",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-068",
+        "round": 1,
+        "usage": {
+          "input_tokens": 817,
+          "output_tokens": 236,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006418,
+        "recorded_at": "2026-08-12T22:10:39.978Z"
+      },
+      {
+        "key": "msgbatch_01Vhc4qCaUD1D7qzPPbwRQxx:INV-069",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-069",
+        "round": 1,
+        "usage": {
+          "input_tokens": 707,
+          "output_tokens": 234,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006118,
+        "recorded_at": "2026-08-12T22:10:39.993Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-005",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-005",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1441,
+          "output_tokens": 163,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0070655,
+        "recorded_at": "2026-08-12T22:15:24.815Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-014",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-014",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1446,
+          "output_tokens": 297,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.008753,
+        "recorded_at": "2026-08-12T22:15:24.834Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-007",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-007",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1532,
+          "output_tokens": 94,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0064305,
+        "recorded_at": "2026-08-12T22:15:24.844Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-012",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-012",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1148,
+          "output_tokens": 149,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006158,
+        "recorded_at": "2026-08-12T22:15:24.857Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-001",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-001",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1649,
+          "output_tokens": 94,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.006723,
+        "recorded_at": "2026-08-12T22:15:24.866Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-008",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-008",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1500,
+          "output_tokens": 2048,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0307755,
+        "recorded_at": "2026-08-12T22:15:24.873Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-009",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-009",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1062,
+          "output_tokens": 160,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0060805,
+        "recorded_at": "2026-08-12T22:15:24.879Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-002",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-002",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1308,
+          "output_tokens": 160,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0066955,
+        "recorded_at": "2026-08-12T22:15:24.883Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-010",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-010",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1687,
+          "output_tokens": 1937,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0298555,
+        "recorded_at": "2026-08-12T22:15:24.888Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-003",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-003",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1505,
+          "output_tokens": 169,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0073005,
+        "recorded_at": "2026-08-12T22:15:24.893Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-013",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-013",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1523,
+          "output_tokens": 1431,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0231205,
+        "recorded_at": "2026-08-12T22:15:24.897Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-016",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-016",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1665,
+          "output_tokens": 91,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0067255,
+        "recorded_at": "2026-08-12T22:15:24.901Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-006",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-006",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1690,
+          "output_tokens": 1939,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.029888,
+        "recorded_at": "2026-08-12T22:15:24.905Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-004",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-004",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1996,
+          "output_tokens": 1724,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0279655,
+        "recorded_at": "2026-08-12T22:15:24.910Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-017",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-017",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1581,
+          "output_tokens": 1354,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.022303,
+        "recorded_at": "2026-08-12T22:15:24.913Z"
+      },
+      {
+        "key": "msgbatch_01XREpCiSj3tXjQ5uHxguHtZ:INV-011",
+        "lane": "claude-opus-5:cached",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": "1h",
+        "case_id": "INV-011",
+        "round": 2,
+        "usage": {
+          "input_tokens": 1612,
+          "output_tokens": 2006,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0305305,
+        "recorded_at": "2026-08-12T22:15:24.916Z"
+      },
+      {
+        "key": "msgbatch_01EyeTz1zsCKy82GbhMnox9n:probe-1",
+        "lane": "unrecorded:swept",
+        "model": "claude-sonnet-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "probe-1",
+        "round": null,
+        "usage": {
+          "input_tokens": 2022,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.002042,
+        "recorded_at": "2026-08-12T22:17:50.089Z"
+      },
+      {
+        "key": "msgbatch_01EyeTz1zsCKy82GbhMnox9n:probe-0",
+        "lane": "unrecorded:swept",
+        "model": "claude-sonnet-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "probe-0",
+        "round": null,
+        "usage": {
+          "input_tokens": 2022,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.002042,
+        "recorded_at": "2026-08-12T22:17:50.092Z"
       }
     ]
   },
@@ -44605,7 +47245,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0225635
+      "cost_usd": 0.0225635,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-002",
@@ -44624,7 +47265,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0270155
+      "cost_usd": 0.0270155,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-003",
@@ -44643,7 +47285,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0198495
+      "cost_usd": 0.0198495,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-004",
@@ -44662,7 +47305,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.023475499999999996
+      "cost_usd": 0.023475499999999996,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-005",
@@ -44681,7 +47325,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.019984499999999995
+      "cost_usd": 0.019984499999999995,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-006",
@@ -44700,7 +47345,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0278845
+      "cost_usd": 0.0278845,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-007",
@@ -44719,7 +47365,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0222525
+      "cost_usd": 0.0222525,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-008",
@@ -44738,7 +47385,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0400035
+      "cost_usd": 0.0400035,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-009",
@@ -44757,7 +47405,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.021914499999999996
+      "cost_usd": 0.021914499999999996,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-010",
@@ -44776,7 +47425,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0188805
+      "cost_usd": 0.0188805,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-011",
@@ -44795,7 +47445,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.003274
+      "cost_usd": 0.003274,
+      "model_route": null
     },
     {
       "case_id": "INV-012",
@@ -44814,7 +47465,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0224755
+      "cost_usd": 0.0224755,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-013",
@@ -44833,7 +47485,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0189405
+      "cost_usd": 0.0189405,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-014",
@@ -44852,7 +47505,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.014637
+      "cost_usd": 0.014637,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-015",
@@ -44871,7 +47525,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-016",
@@ -44890,7 +47545,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.023145
+      "cost_usd": 0.023145,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-017",
@@ -44909,7 +47565,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0171525
+      "cost_usd": 0.0171525,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-018",
@@ -44928,7 +47585,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.018782
+      "cost_usd": 0.018782,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-019",
@@ -44947,7 +47605,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0275695
+      "cost_usd": 0.0275695,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-020",
@@ -44966,7 +47625,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0182055
+      "cost_usd": 0.0182055,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-021",
@@ -44985,7 +47645,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.037131000000000004
+      "cost_usd": 0.037131000000000004,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-022",
@@ -45004,7 +47665,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.042023
+      "cost_usd": 0.042023,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-023",
@@ -45023,7 +47685,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.041050500000000004
+      "cost_usd": 0.041050500000000004,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-024",
@@ -45042,7 +47705,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0187045
+      "cost_usd": 0.0187045,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-025",
@@ -45061,7 +47725,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.021825500000000005
+      "cost_usd": 0.021825500000000005,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-026",
@@ -45080,7 +47745,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0227025
+      "cost_usd": 0.0227025,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-027",
@@ -45099,7 +47765,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0194365
+      "cost_usd": 0.0194365,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-028",
@@ -45118,7 +47785,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.019931500000000005
+      "cost_usd": 0.019931500000000005,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-029",
@@ -45137,7 +47805,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0412435
+      "cost_usd": 0.0412435,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-030",
@@ -45156,7 +47825,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.029165499999999997
+      "cost_usd": 0.029165499999999997,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-031",
@@ -45175,7 +47845,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.03615
+      "cost_usd": 0.03615,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-032",
@@ -45194,7 +47865,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0357415
+      "cost_usd": 0.0357415,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-033",
@@ -45213,7 +47885,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.030207
+      "cost_usd": 0.030207,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-034",
@@ -45232,7 +47905,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.028749
+      "cost_usd": 0.028749,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-035",
@@ -45251,7 +47925,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0518645
+      "cost_usd": 0.0518645,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-036",
@@ -45270,7 +47945,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.022586500000000002
+      "cost_usd": 0.022586500000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-037",
@@ -45289,7 +47965,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.022237
+      "cost_usd": 0.022237,
+      "model_route": null
     },
     {
       "case_id": "INV-038",
@@ -45308,7 +47985,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0406925
+      "cost_usd": 0.0406925,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-039",
@@ -45327,7 +48005,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.032013
+      "cost_usd": 0.032013,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-040",
@@ -45346,7 +48025,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.042604500000000003
+      "cost_usd": 0.042604500000000003,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-041",
@@ -45365,7 +48045,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0228685
+      "cost_usd": 0.0228685,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-042",
@@ -45384,7 +48065,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0265505
+      "cost_usd": 0.0265505,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-043",
@@ -45403,7 +48085,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0307625
+      "cost_usd": 0.0307625,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-044",
@@ -45422,7 +48105,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.027111999999999997
+      "cost_usd": 0.027111999999999997,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-045",
@@ -45441,7 +48125,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0183875
+      "cost_usd": 0.0183875,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-046",
@@ -45460,7 +48145,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0180505
+      "cost_usd": 0.0180505,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-047",
@@ -45479,7 +48165,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.044029
+      "cost_usd": 0.044029,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-048",
@@ -45498,7 +48185,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.019782
+      "cost_usd": 0.019782,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-049",
@@ -45517,7 +48205,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.021525
+      "cost_usd": 0.021525,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-050",
@@ -45536,7 +48225,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.023079999999999996
+      "cost_usd": 0.023079999999999996,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-051",
@@ -45555,7 +48245,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0354945
+      "cost_usd": 0.0354945,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-052",
@@ -45574,7 +48265,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.037112
+      "cost_usd": 0.037112,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-053",
@@ -45593,7 +48285,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.035216000000000004
+      "cost_usd": 0.035216000000000004,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-054",
@@ -45612,7 +48305,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.030923000000000003
+      "cost_usd": 0.030923000000000003,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-055",
@@ -45631,7 +48325,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.028462
+      "cost_usd": 0.028462,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-056",
@@ -45650,7 +48345,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.035864
+      "cost_usd": 0.035864,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-057",
@@ -45669,7 +48365,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.024394500000000003
+      "cost_usd": 0.024394500000000003,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-058",
@@ -45688,7 +48385,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.019316
+      "cost_usd": 0.019316,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-059",
@@ -45707,7 +48405,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0315585
+      "cost_usd": 0.0315585,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-060",
@@ -45726,7 +48425,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.019525999999999998
+      "cost_usd": 0.019525999999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-061",
@@ -45745,7 +48445,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0318855
+      "cost_usd": 0.0318855,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-062",
@@ -45764,7 +48465,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.03051
+      "cost_usd": 0.03051,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-063",
@@ -45783,7 +48485,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.013046
+      "cost_usd": 0.013046,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-064",
@@ -45802,7 +48505,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.023661
+      "cost_usd": 0.023661,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-065",
@@ -45821,7 +48525,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0227095
+      "cost_usd": 0.0227095,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-066",
@@ -45840,7 +48545,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.026653000000000003
+      "cost_usd": 0.026653000000000003,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-067",
@@ -45859,7 +48565,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0241385
+      "cost_usd": 0.0241385,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-068",
@@ -45878,7 +48585,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0210995
+      "cost_usd": 0.0210995,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-069",
@@ -45897,7 +48605,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.01583
+      "cost_usd": 0.01583,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-070",
@@ -45916,7 +48625,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-071",
@@ -45935,7 +48645,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-072",
@@ -45954,7 +48665,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-073",
@@ -45973,7 +48685,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-001",
@@ -45992,7 +48705,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0108045
+      "cost_usd": 0.0108045,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-002",
@@ -46011,7 +48725,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.016771
+      "cost_usd": 0.016771,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-003",
@@ -46030,7 +48745,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0202576
+      "cost_usd": 0.0202576,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-004",
@@ -46049,7 +48765,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 33536
       },
-      "cost_usd": 0.027576800000000002
+      "cost_usd": 0.027576800000000002,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-005",
@@ -46068,7 +48785,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.015526499999999999
+      "cost_usd": 0.015526499999999999,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-006",
@@ -46087,7 +48805,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.0072599
+      "cost_usd": 0.0072599,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-007",
@@ -46106,7 +48825,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.013905899999999999
+      "cost_usd": 0.013905899999999999,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-008",
@@ -46125,7 +48845,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0192447
+      "cost_usd": 0.0192447,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-009",
@@ -46144,7 +48865,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0104251
+      "cost_usd": 0.0104251,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-010",
@@ -46163,7 +48885,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.010642400000000002
+      "cost_usd": 0.010642400000000002,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-011",
@@ -46182,7 +48905,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 4192
       },
-      "cost_usd": 0.0017101
+      "cost_usd": 0.0017101,
+      "model_route": null
     },
     {
       "case_id": "INV-012",
@@ -46201,7 +48925,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.010157999999999999
+      "cost_usd": 0.010157999999999999,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-013",
@@ -46220,7 +48945,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.014022
+      "cost_usd": 0.014022,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-014",
@@ -46239,7 +48965,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.011883500000000002
+      "cost_usd": 0.011883500000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-015",
@@ -46258,7 +48985,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-016",
@@ -46277,7 +49005,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.012954399999999998
+      "cost_usd": 0.012954399999999998,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-017",
@@ -46296,7 +49025,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.011919599999999999
+      "cost_usd": 0.011919599999999999,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-018",
@@ -46315,7 +49045,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0103505
+      "cost_usd": 0.0103505,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-019",
@@ -46334,7 +49065,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0099645
+      "cost_usd": 0.0099645,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-020",
@@ -46353,7 +49085,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.0093594
+      "cost_usd": 0.0093594,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-021",
@@ -46372,7 +49105,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 41920
       },
-      "cost_usd": 0.02592
+      "cost_usd": 0.02592,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-022",
@@ -46391,7 +49125,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.022862200000000003
+      "cost_usd": 0.022862200000000003,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-023",
@@ -46410,7 +49145,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.013582599999999998
+      "cost_usd": 0.013582599999999998,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-024",
@@ -46429,7 +49165,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0101185
+      "cost_usd": 0.0101185,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-025",
@@ -46448,7 +49185,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.014807400000000002
+      "cost_usd": 0.014807400000000002,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-026",
@@ -46467,7 +49205,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.014048399999999999
+      "cost_usd": 0.014048399999999999,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-027",
@@ -46486,7 +49225,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.010003499999999999
+      "cost_usd": 0.010003499999999999,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-028",
@@ -46505,7 +49245,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.0137849
+      "cost_usd": 0.0137849,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-029",
@@ -46524,7 +49265,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0258662
+      "cost_usd": 0.0258662,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-030",
@@ -46543,7 +49285,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.014001900000000001
+      "cost_usd": 0.014001900000000001,
+      "model_route": null
     },
     {
       "case_id": "INV-031",
@@ -46562,7 +49305,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0145545
+      "cost_usd": 0.0145545,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-032",
@@ -46581,7 +49325,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0274842
+      "cost_usd": 0.0274842,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-033",
@@ -46600,7 +49345,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 37728
       },
-      "cost_usd": 0.024860899999999995
+      "cost_usd": 0.024860899999999995,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-034",
@@ -46619,7 +49365,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.015465199999999998
+      "cost_usd": 0.015465199999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-035",
@@ -46638,7 +49385,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 37728
       },
-      "cost_usd": 0.0255844
+      "cost_usd": 0.0255844,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-036",
@@ -46657,7 +49405,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0160957
+      "cost_usd": 0.0160957,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-037",
@@ -46676,7 +49425,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 8384
       },
-      "cost_usd": 0.0040917
+      "cost_usd": 0.0040917,
+      "model_route": "reject"
     },
     {
       "case_id": "INV-038",
@@ -46695,7 +49445,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 41920
       },
-      "cost_usd": 0.029157
+      "cost_usd": 0.029157,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-039",
@@ -46714,7 +49465,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.019809999999999998
+      "cost_usd": 0.019809999999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-040",
@@ -46733,7 +49485,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0202907
+      "cost_usd": 0.0202907,
+      "model_route": "reject"
     },
     {
       "case_id": "INV-041",
@@ -46752,7 +49505,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.012501499999999999
+      "cost_usd": 0.012501499999999999,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-042",
@@ -46771,7 +49525,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.018723200000000002
+      "cost_usd": 0.018723200000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-043",
@@ -46790,7 +49545,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0147806
+      "cost_usd": 0.0147806,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-044",
@@ -46809,7 +49565,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.011684
+      "cost_usd": 0.011684,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-045",
@@ -46828,7 +49585,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.009145
+      "cost_usd": 0.009145,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-046",
@@ -46847,7 +49605,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 12576
       },
-      "cost_usd": 0.0128973
+      "cost_usd": 0.0128973,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-047",
@@ -46866,7 +49625,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.014972699999999999
+      "cost_usd": 0.014972699999999999,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-048",
@@ -46885,7 +49645,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0101805
+      "cost_usd": 0.0101805,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-049",
@@ -46904,7 +49665,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0131076
+      "cost_usd": 0.0131076,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-050",
@@ -46923,7 +49685,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.014287599999999998
+      "cost_usd": 0.014287599999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-051",
@@ -46942,7 +49705,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0235602
+      "cost_usd": 0.0235602,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-052",
@@ -46961,7 +49725,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0150082
+      "cost_usd": 0.0150082,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-053",
@@ -46980,7 +49745,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0196671
+      "cost_usd": 0.0196671,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-054",
@@ -46999,7 +49765,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0133046
+      "cost_usd": 0.0133046,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-055",
@@ -47018,7 +49785,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0162157
+      "cost_usd": 0.0162157,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-056",
@@ -47037,7 +49805,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0167652
+      "cost_usd": 0.0167652,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-057",
@@ -47056,7 +49825,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 12576
       },
-      "cost_usd": 0.0147898
+      "cost_usd": 0.0147898,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-058",
@@ -47075,7 +49845,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.011038
+      "cost_usd": 0.011038,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-059",
@@ -47094,7 +49865,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 16768
       },
-      "cost_usd": 0.0135439
+      "cost_usd": 0.0135439,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-060",
@@ -47113,7 +49885,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.0114375
+      "cost_usd": 0.0114375,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-061",
@@ -47132,7 +49905,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.0166622
+      "cost_usd": 0.0166622,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-062",
@@ -47151,7 +49925,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.009559999999999999
+      "cost_usd": 0.009559999999999999,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-063",
@@ -47170,7 +49945,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 12576
       },
-      "cost_usd": 0.0075788
+      "cost_usd": 0.0075788,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-064",
@@ -47189,7 +49965,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.009777
+      "cost_usd": 0.009777,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-065",
@@ -47208,7 +49985,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0158596
+      "cost_usd": 0.0158596,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-066",
@@ -47227,7 +50005,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 29344
       },
-      "cost_usd": 0.023120700000000004
+      "cost_usd": 0.023120700000000004,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-067",
@@ -47246,7 +50025,8 @@
         "cache_creation_input_tokens": 4192,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.018446999999999998
+      "cost_usd": 0.018446999999999998,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-068",
@@ -47265,7 +50045,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 25152
       },
-      "cost_usd": 0.0111581
+      "cost_usd": 0.0111581,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-069",
@@ -47284,7 +50065,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 20960
       },
-      "cost_usd": 0.011050999999999998
+      "cost_usd": 0.011050999999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-070",
@@ -47303,7 +50085,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-071",
@@ -47322,7 +50105,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-072",
@@ -47341,7 +50125,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-073",
@@ -47360,7 +50145,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-001",
@@ -47379,7 +50165,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15993000000000002
+      "cost_usd": 0.15993000000000002,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-002",
@@ -47398,7 +50185,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.220405
+      "cost_usd": 0.220405,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-003",
@@ -47417,7 +50205,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.188235
+      "cost_usd": 0.188235,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-004",
@@ -47436,7 +50225,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1575875
+      "cost_usd": 0.1575875,
+      "model_route": "reject"
     },
     {
       "case_id": "INV-005",
@@ -47455,7 +50245,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.19156
+      "cost_usd": 0.19156,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-006",
@@ -47474,7 +50265,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.13727250000000002
+      "cost_usd": 0.13727250000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-007",
@@ -47493,7 +50285,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1410925
+      "cost_usd": 0.1410925,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-008",
@@ -47512,7 +50305,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0798025
+      "cost_usd": 0.0798025,
+      "model_route": null
     },
     {
       "case_id": "INV-009",
@@ -47531,7 +50325,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.18596000000000001
+      "cost_usd": 0.18596000000000001,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-010",
@@ -47550,7 +50345,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16642
+      "cost_usd": 0.16642,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-011",
@@ -47569,7 +50365,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08088
+      "cost_usd": 0.08088,
+      "model_route": null
     },
     {
       "case_id": "INV-012",
@@ -47588,7 +50385,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15647
+      "cost_usd": 0.15647,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-013",
@@ -47607,7 +50405,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15845499999999998
+      "cost_usd": 0.15845499999999998,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-014",
@@ -47626,7 +50425,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1641575
+      "cost_usd": 0.1641575,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-015",
@@ -47645,7 +50445,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-016",
@@ -47664,7 +50465,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15376
+      "cost_usd": 0.15376,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-017",
@@ -47683,7 +50485,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1527075
+      "cost_usd": 0.1527075,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-018",
@@ -47702,7 +50505,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1781825
+      "cost_usd": 0.1781825,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-019",
@@ -47721,7 +50525,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.186165
+      "cost_usd": 0.186165,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-020",
@@ -47740,7 +50545,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.21463
+      "cost_usd": 0.21463,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-021",
@@ -47759,7 +50565,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.197015
+      "cost_usd": 0.197015,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-022",
@@ -47778,7 +50585,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.2259125
+      "cost_usd": 0.2259125,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-023",
@@ -47797,7 +50605,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.2118525
+      "cost_usd": 0.2118525,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-024",
@@ -47816,7 +50625,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.13988250000000002
+      "cost_usd": 0.13988250000000002,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-025",
@@ -47835,7 +50645,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.18399
+      "cost_usd": 0.18399,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-026",
@@ -47854,7 +50665,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.14151999999999998
+      "cost_usd": 0.14151999999999998,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-027",
@@ -47873,7 +50685,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16043749999999998
+      "cost_usd": 0.16043749999999998,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-028",
@@ -47892,7 +50705,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1910425
+      "cost_usd": 0.1910425,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-029",
@@ -47911,7 +50725,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.22343000000000002
+      "cost_usd": 0.22343000000000002,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-030",
@@ -47930,7 +50745,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.12549749999999998
+      "cost_usd": 0.12549749999999998,
+      "model_route": null
     },
     {
       "case_id": "INV-031",
@@ -47949,7 +50765,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.13546
+      "cost_usd": 0.13546,
+      "model_route": null
     },
     {
       "case_id": "INV-032",
@@ -47968,7 +50785,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1616125
+      "cost_usd": 0.1616125,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-033",
@@ -47987,7 +50805,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1037175
+      "cost_usd": 0.1037175,
+      "model_route": null
     },
     {
       "case_id": "INV-034",
@@ -48006,7 +50825,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.134655
+      "cost_usd": 0.134655,
+      "model_route": null
     },
     {
       "case_id": "INV-035",
@@ -48025,7 +50845,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1247475
+      "cost_usd": 0.1247475,
+      "model_route": null
     },
     {
       "case_id": "INV-036",
@@ -48044,7 +50865,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.082105
+      "cost_usd": 0.082105,
+      "model_route": null
     },
     {
       "case_id": "INV-037",
@@ -48063,7 +50885,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.12584
+      "cost_usd": 0.12584,
+      "model_route": null
     },
     {
       "case_id": "INV-038",
@@ -48082,7 +50905,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.19132749999999998
+      "cost_usd": 0.19132749999999998,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-039",
@@ -48101,7 +50925,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16768500000000003
+      "cost_usd": 0.16768500000000003,
+      "model_route": "reject"
     },
     {
       "case_id": "INV-040",
@@ -48120,7 +50945,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1279275
+      "cost_usd": 0.1279275,
+      "model_route": null
     },
     {
       "case_id": "INV-041",
@@ -48139,7 +50965,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.12801
+      "cost_usd": 0.12801,
+      "model_route": null
     },
     {
       "case_id": "INV-042",
@@ -48158,7 +50985,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08182500000000001
+      "cost_usd": 0.08182500000000001,
+      "model_route": null
     },
     {
       "case_id": "INV-043",
@@ -48177,7 +51005,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.140575
+      "cost_usd": 0.140575,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-044",
@@ -48196,7 +51025,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.07897
+      "cost_usd": 0.07897,
+      "model_route": null
     },
     {
       "case_id": "INV-045",
@@ -48215,7 +51045,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.118755
+      "cost_usd": 0.118755,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-046",
@@ -48234,7 +51065,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0793025
+      "cost_usd": 0.0793025,
+      "model_route": null
     },
     {
       "case_id": "INV-047",
@@ -48253,7 +51085,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.2121675
+      "cost_usd": 0.2121675,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-048",
@@ -48272,7 +51105,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.190615
+      "cost_usd": 0.190615,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-049",
@@ -48291,7 +51125,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.079635
+      "cost_usd": 0.079635,
+      "model_route": null
     },
     {
       "case_id": "INV-050",
@@ -48310,7 +51145,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.081715
+      "cost_usd": 0.081715,
+      "model_route": null
     },
     {
       "case_id": "INV-051",
@@ -48329,7 +51165,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.10321749999999999
+      "cost_usd": 0.10321749999999999,
+      "model_route": null
     },
     {
       "case_id": "INV-052",
@@ -48348,7 +51185,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.19328499999999998
+      "cost_usd": 0.19328499999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-053",
@@ -48367,7 +51205,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0800375
+      "cost_usd": 0.0800375,
+      "model_route": null
     },
     {
       "case_id": "INV-054",
@@ -48386,7 +51225,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15882000000000002
+      "cost_usd": 0.15882000000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-055",
@@ -48405,7 +51245,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08129249999999999
+      "cost_usd": 0.08129249999999999,
+      "model_route": null
     },
     {
       "case_id": "INV-056",
@@ -48424,7 +51265,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.10038
+      "cost_usd": 0.10038,
+      "model_route": null
     },
     {
       "case_id": "INV-057",
@@ -48443,7 +51285,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08071
+      "cost_usd": 0.08071,
+      "model_route": null
     },
     {
       "case_id": "INV-058",
@@ -48462,7 +51305,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16055750000000002
+      "cost_usd": 0.16055750000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-059",
@@ -48481,7 +51325,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0800525
+      "cost_usd": 0.0800525,
+      "model_route": null
     },
     {
       "case_id": "INV-060",
@@ -48500,7 +51345,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1033425
+      "cost_usd": 0.1033425,
+      "model_route": null
     },
     {
       "case_id": "INV-061",
@@ -48519,7 +51365,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.081775
+      "cost_usd": 0.081775,
+      "model_route": null
     },
     {
       "case_id": "INV-062",
@@ -48538,7 +51385,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1653225
+      "cost_usd": 0.1653225,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-063",
@@ -48557,7 +51405,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1726625
+      "cost_usd": 0.1726625,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-064",
@@ -48576,7 +51425,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1746125
+      "cost_usd": 0.1746125,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-065",
@@ -48595,7 +51445,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16701
+      "cost_usd": 0.16701,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-066",
@@ -48614,7 +51465,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.125105
+      "cost_usd": 0.125105,
+      "model_route": null
     },
     {
       "case_id": "INV-067",
@@ -48633,7 +51485,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1605
+      "cost_usd": 0.1605,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-068",
@@ -48652,7 +51505,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1009075
+      "cost_usd": 0.1009075,
+      "model_route": null
     },
     {
       "case_id": "INV-069",
@@ -48671,7 +51525,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.09998
+      "cost_usd": 0.09998,
+      "model_route": null
     },
     {
       "case_id": "INV-070",
@@ -48690,7 +51545,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-071",
@@ -48709,7 +51565,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-072",
@@ -48728,7 +51585,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-073",
@@ -48747,14 +51605,20 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     }
   ],
   "notes": [
+    "MODEL-VS-POLICY DIVERGENCE was BROKEN in the 2026-08-11 publication and read 0 on every lane. The join took the model's proposed route from a process-local map that only holds cases run in THAT invocation, and every published lane was resumed from a checkpoint, so it joined against nothing and rendered the empty result as zero. The proposal is now persisted on the record; the already-published lanes were recovered from stored batch results (matrix:backfill-routes) at zero spend. Only proposals the driver actually TRACED count: a draft_action truncated by the max_tokens cap, or rejected by the tool schema, is never executed, and counting those fabricated 22 divergences on the opus lane and 1 on haiku:uncached before it was tightened.",
+    "claude-haiku-4-5:uncached: 66 of 73 cases carry a traced model proposal, so the divergence figure is a measurement over 66 cases, not over the lane. Of the rest, 5 short-circuited before any model turn (GR-SCOPE), 2 reached no disposition at all, and 0 ended on the 2048-token output cap. Those groups overlap; they are counted, not apportioned.",
+    "claude-haiku-4-5:cached: 66 of 73 cases carry a traced model proposal, so the divergence figure is a measurement over 66 cases, not over the lane. Of the rest, 5 short-circuited before any model turn (GR-SCOPE), 2 reached no disposition at all, and 1 ended on the 2048-token output cap. Those groups overlap; they are counted, not apportioned.",
+    "claude-opus-5:uncached: 41 of 73 cases carry a traced model proposal, so the divergence figure is a measurement over 41 cases, not over the lane. Of the rest, 5 short-circuited before any model turn (GR-SCOPE), 27 reached no disposition at all, and 30 ended on the 2048-token output cap. Those groups overlap; they are counted, not apportioned.",
     "Calibration agreement is NOT in this directory. The 12 draft(s) in calibration-worksheet.md are scored by a human (Abhinav); the agreement and disagreement tables are computed in a follow-up pass from those scores.",
+    "INCOMPLETE MATRIX: 3 of 6 lanes are present. Missing: `claude-sonnet-5:uncached`, `claude-sonnet-5:cached`, `claude-opus-5:cached`. This is not a release verdict, and no cross-tier comparison here is complete. RUN-LOG.md says why each lane is absent.",
     "LATENCY PASS DID NOT RUN in this invocation, so p50/p95 are absent and latency.json is empty. No latency claim in this directory is a measurement.",
     "Short-circuit savings: 5 of 73 golden cases are rejected by the pre-model GR-SCOPE screen and never cost a request, so every round batches 68, not 73.",
-    "Batch progress is NOT observable from request_counts: a batch reports zero completions for its whole life and then jumps to final counts, so any completion-based stall heuristic cancels healthy work. Stall handling is elapsed-time only. Measured 2026-08-12: haiku and opus batches of 16 requests ended in 2-3 minutes, while two sonnet-5 batches of the same shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - per-model batch cadence differs by two orders of magnitude and cannot be assumed from another model's behaviour.",
+    "Batch progress is NOT observable from request_counts: a batch reports zero completions for its whole life and then jumps to final counts, so any completion-based stall heuristic cancels healthy work. Stall handling is elapsed-time only. Measured 2026-08-12: haiku and opus batches of 16 requests ended in 2-3 minutes, while two sonnet-5 batches of the same shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - per-model batch cadence differs by two orders of magnitude and cannot be assumed from another model's behaviour. It is not stable over TIME either: a control probe on 2026-08-12 at 21:41Z ended a sonnet-5 batch in 3.1 minutes, so the multi-hour figures were a transient queue condition and not a property of the model. Any schedule built on either number is a guess; the ledger, not a stopwatch, is the health signal.",
     "NO MOCK BASELINE WAS LOADED (evals/baseline/latest.json absent), so the regression gates (p0_no_regression, aggregate_no_drop) had nothing to compare against and PASSED VACUOUSLY. Do not read those two gates as evidence of no regression; only the gates that evaluated real data (p0_pass_rate, guardrail_hard_zero) carry a verdict.",
     "Run history, incidents and the reasons lanes are missing are in RUN-LOG.md in this directory. Read it before quoting any number here.",
     "Reviewer N3: a live model that resolves MORE vendors than the mock planner emits extra lookup_vendor and memory.read events. That is correct behaviour, not a defect: grading fails only on MISSING required calls or must_not_call violations, so a higher tool count is not a penalty and should not be read as noise."
@@ -49102,27 +51966,37 @@
         {
           "lane": "claude-opus-5:cached",
           "round": 0,
-          "requests": 84,
-          "cache_read_tokens": 330716,
+          "requests": 152,
+          "cache_read_tokens": 718452,
           "cache_write_tokens": 148252,
-          "uncached_input_tokens": 29057,
-          "cost_usd": 1.0505440000000008,
+          "uncached_input_tokens": 53064,
+          "cost_usd": 1.333058000000001,
           "reads_dominate": true
         },
         {
           "lane": "claude-opus-5:cached",
           "round": 1,
-          "requests": 68,
-          "cache_read_tokens": 387736,
+          "requests": 136,
+          "cache_read_tokens": 775472,
           "cache_write_tokens": 0,
-          "uncached_input_tokens": 59223,
-          "cost_usd": 0.47326650000000015,
+          "uncached_input_tokens": 118125,
+          "cost_usd": 0.9330554999999999,
+          "reads_dominate": true
+        },
+        {
+          "lane": "claude-opus-5:cached",
+          "round": 2,
+          "requests": 16,
+          "cache_read_tokens": 91232,
+          "cache_write_tokens": 0,
+          "uncached_input_tokens": 24345,
+          "cost_usd": 0.2563705,
           "reads_dominate": true
         }
       ],
-      "cache_read_tokens": 718452,
+      "cache_read_tokens": 1585156,
       "cache_write_tokens": 148252,
-      "cost_usd": 1.523810500000001,
+      "cost_usd": 2.522484000000001,
       "rounds_without_cache_benefit": 0,
       "cache_inverted": false
     },
@@ -49132,25 +52006,35 @@
         {
           "lane": "unrecorded:swept",
           "round": 0,
-          "requests": 201,
+          "requests": 203,
           "cache_read_tokens": 177782,
           "cache_write_tokens": 5770,
-          "uncached_input_tokens": 1071207,
-          "cost_usd": 1.4712895,
+          "uncached_input_tokens": 1075251,
+          "cost_usd": 1.4753735000000001,
           "reads_dominate": true
         }
       ],
       "cache_read_tokens": 177782,
       "cache_write_tokens": 5770,
-      "cost_usd": 1.4712895,
+      "cost_usd": 1.4753735000000001,
       "rounds_without_cache_benefit": 0,
       "cache_inverted": false
     }
   ],
   "spend_reconciliation": {
-    "ledger_total_usd": 19.025789400000008,
-    "published_usd": 15.828306900000024,
+    "ledger_total_usd": 20.028559900000015,
+    "published_usd": 12.632045899999996,
     "superseded": [
+      {
+        "label": "claude-haiku-4-5:uncached",
+        "cost_usd": 1.9914595000000013,
+        "reason": "spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix"
+      },
+      {
+        "label": "claude-haiku-4-5:cached",
+        "cost_usd": 1.2048145000000003,
+        "reason": "spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix"
+      },
       {
         "label": "claude-sonnet-5:uncached",
         "cost_usd": 0.19199800000000003,
@@ -49158,12 +52042,12 @@
       },
       {
         "label": "claude-opus-5:cached",
-        "cost_usd": 1.5238105,
+        "cost_usd": 2.5224840000000004,
         "reason": "spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix"
       },
       {
         "label": "unrecorded:swept",
-        "cost_usd": 1.4712895,
+        "cost_usd": 1.4753735000000001,
         "reason": "spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix"
       },
       {

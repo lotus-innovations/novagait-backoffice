@@ -16,9 +16,9 @@ Three of six lanes, all resumed from checkpoints written before the stop:
 | `claude-haiku-4-5:uncached` | complete, published |
 | `claude-haiku-4-5:cached` | complete, published |
 | `claude-opus-5:uncached` | complete, published |
-| `claude-sonnet-5:uncached` | ABSENT, see incident 3 |
-| `claude-sonnet-5:cached` | ABSENT, see incident 3 |
-| `claude-opus-5:cached` | ABSENT, see incident 4 |
+| `claude-sonnet-5:uncached` | ABSENT, see incidents 3 and 10 |
+| `claude-sonnet-5:cached` | ABSENT, see incidents 3 and 10 |
+| `claude-opus-5:cached` | ABSENT, see incidents 4 and 10 (attempted twice) |
 
 Also absent: both judge passes, the interactive latency pass, and therefore
 every p50/p95 figure and every judge verdict. `latency.json` is empty by
@@ -125,6 +125,43 @@ construction, not by measurement.
    8-input/1-output-token interactive request, recorded in the ledger as
    `credit-probe`.
 
+10. **A workspace API usage limit ended the run, and it is a different
+    blocker from the credit exhaustion.** Credits were topped up and verified
+    on 2026-08-12 (incident 9), and `claude-opus-5:cached` was re-run from
+    scratch. It completed rounds 0 and 1 (68 requests each) and failed on the
+    next submission with `400 invalid_request_error: You have reached your
+    specified workspace API usage limits. You will regain access on 2026-09-01
+    at 00:00 UTC.` Confirmed independently: a 1-token haiku request fails the
+    same way. **No further live measurement is possible on this workspace
+    until 2026-09-01**, which is an account-configuration decision for the
+    principal and was not taken here.
+
+    Two consequences worth separating:
+    - The lane's ~$1.00 of real spend is itemised as superseded, not netted
+      out. Its results are billed and unread.
+    - `claude-sonnet-5:uncached` and `claude-sonnet-5:cached` were never
+      attempted. A control probe at 21:41Z had just shown sonnet batches
+      ending in **3.1 minutes**, i.e. the multi-hour cadence of incident 3 was
+      transient congestion and the lanes were feasible again. They are absent
+      because the workspace limit landed first, NOT because of cadence.
+
+    What made an honest close-out possible: **reads are still permitted**.
+    Retrieving finished batch results, listing batches and sweeping
+    billed-but-unread spend all still work, so the divergence recovery, the
+    matrix regeneration from checkpoints and the reconciliation sweep were all
+    completed after writes were blocked, at zero spend.
+
+11. **Spend attribution moved from lane name to batch id, and it moved
+    $3.1963.** `reconcileSpend` was told which spend was published by matching
+    lane NAMES against the surviving matrix. That is wrong for any lane that
+    ran more than once: the haiku lanes were each run twice, and re-running
+    `claude-opus-5:cached` would have made the credit-exhausted attempt's
+    spend look published because the name matched. Each lane's checkpoint now
+    carries the batch ids of the attempt that was actually published, and
+    those ids are the authority. The published figure fell from $15.8283 to
+    $12.6320; the difference is the haiku lanes' superseded first attempts,
+    which are now itemised as what they are.
+
 ## The finding that needs a human decision
 
 Across all three published lanes the dominant failure is `GRD-004`,
@@ -151,21 +188,32 @@ should be resolved before anyone quotes the pass rates in this directory.
 
 ## Spend
 
-Reconciled by `matrix:augment`; the assertion that published plus superseded
-equals the ledger total passed.
+Reconciled by `matrix:augment` with `MATRIX_SWEEP=1`; the assertion that
+published plus superseded equals the ledger total passed.
 
 | line | USD |
 | --- | ---: |
-| ledger total | 19.0258 |
-| published (the three lanes above) | 15.8283 |
-| superseded `claude-opus-5:cached` | 1.5238 |
-| superseded `unrecorded:swept` | 1.4713 |
+| ledger total | 20.0286 |
+| published (the three lanes above) | 12.6320 |
+| superseded `claude-opus-5:cached` (both attempts) | 2.5225 |
+| superseded `claude-haiku-4-5:uncached` (first attempt) | 1.9915 |
+| superseded `unrecorded:swept` | 1.4754 |
+| superseded `claude-haiku-4-5:cached` (first attempt) | 1.2048 |
 | superseded `claude-sonnet-5:uncached` | 0.1920 |
 | superseded manual reconciliation | 0.0104 |
 
-Against a $65 hard envelope. The `unrecorded:swept` line is money spent on
+Against a $65 hard envelope, so $44.97 of headroom was left unspent when the
+workspace limit stopped the run. The `unrecorded:swept` line is money spent on
 requests that completed and were billed but whose results the driver never
 read, largely because of incidents 1 and 3. It is published as swept rather
 than netted out.
+
+The published figure is attributed by BATCH ID, not by lane name (incident 11),
+so a lane that was run twice contributes only the attempt that survived into
+this matrix.
+
+Still absent, and therefore not measurements: both judge passes, the
+interactive latency pass, every p50/p95 figure, and the judge-vs-human
+calibration agreement. `latency.json` is empty by construction.
 
 - L. Fox (Systems Architect)

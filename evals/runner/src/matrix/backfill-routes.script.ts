@@ -82,10 +82,7 @@ test("backfill model_route into published checkpoints", async () => {
   const report: string[] = [];
 
   for (const lane of lanes) {
-    const path = join(
-      RESULTS_DIR,
-      `checkpoint-${lane.replace(":", "-")}.json`,
-    );
+    const path = join(RESULTS_DIR, `checkpoint-${lane.replace(":", "-")}.json`);
     const checkpoint = await readFile(path, "utf8").then(
       (raw) => JSON.parse(raw) as Checkpoint,
       () => null,
@@ -186,11 +183,7 @@ test("backfill model_route into published checkpoints", async () => {
     // published. The attempt boundary computed above, already validated
     // against the checkpoint's own iteration counts, is the exact answer.
     checkpoint.batch_ids = ordered.slice(start);
-    await writeFile(
-      path,
-      `${JSON.stringify(checkpoint, null, 2)}\n`,
-      "utf8",
-    );
+    await writeFile(path, `${JSON.stringify(checkpoint, null, 2)}\n`, "utf8");
     report.push(
       `${lane}: ${proposals.size}/${checkpoint.records.length} proposals ` +
         `recovered from ${ordered.length - start} batches (of ${ordered.length} ` +
