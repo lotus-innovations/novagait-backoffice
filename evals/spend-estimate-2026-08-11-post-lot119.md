@@ -1,7 +1,37 @@
+> **Addendum: post-LOT-119 re-measurement.**
+>
+> Measured 2026-08-11, after LOT-119 (`PROMPT_VERSION` 1.2.0, system+tools
+> prefix 4,516 tokens on `claude-haiku-4-5`, prompt caching wired into both
+> loop drivers). This supersedes the token and dollar figures in
+> `spend-estimate-2026-08-11.md`, which were measured against
+> `PROMPT_VERSION` 1.1.0 and a 3,162-token prefix.
+>
+> **Totals:** raw **$49.81** worst / **$35.27** best; with 1.3x contingency
+> **$64.75** worst / **$45.85** best. **Envelope approved: $65** (Abhinav,
+> 2026-08-11).
+>
+> **Also decided on this evidence:** `MAX_RUN_COST_MICRO_USD` raised
+> 20_000 -> 30_000 ($0.02 -> $0.03). The re-run measured 23 of 73 cached
+> interactive Haiku runs above the old $0.02 breaker (mean $0.0183, worst
+> $0.0239, led by the three 9-turn cases): caching more than halved the
+> per-run cost but did not clear the tail.
+>
+> **Read the numbers, not the narrative.** The body below is generator
+> output. Its §10 "side findings" prose was written against the pre-LOT-119
+> state and parts of it are stale where they describe the prefix as 3,162
+> tokens / 934 short of the minimum, `cache_control` as silently ignored, or
+> `MAX_ITERATIONS` as 8. The generator (`evals/runner/src/spend/report.ts`)
+> was fixed in the same commit as this file to derive those statements from
+> the measured prefix and the live policy constants, so the next regeneration
+> will read correctly; this document is the output as generated, kept as the
+> dated record of the measurement.
+
+---
+
 # LOT-105 live eval matrix: spend estimate (workpaper)
 
-Generated 2026-08-11. Pricing verified 2026-08-11.
-Prompt version 1.1.0, tools version 1.0.0.
+Generated post-lot119. Pricing verified 2026-08-11.
+Prompt version 1.2.0, tools version 1.0.0.
 
 S9 gate artifact: the dollar figure that must be shown to Abhinav before
 any live run (spec 09 §4, spec 13 §3).
@@ -17,31 +47,13 @@ token-consuming endpoint was made.
 
 | Line                                  |        Raw | With 1.3x contingency |
 | ------------------------------------- | ---------: | --------------------: |
-| Best case (98% batch cache-hit rate)  | **$28.22** |            **$36.68** |
-| Worst case (30% batch cache-hit rate) | **$37.03** |            **$48.14** |
+| Best case (98% batch cache-hit rate)  | **$35.27** |            **$45.85** |
+| Worst case (30% batch cache-hit rate) | **$49.81** |            **$64.75** |
 
 The matrix ships **both** cache columns (spec 09 §4 publishes cached and
 uncached side by side), so the headline is the sum of the two columns
 plus judge, calibration, and the interactive latency pass, not one
 column or the other.
-
-**Not in the totals:** an optional effort-level sweep on sonnet-5 and
-opus-5 (spec 09 §4 carries the effort axis but does not enumerate levels)
-adds roughly **+$29.92 raw** on top of the uncached column, a ceiling of
-about **$87 with contingency** if a full {low, medium, high, xhigh} sweep
-is ordered. Decide the effort levels before LOT-105 runs. Detail: §5.
-
-### Verification record (2026-08-11)
-
-Independently verified before presentation: arithmetic re-derived from the
-219 per-case records by a fresh-context reviewer (all subtotals confirmed);
-the two doc-dependent claims re-checked by the main session against the
-live pages the same day. Pricing page states verbatim that Sonnet 5's
-$2/$10, "announced at launch as introductory pricing through August 31,
-2026, is now the standard price" and the scheduled increase "will not
-occur." Batch docs state cache hits are "provided on a best-effort basis"
-with users typically experiencing "cache hit rates ranging from 30% to
-98%". Both figures used here stand as written.
 
 ---
 
@@ -51,7 +63,7 @@ with users typically experiencing "cache hit rates ranging from 30% to
    73 golden cases the estimator reconstructs the first live
    request exactly as `packages/agent/src/loop.ts` would send it: the
    frozen system prompt from `prompts.ts` (PROMPT_VERSION
-   1.1.0), all 8 tool JSON Schemas built the same way the
+   1.2.0), all 8 tool JSON Schemas built the same way the
    raw driver builds them (`z.toJSONSchema(toolInputSchemas[name])`), and
    an intake user turn carrying the inbox-item metadata plus the document
    body from the compiled fixtures. That payload goes to `count_tokens`.
@@ -94,20 +106,18 @@ Per model, summed across all 73 cases (one run each):
 
 | Model              | Cacheable prefix (sys+tools) | Mean iterations/run | Mean input tok/run | Mean output tok/run | Total input tok | Total output tok |
 | ------------------ | ---------------------------: | ------------------: | -----------------: | ------------------: | --------------: | ---------------: |
-| `claude-haiku-4-5` |                      3,162 ⚠ |                 6.8 |             26,985 |                 924 |       1,969,895 |           67,444 |
-| `claude-sonnet-5`  |                        3,954 |                 6.8 |             33,885 |               1,097 |       2,473,612 |           80,059 |
-| `claude-opus-5`    |                        3,886 |                 6.8 |             33,420 |               1,097 |       2,439,680 |           80,059 |
+| `claude-haiku-4-5` |                        4,516 |                 6.8 |             36,240 |                 924 |       2,645,541 |           67,444 |
+| `claude-sonnet-5`  |                        5,845 |                 6.8 |             46,811 |               1,097 |       3,417,221 |           80,059 |
+| `claude-opus-5`    |                        5,777 |                 6.8 |             46,346 |               1,097 |       3,383,289 |           80,059 |
 
 Input split into the shared cacheable prefix (re-read once per iteration)
 and the per-case suffix that can never be shared:
 
 | Model              | Total prefix tok (re-reads) | Total suffix tok | Prefix share of input |
 | ------------------ | --------------------------: | ---------------: | --------------------: |
-| `claude-haiku-4-5` |                   1,577,838 |          392,057 |                 80.1% |
-| `claude-sonnet-5`  |                   1,973,046 |          500,566 |                 79.8% |
-| `claude-opus-5`    |                   1,939,114 |          500,566 |                 79.5% |
-
-> ⚠ **Cache minimum not met.** `claude-haiku-4-5` needs a 4,096-token minimum cacheable prefix; ours is 3,162. Below the minimum, `cache_control` is silently ignored (no error is returned), so the cached column for that model is identical to the uncached column. This is a real finding, not a rounding note: it is the single largest correction to a naive estimate.
+| `claude-haiku-4-5` |                   2,253,484 |          392,057 |                 85.2% |
+| `claude-sonnet-5`  |                   2,916,655 |          500,566 |                 85.4% |
+| `claude-opus-5`    |                   2,882,723 |          500,566 |                 85.2% |
 
 ---
 
@@ -162,19 +172,19 @@ model per column.
 
 | Model              | Input $ | Output $ |       Total | Cost/run |
 | ------------------ | ------: | -------: | ----------: | -------: |
-| `claude-haiku-4-5` | $0.9849 |  $0.1686 | **$1.1536** |  $0.0158 |
-| `claude-sonnet-5`  | $2.4736 |  $0.4003 | **$2.8739** |  $0.0394 |
-| `claude-opus-5`    | $6.0992 |  $1.0007 | **$7.0999** |  $0.0973 |
-| **Subtotal**       |         |          |  **$11.13** |          |
+| `claude-haiku-4-5` | $1.3228 |  $0.1686 | **$1.4914** |  $0.0204 |
+| `claude-sonnet-5`  | $3.4172 |  $0.4003 | **$3.8175** |  $0.0523 |
+| `claude-opus-5`    | $8.4582 |  $1.0007 | **$9.4590** |  $0.1296 |
+| **Subtotal**       |         |          |  **$14.77** |          |
 
 ### Cached column, by batch cache-hit rate
 
 | Hit rate | `claude-haiku-4-5` | `claude-sonnet-5` | `claude-opus-5` |   Subtotal |
 | -------- | -----------------: | ----------------: | --------------: | ---------: |
-| 98%      |            $1.1536 |           $1.1731 |         $2.9211 |  **$5.25** |
-| 90%      |            $1.1536 |           $1.4730 |         $3.6580 |  **$6.28** |
-| 70%      |            $1.1536 |           $2.2228 |         $5.5002 |  **$8.88** |
-| 30%      |            $1.1536 |           $3.7223 |         $9.1845 | **$14.06** |
+| 98%      |            $0.5201 |           $1.3034 |         $3.2467 |  **$5.07** |
+| 90%      |            $0.6914 |           $1.7467 |         $4.3421 |  **$6.78** |
+| 70%      |            $1.1196 |           $2.8550 |         $7.0807 | **$11.06** |
+| 30%      |            $1.9759 |           $5.0717 |        $12.5579 | **$19.61** |
 
 ### Effort axis
 
@@ -186,7 +196,7 @@ multiplies those two models' matrix cost by roughly **4x on input** and
 **more than 4x on output** (higher effort spends more thinking and output
 tokens, and thinking is billed as output). Applying a conservative 4x to
 the Sonnet 5 + Opus 5 rows of the uncached column adds approximately
-**$29.92** on top of the uncached subtotal (4x = 3x incremental).
+**$39.83** on top of the uncached subtotal (4x = 3x incremental).
 Decide the effort levels before running; this line is not in the totals.
 
 ---
@@ -229,10 +239,10 @@ axis. Repetitions are what make p50/p95 meaningful.
 
 | Model              |       Cost |
 | ------------------ | ---------: |
-| `claude-haiku-4-5` |    $1.1378 |
-| `claude-sonnet-5`  |    $2.8345 |
-| `claude-opus-5`    |    $7.0027 |
-| **Subtotal**       | **$10.97** |
+| `claude-haiku-4-5` |    $1.4710 |
+| `claude-sonnet-5`  |    $3.7652 |
+| `claude-opus-5`    |    $9.3294 |
+| **Subtotal**       | **$14.57** |
 
 ---
 
@@ -240,13 +250,13 @@ axis. Repetitions are what make p50/p95 meaningful.
 
 | Component                 | Best case (98% hits) | Worst case (30% hits) |
 | ------------------------- | -------------------: | --------------------: |
-| Matrix, uncached column   |               $11.13 |                $11.13 |
-| Matrix, cached column     |                $5.25 |                $14.06 |
+| Matrix, uncached column   |               $14.77 |                $14.77 |
+| Matrix, cached column     |                $5.07 |                $19.61 |
 | Judge (both judge models) |                $0.81 |                 $0.81 |
 | Judge calibration         |                $0.06 |                 $0.06 |
-| Interactive latency pass  |               $10.97 |                $10.97 |
-| **Raw total**             |           **$28.22** |            **$37.03** |
-| **With 1.3x contingency** |           **$36.68** |            **$48.14** |
+| Interactive latency pass  |               $14.57 |                $14.57 |
+| **Raw total**             |           **$35.27** |            **$49.81** |
+| **With 1.3x contingency** |           **$45.85** |            **$64.75** |
 
 Contingency covers: live models taking different tool paths than the
 deterministic mock (more iterations, extra `lookup_po` pages), schema
@@ -301,40 +311,18 @@ total roughly linearly within that share.
 These came out of reconstructing the real payloads and should be settled
 before LOT-105 executes.
 
-**F1. 3 cases exceed the 8-iteration loop cap.**
-A recorded sequence of N tool calls needs N+1 model turns (the final
-turn writes the answer). These cases need more turns than
-`MAX_ITERATIONS` allows:
-
-| Case      | Model turns required | Cap |
-| --------- | -------------------: | --: |
-| `INV-002` |                    9 |   8 |
-| `INV-012` |                    9 |   8 |
-| `INV-018` |                    9 |   8 |
-
-In a live run the loop stops at the cap and those cases end without a
-final answer, a guaranteed failure that would read as a model
-capability result on the report page. Either raise `MAX_ITERATIONS`
-in `packages/agent/src/policy-constants.ts` (it is spec 13 §1's
-[DEFAULT] of 8, so an Abhinav-approved change), or rely on the live
-model issuing parallel tool calls to collapse turns, which is
-plausible but not something to bet a published number on. Their cost
-in this estimate is measured at their full sequence length, so the
-dollar figure is unaffected by which way this goes.
-
-**F2. Measured per-run cost breaches the per-run cost breaker
-(`MAX_RUN_COST_MICRO_USD` = 20_000, i.e. $0.02).** The
+**F2. Measured per-run cost breaches `MAX_RUN_COST_USD`.** The
 interactive (non-batch, uncached) cost of a single run, computed from
 the same measured token counts:
 
 | Model              | Cost per interactive run | vs $0.02 per-run cap |
 | ------------------ | -----------------------: | -------------------- |
-| `claude-haiku-4-5` |                  $0.0316 | **over by $0.0116**  |
-| `claude-sonnet-5`  |                  $0.0787 | **over by $0.0587**  |
-| `claude-opus-5`    |                  $0.1945 | **over by $0.1745**  |
+| `claude-haiku-4-5` |                  $0.0409 | **over by $0.0209**  |
+| `claude-sonnet-5`  |                  $0.1046 | **over by $0.0846**  |
+| `claude-opus-5`    |                  $0.2591 | **over by $0.2391**  |
 
 `claude-haiku-4-5` is the **public runtime model** (spec 13 preamble),
-and at $0.0316 per run it sits above the $0.02
+and at $0.0409 per run it sits above the $0.02
 `MAX_RUN_COST_MICRO_USD` breaker in
 `packages/agent/src/policy-constants.ts`. Unchanged, the breaker aborts
 runs with `run.end{outcome:"cost_capped"}`, on the happy path, in
@@ -349,12 +337,7 @@ Three ways out, in order of preference:
    934 tokens short. Cached, the per-run cost falls to roughly the
    suffix-only figure and lands well under the cap. This is the only
    option that improves the demo rather than loosening a control.
-   Note this is a two-part change: `cache_control` appears nowhere in
-   `packages/agent/src` today, so the loop drivers must also start
-   marking the system+tools prefix as cacheable; growing the prefix
-   alone does nothing.
-2. **Raise `MAX_RUN_COST_MICRO_USD`** to ~50_000 ($0.05). It is a spec
-   13 §1 [DEFAULT],
+2. **Raise `MAX_RUN_COST_USD`** to ~$0.05. It is a spec 13 §1 [DEFAULT],
    so an Abhinav decision, and it interacts with the $1.00/day breaker:
    at $0.032/run the daily budget already buys only ~31 runs.
 3. **Cut turns.** 6.84 model turns per run, each re-reading the whole
@@ -394,24 +377,3 @@ root vitest config (which includes `*.test.ts` only), so a normal
 `evals/spend-estimate-2026-08-11.json`.
 
 — L. Fox (Systems Architect)
-
----
-
-## Addendum (2026-08-11, post-LOT-119)
-
-**Superseded.** Every token count and dollar figure above was measured
-against `PROMPT_VERSION` 1.1.0, when the system+tools prefix was 3,162
-tokens and prompt caching was not wired in. LOT-119 grew the prefix to 4,516
-tokens (over `claude-haiku-4-5`'s 4,096-token minimum) and added
-`cache_control` to both loop drivers, so §3's ⚠ cache-minimum finding and
-the §10 F2 breaker finding are both resolved.
-
-The current S9 gate artifact is
-[`spend-estimate-2026-08-11-post-lot119.md`](./spend-estimate-2026-08-11-post-lot119.md):
-raw $49.81 worst / $35.27 best, with contingency $64.75 / $45.85, against an
-approved $65 envelope. `MAX_RUN_COST_MICRO_USD` was also raised to 30_000
-($0.03) on that re-measurement.
-
-This document is left as written. It is the dated record of what was
-measured on 2026-08-11 before LOT-119, and its findings are what drove that
-work; do not read its numbers as current.

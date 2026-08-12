@@ -186,7 +186,7 @@ describe("breakers", () => {
       },
     });
     const { result } = await run("raw", [expensive]);
-    // 50000*1 + 10000*5 = 100000 micro-USD > 20000 cap
+    // 50000*1 + 10000*5 = 100000 micro-USD, over any configured cap
     expect(result.outcome).toBe("cost_capped");
     expect(result.failureCode).toBe("SYS-003");
   });

@@ -13,7 +13,13 @@ export const VENDOR_MATCH_THRESHOLD = 0.9; // Jaro-Winkler floor for fuzzy match
 
 export const MAX_ITERATIONS = 10; // loop cap (spec 13 §1, raised 8->10 LOT-119)
 export const RUN_WALL_CLOCK_MS = 90_000;
-export const MAX_RUN_COST_MICRO_USD = 20_000; // $0.02 per run
+// $0.03 per run. Raised 20_000 -> 30_000 on measured evidence (approved
+// 2026-08-11): after LOT-119 put prompt caching in play, a re-run of the
+// estimator against PROMPT_VERSION 1.2.0 measured 23 of 73 cached
+// interactive Haiku runs above the old $0.02 breaker (mean $0.0183, worst
+// $0.0239, led by the three 9-turn cases). Caching cut the per-run cost by
+// more than half; it did not leave enough headroom on the tail.
+export const MAX_RUN_COST_MICRO_USD = 30_000;
 
 // Prompt-cache TTLs (LOT-119). The cacheable prefix is system+tools; the
 // breakpoint that marks it lives in loop.ts. Interactive runs are minutes
