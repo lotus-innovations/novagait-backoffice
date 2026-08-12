@@ -83,6 +83,14 @@ export interface MatrixRow {
    * are carrying the model.
    */
   model_policy_divergence: number | null;
+  /**
+   * Runs whose final turn ended on the output-token cap. A capped run cannot
+   * finish its draft_action, so it grades as a failure that says nothing about
+   * the model's judgement. Published on the ROW because a reader comparing
+   * tiers is otherwise comparing one model against another model's truncation
+   * rate: 27 of 73 opus runs died this way on 2026-08-12.
+   */
+  output_capped_runs: number;
 }
 
 /**
@@ -152,6 +160,9 @@ export function buildMatrixRows(args: {
       p95_latency_ms: stats?.p95_ms ?? null,
       mean_iterations: laneRecords.reduce((a, r) => a + r.iterations, 0) / runs,
       model_policy_divergence: args.divergenceByLane?.[grading.key] ?? null,
+      output_capped_runs: laneRecords.filter(
+        (record) => record.stop_reason === "max_tokens",
+      ).length,
     };
   });
 }
@@ -217,7 +228,21 @@ export function renderMatrixTable(rows: MatrixRow[]): string {
       `${row.model_policy_divergence === null ? "n/a" : String(row.model_policy_divergence)} |`,
     ].join(" | "),
   );
-  return [...header, ...body].join("\n");
+  // Prominent, directly under the table, not in a footnote section a reader
+  // reaches after they have already formed a view of the numbers above.
+  const capped = rows
+    .filter((row) => row.output_capped_runs > 0)
+    .map(
+      (row) =>
+        `- **OUTPUT CAP, \`${row.model}\` ${row.mode}: ${row.output_capped_runs} of ` +
+        `${row.cases} runs ended on the output-token cap** with no completed ` +
+        "`draft_action`. Those runs grade as failures for running out of room, " +
+        "not for judgement, so this row measures the model UNDER THAT CAP and " +
+        "is not a clean capability comparison against a row that did not truncate.",
+    );
+  return [...header, ...body, ...(capped.length > 0 ? ["", ...capped] : [])].join(
+    "\n",
+  );
 }
 
 export async function loadBaseline(path: string): Promise<EvalSummary | null> {
