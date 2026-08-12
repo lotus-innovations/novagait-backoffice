@@ -322,7 +322,8 @@ plausible but not something to bet a published number on. Their cost
 in this estimate is measured at their full sequence length, so the
 dollar figure is unaffected by which way this goes.
 
-**F2. Measured per-run cost breaches `MAX_RUN_COST_USD`.** The
+**F2. Measured per-run cost breaches the per-run cost breaker
+(`MAX_RUN_COST_MICRO_USD` = 20_000, i.e. $0.02).** The
 interactive (non-batch, uncached) cost of a single run, computed from
 the same measured token counts:
 
@@ -348,7 +349,12 @@ Three ways out, in order of preference:
    934 tokens short. Cached, the per-run cost falls to roughly the
    suffix-only figure and lands well under the cap. This is the only
    option that improves the demo rather than loosening a control.
-2. **Raise `MAX_RUN_COST_USD`** to ~$0.05. It is a spec 13 §1 [DEFAULT],
+   Note this is a two-part change: `cache_control` appears nowhere in
+   `packages/agent/src` today, so the loop drivers must also start
+   marking the system+tools prefix as cacheable; growing the prefix
+   alone does nothing.
+2. **Raise `MAX_RUN_COST_MICRO_USD`** to ~50_000 ($0.05). It is a spec
+   13 §1 [DEFAULT],
    so an Abhinav decision, and it interacts with the $1.00/day breaker:
    at $0.032/run the daily budget already buys only ~31 runs.
 3. **Cut turns.** 6.84 model turns per run, each re-reading the whole
