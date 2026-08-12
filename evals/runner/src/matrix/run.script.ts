@@ -201,7 +201,10 @@ test("LOT-105 live matrix", async () => {
     await mkdir(RESULTS_TARGET, { recursive: true });
     await writeFile(
       checkpointPath(lane),
-      `${JSON.stringify({ outcomes: result.outcomes, records: result.records }, null, 2)}\n`,
+      // batch_ids travel with the lane so spend reconciliation can attribute
+      // by BATCH rather than by lane name, which stops a re-run lane's earlier
+      // failed attempt from being counted as published spend.
+      `${JSON.stringify({ outcomes: result.outcomes, records: result.records, batch_ids: result.batch_ids }, null, 2)}\n`,
       "utf8",
     );
     log(
@@ -457,7 +460,11 @@ test("LOT-105 live matrix", async () => {
       "requests ended in 2-3 minutes, while two sonnet-5 batches of the same " +
       "shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - " +
       "per-model batch cadence differs by two orders of magnitude and cannot be " +
-      "assumed from another model's behaviour.",
+      "assumed from another model's behaviour. It is not stable over TIME " +
+      "either: a control probe on 2026-08-12 at 21:41Z ended a sonnet-5 batch " +
+      "in 3.1 minutes, so the multi-hour figures were a transient queue " +
+      "condition and not a property of the model. Any schedule built on either " +
+      "number is a guess; the ledger, not a stopwatch, is the health signal.",
   );
 
   if (baseline === undefined || baseline === null) {

@@ -145,6 +145,27 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
     laneKeys.has(lane) ||
     lane.startsWith("judge:") ||
     lane.startsWith("latency:");
+
+  // Batch-exact attribution, preferred over lane name. A lane can appear TWICE
+  // in one ledger - claude-opus-5:cached was attempted, killed by credit
+  // exhaustion, and re-run - and a lane-name rule then reports the dead
+  // attempt's spend as published because the name matches. Each lane's
+  // checkpoint carries the batch ids of the attempt that was actually
+  // published, so those ids are the authority; lane name is the fallback for
+  // a lane whose checkpoint predates the field.
+  const attributed = new Set<string>();
+  const lanesWithBatchIds = new Set<string>();
+  for (const lane of laneKeys) {
+    const path = join(RESULTS_DIR, `checkpoint-${lane.replace(":", "-")}.json`);
+    const checkpoint = await readFile(path, "utf8").then(
+      (raw) => JSON.parse(raw) as { batch_ids?: string[] },
+      () => null,
+    );
+    if (checkpoint?.batch_ids === undefined) continue;
+    lanesWithBatchIds.add(lane);
+    for (const id of checkpoint.batch_ids) attributed.add(id);
+  }
+
   const published = new Set<string>();
   const superseded = new Set<string>();
   for (const entry of ledger.entries) {
@@ -152,13 +173,21 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
     const batchId = entry.key.split(":")[0];
     const afterCutoff =
       SUPERSEDED_BEFORE === "" || entry.recorded_at >= SUPERSEDED_BEFORE;
-    if (afterCutoff && isPublishedLane(entry.lane)) {
+    const isPublished = lanesWithBatchIds.has(entry.lane)
+      ? attributed.has(batchId)
+      : afterCutoff && isPublishedLane(entry.lane);
+    if (isPublished) {
       published.add(batchId);
     } else {
       superseded.add(batchId);
     }
   }
   for (const id of published) superseded.delete(id);
+  console.log(
+    `attribution: ${lanesWithBatchIds.size} of ${laneKeys.size} lanes attributed ` +
+      `by batch id (${attributed.size} batches); the rest by lane name` +
+      (SUPERSEDED_BEFORE === "" ? "" : ` with cutoff ${SUPERSEDED_BEFORE}`),
+  );
 
   const cache = cacheStatsByLane(ledger);
   const spend = reconcileSpend(ledger, published);

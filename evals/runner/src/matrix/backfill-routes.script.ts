@@ -37,6 +37,8 @@ const LEDGER_PATH = join(REPO, "evals/results/spend-ledger-2026-08-11.json");
 interface Checkpoint {
   outcomes: RunOutcome[];
   records: CaseRunRecord[];
+  /** Batches the PUBLISHED attempt used; see the reconciliation note below. */
+  batch_ids?: string[];
 }
 
 /**
@@ -176,6 +178,14 @@ test("backfill model_route into published checkpoints", async () => {
       records: checkpoint.records,
       outcomes: checkpoint.outcomes,
     });
+    // Reconciliation needs the batch ids of the attempt that was actually
+    // published. Lane name is not enough once a lane is re-run: the
+    // claude-opus-5:cached lane exists twice in this ledger, once as the
+    // attempt that died on credit exhaustion and once as the attempt that
+    // succeeded, and a lane-name rule would report the dead one's spend as
+    // published. The attempt boundary computed above, already validated
+    // against the checkpoint's own iteration counts, is the exact answer.
+    checkpoint.batch_ids = ordered.slice(start);
     await writeFile(
       path,
       `${JSON.stringify(checkpoint, null, 2)}\n`,
@@ -183,7 +193,8 @@ test("backfill model_route into published checkpoints", async () => {
     );
     report.push(
       `${lane}: ${proposals.size}/${checkpoint.records.length} proposals ` +
-        `recovered from ${ordered.length - start} batches, divergence ` +
+        `recovered from ${ordered.length - start} batches (of ${ordered.length} ` +
+        `the lane name covers), divergence ` +
         `${before === null ? "null" : before} -> ${after === null ? "null" : after}`,
     );
   }
