@@ -125,17 +125,37 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
     );
   }
 
-  // A batch counts as published unless every one of its entries predates the
-  // cutoff, which is what an abandoned attempt looks like in the ledger.
+  const matrixPath = join(RESULTS_DIR, "matrix.json");
+  const matrix = JSON.parse(await readFile(matrixPath, "utf8")) as Record<
+    string,
+    unknown
+  > & { lanes?: { key: string }[] };
+
+  // Spend is published only if it belongs to a lane that survived INTO this
+  // matrix. Time alone cannot express that: a lane can fail after the cutoff
+  // (opus:cached failed on the last attempt of the run) and its spend is just
+  // as superseded as the abandoned first attempt's. Deriving the set from the
+  // matrix's own lanes is what reconcileSpend's contract already asks for -
+  // "the batch ids the surviving lanes and judge passes actually used" - and
+  // without it a run whose later lanes failed reports their spend as published.
+  const laneKeys = new Set(
+    ((matrix.lanes ?? []) as { key: string }[]).map((lane) => lane.key),
+  );
+  const isPublishedLane = (lane: string): boolean =>
+    laneKeys.has(lane) ||
+    lane.startsWith("judge:") ||
+    lane.startsWith("latency:");
   const published = new Set<string>();
   const superseded = new Set<string>();
   for (const entry of ledger.entries) {
     if (entry.key.endsWith(":reconciled")) continue;
     const batchId = entry.key.split(":")[0];
-    if (SUPERSEDED_BEFORE !== "" && entry.recorded_at < SUPERSEDED_BEFORE) {
-      superseded.add(batchId);
-    } else {
+    const afterCutoff =
+      SUPERSEDED_BEFORE === "" || entry.recorded_at >= SUPERSEDED_BEFORE;
+    if (afterCutoff && isPublishedLane(entry.lane)) {
       published.add(batchId);
+    } else {
+      superseded.add(batchId);
     }
   }
   for (const id of published) superseded.delete(id);
@@ -143,11 +163,6 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
   const cache = cacheStatsByLane(ledger);
   const spend = reconcileSpend(ledger, published);
 
-  const matrixPath = join(RESULTS_DIR, "matrix.json");
-  const matrix = JSON.parse(await readFile(matrixPath, "utf8")) as Record<
-    string,
-    unknown
-  >;
   matrix.cache_accounting = cache;
   matrix.spend_reconciliation = spend;
   await writeFile(matrixPath, `${JSON.stringify(matrix, null, 2)}\n`, "utf8");

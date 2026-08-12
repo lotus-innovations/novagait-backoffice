@@ -1,0 +1,11 @@
+{
+  "cases": [],
+  "repetitions": 0,
+  "samples": [],
+  "stats": [],
+  "cost_usd": 0,
+  "overrides": {
+    "max_cost_micro_usd": 0,
+    "wall_clock_ms": 0
+  }
+}

@@ -358,12 +358,24 @@ test("LOT-105 live matrix", async () => {
       : undefined;
 
   notes.push(
-    "Calibration agreement is NOT in this directory. The 15 drafts in " +
+    // Counted, not asserted: the selection rule can yield fewer drafts than it
+    // targets when a lane is missing, and a hardcoded count in a published
+    // note is a template number masquerading as a measurement.
+    `Calibration agreement is NOT in this directory. The ${calibration?.key.drafts.length ?? 0} draft(s) in ` +
       "calibration-worksheet.md are scored by a human (Abhinav); the agreement " +
       "and disagreement tables are computed in a follow-up pass from those scores.",
-    `Latency overrides: per-run breaker lifted to $${(latency.overrides.max_cost_micro_usd / 1_000_000).toFixed(2)} ` +
-      `and wall clock to ${latency.overrides.wall_clock_ms / 1000}s, so an opus run is measured rather than cost-capped. ` +
-      "Production containment is unchanged and is NOT what this lane measures.",
+  );
+  // Only describe the overrides when the pass actually ran. The skipped-latency
+  // placeholder carries zeroes, and rendering it unconditionally published the
+  // sentence "breaker lifted to $0.00 and wall clock to 0s" - a measurement
+  // claim about a lane that never executed.
+  notes.push(
+    latency.samples.length > 0
+      ? `Latency overrides: per-run breaker lifted to $${(latency.overrides.max_cost_micro_usd / 1_000_000).toFixed(2)} ` +
+          `and wall clock to ${latency.overrides.wall_clock_ms / 1000}s, so an opus run is measured rather than cost-capped. ` +
+          "Production containment is unchanged and is NOT what this lane measures."
+      : "LATENCY PASS DID NOT RUN in this invocation, so p50/p95 are absent " +
+          "and latency.json is empty. No latency claim in this directory is a measurement.",
   );
 
   if (SMOKE) {
@@ -372,6 +384,47 @@ test("LOT-105 live matrix", async () => {
         "end before the published run. Not the matrix; do not cite these numbers.",
     );
   }
+  // Short-circuit savings, counted rather than asserted: a GR-SCOPE reject is
+  // decided before any model turn and never costs a request.
+  const shortCircuited = new Set(
+    records.filter((record) => record.short_circuit).map((r) => r.case_id),
+  ).size;
+  if (records.length > 0) {
+    notes.push(
+      `Short-circuit savings: ${shortCircuited} of ${cases.length} golden cases are rejected by ` +
+        "the pre-model GR-SCOPE screen and never cost a request, so every round " +
+        `batches ${cases.length - shortCircuited}, not ${cases.length}.`,
+    );
+  }
+
+  // The single most expensive lesson of this run, kept with the artifacts it
+  // explains rather than in a thread nobody will read.
+  notes.push(
+    "Batch progress is NOT observable from request_counts: a batch reports zero " +
+      "completions for its whole life and then jumps to final counts, so any " +
+      "completion-based stall heuristic cancels healthy work. Stall handling is " +
+      "elapsed-time only. Measured 2026-08-12: haiku and opus batches of 16 " +
+      "requests ended in 2-3 minutes, while two sonnet-5 batches of the same " +
+      "shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - " +
+      "per-model batch cadence differs by two orders of magnitude and cannot be " +
+      "assumed from another model's behaviour.",
+  );
+
+  if (baseline === undefined || baseline === null) {
+    notes.push(
+      "NO MOCK BASELINE WAS LOADED (evals/baseline/latest.json absent), so the " +
+        "regression gates (p0_no_regression, aggregate_no_drop) had nothing to " +
+        "compare against and PASSED VACUOUSLY. Do not read those two gates as " +
+        "evidence of no regression; only the gates that evaluated real data " +
+        "(p0_pass_rate, guardrail_hard_zero) carry a verdict.",
+    );
+  }
+
+  notes.push(
+    "Run history, incidents and the reasons lanes are missing are in " +
+      "RUN-LOG.md in this directory. Read it before quoting any number here.",
+  );
+
   notes.push(
     "Reviewer N3: a live model that resolves MORE vendors than the mock planner " +
       "emits extra lookup_vendor and memory.read events. That is correct " +

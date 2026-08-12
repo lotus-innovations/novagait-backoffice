@@ -1,0 +1,101 @@
+# LOT-105 live model matrix
+
+Generated 2026-08-11. Prompt 1.2.0, tools 1.0.0, SDK 0.115.0. Pricing verified 2026-08-11.
+
+Deployed tier: `claude-haiku-4-5`. Only that tier's gates block release (spec 09 §4); the other rows are published for comparison.
+
+## Published matrix
+
+| model | mode | pass rate | P0 pass rate | mean $/run | $/correct run | p50 ms | p95 ms | model vs policy |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `claude-haiku-4-5` | uncached | 43.8% | 65.7% | $0.0247 | $0.0564 | n/a | n/a | 0 |
+| `claude-haiku-4-5` | cached | 46.6% | 71.4% | $0.0139 | $0.0299 | n/a | n/a | 0 |
+| `claude-opus-5` | uncached | 37.0% | 62.9% | $0.1344 | $0.3634 | n/a | n/a | 0 |
+
+Latency is measured on the interactive lane, uncached, and is therefore
+identical across a model's two cache rows (spec 13 §3).
+
+"model vs policy" counts cases where the model proposed one route and
+policy disposed another. It is reported, never graded: the disposed
+route is the product's answer, and this column says how often the
+guardrails did the deciding.
+
+## Gates
+
+- `claude-haiku-4-5:uncached` FAIL (blocking)
+    - p0_pass_rate: FAIL (P0 pass rate 0.657 vs minimum 0.9)
+    - guardrail_hard_zero: FAIL (29 GRD-family failures, maximum 0)
+    - p0_no_regression: pass (no baseline to compare against)
+    - aggregate_no_drop: pass (no baseline to compare against)
+- `claude-haiku-4-5:cached` FAIL (blocking)
+    - p0_pass_rate: FAIL (P0 pass rate 0.714 vs minimum 0.9)
+    - guardrail_hard_zero: FAIL (27 GRD-family failures, maximum 0)
+    - p0_no_regression: pass (no baseline to compare against)
+    - aggregate_no_drop: pass (no baseline to compare against)
+- `claude-opus-5:uncached` FAIL (informational)
+    - p0_pass_rate: FAIL (P0 pass rate 0.629 vs minimum 0.9)
+    - guardrail_hard_zero: FAIL (22 GRD-family failures, maximum 0)
+    - p0_no_regression: pass (no baseline to compare against)
+    - aggregate_no_drop: pass (no baseline to compare against)
+
+## Metric caveats
+
+Carried from `evals/thresholds.json`. These are measurement
+limits, not results: read them before quoting any number above.
+
+- **vendor_id_field_accuracy**: Degenerate on BOTH lanes and NOT a model measurement. The vendor id is re-resolved in code from the printed name (resolveVendorName) in the mock lane and in the live lane alike, and the model's claimed vendor_id is overwritten before the extraction is stashed. This field is therefore 100% by construction and must not be reported as extraction accuracy.
+- **output_schema_valid**: Reduced to drafted/not-drafted on both lanes. Neither lane traces the full extraction on draft_action (arg redaction would rewrite remit_to and make it unparseable), so the graded projection reads the extraction from run state, where it was written by code that already validated it. FMT therefore distinguishes a run that drafted from a run that did not, and nothing finer.
+- **decision**: The graded decision is the DISPOSED route, not the model's proposal: code floor-checks the model's route against the deterministic route and can escalate it. A model that under-routes a case policy holds still scores as correct on DEC. The raw proposal is in the trace as draft_action.args.model_route; the matrix's divergence column is what measures model-vs-policy.
+
+## Spend
+
+Actual: $19.03 against a $65 envelope.
+
+- Calibration agreement is NOT in this directory. The 12 draft(s) in calibration-worksheet.md are scored by a human (Abhinav); the agreement and disagreement tables are computed in a follow-up pass from those scores.
+- LATENCY PASS DID NOT RUN in this invocation, so p50/p95 are absent and latency.json is empty. No latency claim in this directory is a measurement.
+- Short-circuit savings: 5 of 73 golden cases are rejected by the pre-model GR-SCOPE screen and never cost a request, so every round batches 68, not 73.
+- Batch progress is NOT observable from request_counts: a batch reports zero completions for its whole life and then jumps to final counts, so any completion-based stall heuristic cancels healthy work. Stall handling is elapsed-time only. Measured 2026-08-12: haiku and opus batches of 16 requests ended in 2-3 minutes, while two sonnet-5 batches of the same shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - per-model batch cadence differs by two orders of magnitude and cannot be assumed from another model's behaviour.
+- NO MOCK BASELINE WAS LOADED (evals/baseline/latest.json absent), so the regression gates (p0_no_regression, aggregate_no_drop) had nothing to compare against and PASSED VACUOUSLY. Do not read those two gates as evidence of no regression; only the gates that evaluated real data (p0_pass_rate, guardrail_hard_zero) carry a verdict.
+- Run history, incidents and the reasons lanes are missing are in RUN-LOG.md in this directory. Read it before quoting any number here.
+- Reviewer N3: a live model that resolves MORE vendors than the mock planner emits extra lookup_vendor and memory.read events. That is correct behaviour, not a defect: grading fails only on MISSING required calls or must_not_call violations, so a higher tool count is not a penalty and should not be read as noise.
+
+## Cache behaviour, round by round
+
+The cached column is only a saving while the 1h TTL survives the gap
+between batch rounds. Where it does, reads dominate and the lane is
+cheaper; where a round cadence exceeds the TTL, every round pays a 2x
+write instead of a 0.1x read and caching inverts. Both outcomes are
+reported here as measured.
+
+| lane | round | requests | cache read tok | cache write tok | reads dominate |
+| --- | ---: | ---: | ---: | ---: | :--- |
+| `claude-haiku-4-5:cached` | 0 | 136 | 360512 | 209600 | n/a (first round always writes) |
+| `claude-haiku-4-5:cached` | 1 | 135 | 565920 | 0 | yes |
+| `claude-haiku-4-5:cached` | 2 | 134 | 561728 | 0 | yes |
+| `claude-haiku-4-5:cached` | 3 | 131 | 549152 | 0 | yes |
+| `claude-haiku-4-5:cached` | 4 | 119 | 498848 | 0 | yes |
+| `claude-haiku-4-5:cached` | 5 | 76 | 318592 | 0 | yes |
+| `claude-haiku-4-5:cached` | 6 | 49 | 205408 | 0 | yes |
+| `claude-haiku-4-5:cached` | 7 | 21 | 88032 | 0 | yes |
+| `claude-haiku-4-5:cached` | 8 | 9 | 37728 | 0 | yes |
+| `claude-haiku-4-5:cached` | 9 | 4 | 16768 | 0 | yes |
+| `claude-opus-5:cached` | 0 | 84 | 330716 | 148252 | n/a (first round always writes) |
+| `claude-opus-5:cached` | 1 | 68 | 387736 | 0 | yes |
+
+- `claude-haiku-4-5:cached`: caching held. 3202688 read tokens against 209600 written.
+- `claude-opus-5:cached`: caching held. 718452 read tokens against 148252 written.
+
+## Spend reconciliation
+
+Ledger total: $19.0258.
+Attributable to this matrix: $15.8283.
+
+Real spend that bought nothing published, itemised rather than folded
+into the total:
+
+- `claude-sonnet-5:uncached`: $0.1920 — spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix
+- `claude-opus-5:cached`: $1.5238 — spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix
+- `unrecorded:swept`: $1.4713 — spent by a run attempt that was cancelled or restarted; the batches completed and were billed, but their results are not in this matrix
+- `manual reconciliation`: $0.0104 — a batch that completed and was billed before a retrieval bug threw; usage re-fetched from the API and recorded so the envelope is honest
+
+Published plus superseded equals the ledger total.
