@@ -29,6 +29,7 @@ import {
   type ToolName,
 } from "./tools";
 import { nodeIds, type RunMode, type RunOutcome } from "./trace";
+import type { Redactable } from "./redact";
 import { TraceWriter } from "./trace-writer";
 
 export const DEFAULT_MODEL = "claude-haiku-4-5";
@@ -205,12 +206,34 @@ export interface RunWorkflowOptions {
   thinking?: Anthropic.Beta.BetaThinkingConfigParam;
   maxCostMicroUsd?: number;
   wallClockMs?: number;
+  /**
+   * Trace writer to append to. Supply one when the caller writes its own
+   * events for the same run (guardrail checks, memory reads, approval) so
+   * both share a single monotonic `seq` and the caller's `mode` stamp; two
+   * writers on one run id would each start at seq 0 and scramble the order.
+   * Its runId wins over `runId` when both are given.
+   */
+  writer?: TraceWriter;
+  /**
+   * Project a tool call's arguments before they are traced. Defaults to
+   * identity. The live pipeline uses it to keep `draft_action` args in the
+   * shape the mock lane records ({route, summary}); the executor has already
+   * run when this is called, so a projector may read state it produced.
+   * Redaction still applies afterwards, in the trace writer.
+   */
+  traceArgs?: (
+    name: ToolName,
+    input: Record<string, unknown>,
+  ) => Record<string, Redactable>;
   // Business outcome comes from the caller (state machine / gate); the loop
   // only knows about breaker outcomes. Default is "held": safe, reviewable.
-  resolveOutcome?: (finalText: string) => {
-    outcome: RunOutcome;
-    failure_code: string | null;
-  };
+  // May be async: the live pipeline finalizes its disposition here, and the
+  // outcome it returns is the one run.end records.
+  resolveOutcome?: (
+    finalText: string,
+  ) =>
+    | { outcome: RunOutcome; failure_code: string | null }
+    | Promise<{ outcome: RunOutcome; failure_code: string | null }>;
 }
 
 export interface RunWorkflowResult {
@@ -238,12 +261,14 @@ export async function runWorkflow(
   const maxCost = options.maxCostMicroUsd ?? MAX_RUN_COST_MICRO_USD;
   const wallClockMs = options.wallClockMs ?? RUN_WALL_CLOCK_MS;
   const system = options.system ?? buildSystemPrompt();
-  const cachedSystem = buildCachedSystem(
-    system,
-    options.cacheTtl ?? CACHE_TTL_INTERACTIVE,
-  );
+  // One resolved TTL for both the cache_control breakpoint and the cost
+  // math: a 1h write bills 2.0x, not 1.25x (LOT-113), so the two must never
+  // be resolved independently.
+  const cacheTtl = options.cacheTtl ?? CACHE_TTL_INTERACTIVE;
+  const cachedSystem = buildCachedSystem(system, cacheTtl);
 
-  const writer = new TraceWriter(options.store, options.runId);
+  const writer =
+    options.writer ?? new TraceWriter(options.store, options.runId);
   const totals = {
     input_tokens: 0,
     output_tokens: 0,
@@ -269,6 +294,10 @@ export async function runWorkflow(
 
   // Wrap executors once so every driver traces tool calls identically.
   const attempts = new Map<string, number>();
+  const projectArgs = (name: ToolName, input: unknown): Record<string, never> =>
+    (options.traceArgs
+      ? options.traceArgs(name, (input ?? {}) as Record<string, unknown>)
+      : input) as Record<string, never>;
   let currentIteration = 0;
   const tracedExecutors = Object.fromEntries(
     TOOL_NAMES.map((name) => [
@@ -283,7 +312,7 @@ export async function runWorkflow(
             type: "tool.call",
             node_id: nodeIds.tool(currentIteration, name),
             name,
-            args: input as Record<string, never>,
+            args: projectArgs(name, input),
             result_summary: String(output).slice(0, 160),
             duration_ms: Date.now() - started,
             attempt,
@@ -294,7 +323,7 @@ export async function runWorkflow(
             type: "tool.call",
             node_id: nodeIds.tool(currentIteration, name),
             name,
-            args: input as Record<string, never>,
+            args: projectArgs(name, input),
             result_summary: `error: ${String(error)}`.slice(0, 160),
             duration_ms: Date.now() - started,
             attempt,
@@ -336,7 +365,7 @@ export async function runWorkflow(
         cache_read_input_tokens:
           step.message.usage.cache_read_input_tokens ?? 0,
       };
-      const cost = computeCostMicroUsd(model, usage);
+      const cost = computeCostMicroUsd(model, usage, cacheTtl);
       totals.input_tokens += usage.input_tokens;
       totals.output_tokens += usage.output_tokens;
       totals.cache_creation_input_tokens += usage.cache_creation_input_tokens;
@@ -386,7 +415,7 @@ export async function runWorkflow(
   }
 
   if (!outcome) {
-    const resolved = options.resolveOutcome?.(finalText) ?? {
+    const resolved = (await options.resolveOutcome?.(finalText)) ?? {
       outcome: "held" as RunOutcome,
       failure_code: null,
     };

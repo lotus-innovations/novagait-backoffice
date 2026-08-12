@@ -7,6 +7,7 @@ import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { InMemoryStore, getApprovalForRun } from "@novagait/agent";
 import { POST as intakePost } from "./intake/route";
+import { POST as devRunPost } from "./dev/run/route";
 import { POST as approvalPost } from "./approvals/[id]/route";
 import {
   GET as toggleGet,
@@ -256,5 +257,73 @@ describe("admin surfaces fail closed", () => {
       }),
     );
     expect(badAuth.status).toBe(401);
+  });
+});
+
+describe("POST /api/dev/run lane gating", () => {
+  const saved = {
+    MOCK_AGENT: process.env.MOCK_AGENT,
+    LIVE_AGENT: process.env.LIVE_AGENT,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+  };
+
+  const devRequest = (body: Record<string, unknown>) =>
+    new Request(`${BASE}/api/dev/run`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+  const restore = (key: keyof typeof saved) => {
+    if (saved[key] === undefined) delete process.env[key];
+    else process.env[key] = saved[key];
+  };
+
+  afterEach(() => {
+    (Object.keys(saved) as (keyof typeof saved)[]).forEach(restore);
+  });
+
+  it("runs the mock lane by default", async () => {
+    delete process.env.ANTHROPIC_API_KEY;
+    const response = await devRunPost(devRequest({ item: "INB-001" }));
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { outcome: string };
+    expect(body.outcome).toBe("executed");
+  });
+
+  it("403s the live lane when the opt-in flag is absent", async () => {
+    delete process.env.LIVE_AGENT;
+    process.env.ANTHROPIC_API_KEY = "sk-ant-not-real";
+    const response = await devRunPost(
+      devRequest({ item: "INB-001", lane: "live" }),
+    );
+    expect(response.status).toBe(403);
+    expect((await response.json()).error).toMatch(/LIVE_AGENT=1/);
+  });
+
+  it("403s the live lane when the flag is set but no key is configured", async () => {
+    process.env.LIVE_AGENT = "1";
+    delete process.env.ANTHROPIC_API_KEY;
+    const response = await devRunPost(
+      devRequest({ item: "INB-001", lane: "live" }),
+    );
+    expect(response.status).toBe(403);
+  });
+
+  it("403s the mock lane once a key makes the mock agent inactive", async () => {
+    delete process.env.MOCK_AGENT;
+    process.env.ANTHROPIC_API_KEY = "sk-ant-not-real";
+    const response = await devRunPost(devRequest({ item: "INB-001" }));
+    expect(response.status).toBe(403);
+  });
+
+  it("refuses a model the pricing table cannot price", async () => {
+    process.env.LIVE_AGENT = "1";
+    process.env.ANTHROPIC_API_KEY = "sk-ant-not-real";
+    const response = await devRunPost(
+      devRequest({ item: "INB-001", lane: "live", model: "claude-imaginary" }),
+    );
+    expect(response.status).toBe(400);
+    expect((await response.json()).error).toMatch(/No pricing entry/);
   });
 });

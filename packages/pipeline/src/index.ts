@@ -6,3 +6,4 @@ export * from "./mock-agent";
 export * from "./parse";
 export * from "./reset";
 export * from "./resume";
+export * from "./live-agent";
