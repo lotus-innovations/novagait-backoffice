@@ -47,7 +47,7 @@ export interface LiveLaneConfig {
  * `thinking` is always the disabled config; the agent loop's allowlist is
  * what decides whether it actually goes on the wire, so this stays a single
  * uniform config and the model-capability question lives in exactly one
- * place (packages/agent/src/loop.ts, THINKING_DISABLE_SUPPORTED).
+ * place (packages/agent/src/loop.ts, THINKING_CONFIG_SUPPORTED).
  */
 export function liveLaneConfig(model: LiveMatrixModel): LiveLaneConfig {
   return { model, cacheTtl: CACHE_TTL_BATCH, thinking: MATRIX_THINKING };

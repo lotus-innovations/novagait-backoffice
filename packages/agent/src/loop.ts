@@ -62,20 +62,22 @@ export function buildCachedSystem(
 }
 
 /**
- * Models that accept `thinking: {type: "disabled"}`.
+ * Models whose request surface accepts a `thinking` parameter at all.
  *
- * The matrix models sonnet-5 and opus-5 accept it; claude-haiku-4-5 predates
- * the parameter, so the production path sends no `thinking` field at all
- * rather than risk a 400 on the one model the demo actually runs on. This is
- * an allowlist by design: an unknown model gets the param dropped, never
- * forwarded on the assumption that it will be accepted.
+ * This is a strict capability allowlist covering EVERY thinking config, not
+ * just `disabled`. claude-haiku-4-5 (the production model) predates the
+ * parameter: `adaptive` is not part of its surface, and its extended-thinking
+ * form is `{type: "enabled", budget_tokens: N}`, so forwarding any thinking
+ * config to it risks a 400 on the one model the public demo actually runs.
+ * An unknown model is treated as not supporting it: the param is dropped,
+ * never forwarded on the assumption that it will be accepted.
  *
- * On opus-5 `disabled` is additionally rejected above `high` effort. The loop
- * never sets effort (so it runs at the default `high`), and there is no
+ * On opus-5, `disabled` is additionally rejected above `high` effort. The
+ * loop sets no effort (so it runs at the default `high`), and there is no
  * effort knob to get this wrong with; if one is ever added, this guard is
- * where the interaction has to be re-checked.
+ * where that interaction has to be re-checked.
  */
-export const THINKING_DISABLE_SUPPORTED: readonly string[] = [
+export const THINKING_CONFIG_SUPPORTED: readonly string[] = [
   "claude-sonnet-5",
   "claude-opus-5",
 ];
@@ -85,12 +87,7 @@ export function resolveThinking(
   thinking?: Anthropic.Beta.BetaThinkingConfigParam,
 ): Anthropic.Beta.BetaThinkingConfigParam | undefined {
   if (!thinking) return undefined;
-  if (
-    thinking.type === "disabled" &&
-    !THINKING_DISABLE_SUPPORTED.includes(model)
-  ) {
-    return undefined;
-  }
+  if (!THINKING_CONFIG_SUPPORTED.includes(model)) return undefined;
   return thinking;
 }
 

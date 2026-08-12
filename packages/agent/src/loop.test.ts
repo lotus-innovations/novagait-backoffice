@@ -270,12 +270,12 @@ describe.each<DriverName>(["raw", "runner"])("%s driver caching", (driver) => {
     expect(new Set(rendered).size).toBe(1);
   });
 
-  it("drops thinking:disabled on the production haiku model", async () => {
-    const { sent } = await run(driver, [FINAL_RESPONSE], {
-      thinking: { type: "disabled" },
-    });
-    // DEFAULT_MODEL is claude-haiku-4-5: the param must never reach the wire.
-    expect(sent[0].thinking).toBeUndefined();
+  it("drops any thinking config on the production haiku model", async () => {
+    for (const thinking of [{ type: "disabled" }, { type: "adaptive" }]) {
+      const { sent } = await run(driver, [FINAL_RESPONSE], { thinking });
+      // DEFAULT_MODEL is claude-haiku-4-5: nothing may reach the wire.
+      expect(sent[0].thinking).toBeUndefined();
+    }
   });
 
   it("sends thinking:disabled on a matrix model that accepts it", async () => {
@@ -298,18 +298,26 @@ describe("cache + thinking helpers", () => {
     expect(blocks.filter((b) => b.cache_control).length).toBe(1);
   });
 
-  it("allowlists thinking:disabled rather than denylisting", () => {
-    const disabled = { type: "disabled" } as const;
-    expect(resolveThinking("claude-sonnet-5", disabled)).toEqual(disabled);
-    expect(resolveThinking("claude-opus-5", disabled)).toEqual(disabled);
-    expect(resolveThinking("claude-haiku-4-5", disabled)).toBeUndefined();
-    // An unknown model gets the param dropped, never forwarded on faith.
-    expect(resolveThinking("some-future-model", disabled)).toBeUndefined();
+  it("allowlists by model capability, for every thinking config kind", () => {
+    const configs = [
+      { type: "disabled" },
+      { type: "adaptive" },
+      { type: "enabled", budget_tokens: 1024 },
+    ] as const;
+    for (const config of configs) {
+      expect(resolveThinking("claude-sonnet-5", config)).toEqual(config);
+      expect(resolveThinking("claude-opus-5", config)).toEqual(config);
+      // claude-haiku-4-5 is the production model and predates the parameter:
+      // no thinking config of any kind may reach it.
+      expect(resolveThinking("claude-haiku-4-5", config)).toBeUndefined();
+      // An unknown model is treated as not supporting it, never forwarded
+      // on the assumption that it will be accepted.
+      expect(resolveThinking("some-future-model", config)).toBeUndefined();
+    }
   });
 
-  it("passes non-disabled thinking through untouched", () => {
-    const adaptive = { type: "adaptive" } as const;
-    expect(resolveThinking("claude-haiku-4-5", adaptive)).toEqual(adaptive);
+  it("passes undefined through as undefined", () => {
+    expect(resolveThinking("claude-sonnet-5", undefined)).toBeUndefined();
     expect(resolveThinking("claude-haiku-4-5", undefined)).toBeUndefined();
   });
 });

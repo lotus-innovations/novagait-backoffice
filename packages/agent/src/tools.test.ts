@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { z } from "zod";
 import { extractionSchema } from "./extraction";
 import {
   AUTONOMY_CAP_CENTS,
@@ -6,11 +7,13 @@ import {
   VENDOR_MATCH_THRESHOLD,
   priceToleranceCents,
 } from "./policy-constants";
+import { loadKb } from "./kb";
 import { PROMPT_VERSION, buildSystemPrompt } from "./prompts";
 import {
   TOOLS_VERSION,
   TOOL_NAMES,
   buildTools,
+  toolDescriptions,
   toolInputSchemas,
   type ToolExecutors,
 } from "./tools";
@@ -127,6 +130,57 @@ describe("prompt", () => {
     expect(prompt).toContain("price_variance_exceeds_tolerance");
     expect(prompt).toContain("qty_billed_exceeds_received");
     expect(prompt).toContain(String(VENDOR_MATCH_THRESHOLD));
+  });
+
+  // LOT-119 review finding 2. The exact check is
+  // `npm run -w @novagait/evals-runner spend:prefix`, which measures the
+  // prefix against messages.count_tokens - but that needs an API key, so CI
+  // (which is key-free) never runs it. This is the keyless floor that DOES
+  // run on every push: a cheap character-count proxy that catches a material
+  // shrink of the prefix, e.g. someone trimming a section of the prompt.
+  //
+  // Derivation: at PROMPT_VERSION 1.2.0 the rendered system+tools prefix
+  // measured 14,386 characters (system 8,038 + tool schemas 6,348) and
+  // 4,516 tokens on claude-haiku-4-5, a ratio of 3.186 chars/token. Holding
+  // that ratio, the 4,096-token cache minimum needs 4,096 x 3.186 = 13,050
+  // characters; the floor is set to 13,600 for ~4% margin against the ratio
+  // drifting as wording changes. Current headroom above the floor is ~5%.
+  //
+  // This is a PROXY, not a guarantee: chars/token moves with content, so
+  // passing here does not prove the prefix still clears 4,096. Run
+  // spend:prefix after any prompts.ts or tool-surface edit for the real
+  // number. This test's job is to make an accidental shrink loud in CI.
+  const PREFIX_CHAR_FLOOR = 13_600;
+
+  it("keeps the system+tools prefix above the cache-minimum char floor", () => {
+    const toolSchemas = TOOL_NAMES.map((name) => ({
+      name,
+      description: toolDescriptions[name],
+      input_schema: z.toJSONSchema(toolInputSchemas[name]),
+    }));
+    const chars =
+      buildSystemPrompt().length + JSON.stringify(toolSchemas).length;
+    expect(chars).toBeGreaterThan(PREFIX_CHAR_FLOOR);
+  });
+
+  // LOT-119 review finding 3. The prompt quotes the chart of accounts, which
+  // is owned by kb/gl-coding.md. Nothing tied the two, so the KB could be
+  // recoded and the prompt would keep dictating the old codes. Same shape as
+  // the VENDOR_MATCH_THRESHOLD assertion above: the value comes from its
+  // source, and the prompt is checked against it.
+  it("quotes GL codes that still exist in the KB chart of accounts", () => {
+    const doc = loadKb().find((entry) => entry.id === "gl-coding");
+    expect(doc).toBeDefined();
+    const codes = [...new Set(doc!.content.match(/\b\d{4}\b/g) ?? [])];
+    // Guard the regex itself: an empty match set would make this vacuous.
+    expect(codes.length).toBeGreaterThanOrEqual(5);
+    const prompt = buildSystemPrompt();
+    for (const code of codes) {
+      expect(prompt).toContain(code);
+    }
+    // Only KB -> prompt is asserted. The reverse direction would false-fire
+    // on non-GL four-digit strings the prompt legitimately contains (the
+    // hard floor renders as "$5000.00").
   });
 
   it("policy tolerance helper honors max(2%, $25)", () => {

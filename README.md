@@ -43,6 +43,15 @@ CI is key-free by design: no Anthropic API key exists anywhere in GitHub.
 Demo data is ephemeral by design; nothing in any demo store is worth backing
 up.
 
+**After editing `packages/agent/src/prompts.ts` or the tool surface, run
+`npm run -w @novagait/evals-runner spend:prefix`** (needs
+`secrets/backoffice-runtime.env`; uses the free `count_tokens` endpoint). It
+re-measures the cacheable system+tools prefix per model and fails if any
+drops under that model's prompt-cache minimum - `claude-haiku-4-5` needs
+4,096 tokens, and below the minimum `cache_control` is silently ignored with
+no error. `npm test` carries a character-count floor as a cheap proxy, but
+because CI is key-free the exact token check only ever runs locally.
+
 ## License
 
 Source-visible demonstration project. (c) Lotus Innovations. All rights
