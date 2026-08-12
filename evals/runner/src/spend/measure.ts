@@ -40,7 +40,17 @@ function client(): Anthropic {
   return new Anthropic({ apiKey: key, maxRetries: 5 });
 }
 
-const api = client();
+// Constructed on FIRST USE, not at module load. Importing this module (or
+// anything that reaches it, e.g. cost.ts -> report.ts) must not require a
+// key: the renderer is pure and belongs in the key-free CI lane, and until
+// this was lazy it dragged a credential requirement into every importer.
+// The key check itself is unchanged - it still fires, still with the same
+// message, on the first call that would actually contact the API.
+let apiSingleton: Anthropic | null = null;
+function api(): Anthropic {
+  if (apiSingleton === null) apiSingleton = client();
+  return apiSingleton;
+}
 
 async function countTokens(
   model: string,
@@ -49,7 +59,7 @@ async function countTokens(
 ): Promise<number> {
   for (let attempt = 0; ; attempt++) {
     try {
-      const res = await api.messages.countTokens({
+      const res = await api().messages.countTokens({
         model,
         messages,
         ...(opts.system ? { system: opts.system } : {}),
