@@ -2488,7 +2488,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15993000000000002
+      "cost_usd": 0.15993000000000002,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-002",
@@ -2507,7 +2508,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.220405
+      "cost_usd": 0.220405,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-003",
@@ -2526,7 +2528,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.188235
+      "cost_usd": 0.188235,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-004",
@@ -2545,7 +2548,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1575875
+      "cost_usd": 0.1575875,
+      "model_route": "reject"
     },
     {
       "case_id": "INV-005",
@@ -2564,7 +2568,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.19156
+      "cost_usd": 0.19156,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-006",
@@ -2583,7 +2588,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.13727250000000002
+      "cost_usd": 0.13727250000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-007",
@@ -2602,7 +2608,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1410925
+      "cost_usd": 0.1410925,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-008",
@@ -2621,7 +2628,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0798025
+      "cost_usd": 0.0798025,
+      "model_route": null
     },
     {
       "case_id": "INV-009",
@@ -2640,7 +2648,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.18596000000000001
+      "cost_usd": 0.18596000000000001,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-010",
@@ -2659,7 +2668,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16642
+      "cost_usd": 0.16642,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-011",
@@ -2678,7 +2688,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08088
+      "cost_usd": 0.08088,
+      "model_route": null
     },
     {
       "case_id": "INV-012",
@@ -2697,7 +2708,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15647
+      "cost_usd": 0.15647,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-013",
@@ -2716,7 +2728,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15845499999999998
+      "cost_usd": 0.15845499999999998,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-014",
@@ -2735,7 +2748,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1641575
+      "cost_usd": 0.1641575,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-015",
@@ -2754,7 +2768,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-016",
@@ -2773,7 +2788,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15376
+      "cost_usd": 0.15376,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-017",
@@ -2792,7 +2808,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1527075
+      "cost_usd": 0.1527075,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-018",
@@ -2811,7 +2828,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1781825
+      "cost_usd": 0.1781825,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-019",
@@ -2830,7 +2848,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.186165
+      "cost_usd": 0.186165,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-020",
@@ -2849,7 +2868,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.21463
+      "cost_usd": 0.21463,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-021",
@@ -2868,7 +2888,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.197015
+      "cost_usd": 0.197015,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-022",
@@ -2887,7 +2908,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.2259125
+      "cost_usd": 0.2259125,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-023",
@@ -2906,7 +2928,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.2118525
+      "cost_usd": 0.2118525,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-024",
@@ -2925,7 +2948,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.13988250000000002
+      "cost_usd": 0.13988250000000002,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-025",
@@ -2944,7 +2968,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.18399
+      "cost_usd": 0.18399,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-026",
@@ -2963,7 +2988,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.14151999999999998
+      "cost_usd": 0.14151999999999998,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-027",
@@ -2982,7 +3008,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16043749999999998
+      "cost_usd": 0.16043749999999998,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-028",
@@ -3001,7 +3028,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1910425
+      "cost_usd": 0.1910425,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-029",
@@ -3020,7 +3048,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.22343000000000002
+      "cost_usd": 0.22343000000000002,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-030",
@@ -3039,7 +3068,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.12549749999999998
+      "cost_usd": 0.12549749999999998,
+      "model_route": null
     },
     {
       "case_id": "INV-031",
@@ -3058,7 +3088,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.13546
+      "cost_usd": 0.13546,
+      "model_route": null
     },
     {
       "case_id": "INV-032",
@@ -3077,7 +3108,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1616125
+      "cost_usd": 0.1616125,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-033",
@@ -3096,7 +3128,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1037175
+      "cost_usd": 0.1037175,
+      "model_route": null
     },
     {
       "case_id": "INV-034",
@@ -3115,7 +3148,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.134655
+      "cost_usd": 0.134655,
+      "model_route": null
     },
     {
       "case_id": "INV-035",
@@ -3134,7 +3168,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1247475
+      "cost_usd": 0.1247475,
+      "model_route": null
     },
     {
       "case_id": "INV-036",
@@ -3153,7 +3188,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.082105
+      "cost_usd": 0.082105,
+      "model_route": null
     },
     {
       "case_id": "INV-037",
@@ -3172,7 +3208,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.12584
+      "cost_usd": 0.12584,
+      "model_route": null
     },
     {
       "case_id": "INV-038",
@@ -3191,7 +3228,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.19132749999999998
+      "cost_usd": 0.19132749999999998,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-039",
@@ -3210,7 +3248,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16768500000000003
+      "cost_usd": 0.16768500000000003,
+      "model_route": "reject"
     },
     {
       "case_id": "INV-040",
@@ -3229,7 +3268,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1279275
+      "cost_usd": 0.1279275,
+      "model_route": null
     },
     {
       "case_id": "INV-041",
@@ -3248,7 +3288,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.12801
+      "cost_usd": 0.12801,
+      "model_route": null
     },
     {
       "case_id": "INV-042",
@@ -3267,7 +3308,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08182500000000001
+      "cost_usd": 0.08182500000000001,
+      "model_route": null
     },
     {
       "case_id": "INV-043",
@@ -3286,7 +3328,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.140575
+      "cost_usd": 0.140575,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-044",
@@ -3305,7 +3348,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.07897
+      "cost_usd": 0.07897,
+      "model_route": null
     },
     {
       "case_id": "INV-045",
@@ -3324,7 +3368,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.118755
+      "cost_usd": 0.118755,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-046",
@@ -3343,7 +3388,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0793025
+      "cost_usd": 0.0793025,
+      "model_route": null
     },
     {
       "case_id": "INV-047",
@@ -3362,7 +3408,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.2121675
+      "cost_usd": 0.2121675,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-048",
@@ -3381,7 +3428,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.190615
+      "cost_usd": 0.190615,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-049",
@@ -3400,7 +3448,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.079635
+      "cost_usd": 0.079635,
+      "model_route": null
     },
     {
       "case_id": "INV-050",
@@ -3419,7 +3468,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.081715
+      "cost_usd": 0.081715,
+      "model_route": null
     },
     {
       "case_id": "INV-051",
@@ -3438,7 +3488,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.10321749999999999
+      "cost_usd": 0.10321749999999999,
+      "model_route": null
     },
     {
       "case_id": "INV-052",
@@ -3457,7 +3508,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.19328499999999998
+      "cost_usd": 0.19328499999999998,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-053",
@@ -3476,7 +3528,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0800375
+      "cost_usd": 0.0800375,
+      "model_route": null
     },
     {
       "case_id": "INV-054",
@@ -3495,7 +3548,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.15882000000000002
+      "cost_usd": 0.15882000000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-055",
@@ -3514,7 +3568,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08129249999999999
+      "cost_usd": 0.08129249999999999,
+      "model_route": null
     },
     {
       "case_id": "INV-056",
@@ -3533,7 +3588,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.10038
+      "cost_usd": 0.10038,
+      "model_route": null
     },
     {
       "case_id": "INV-057",
@@ -3552,7 +3608,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.08071
+      "cost_usd": 0.08071,
+      "model_route": null
     },
     {
       "case_id": "INV-058",
@@ -3571,7 +3628,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16055750000000002
+      "cost_usd": 0.16055750000000002,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-059",
@@ -3590,7 +3648,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0800525
+      "cost_usd": 0.0800525,
+      "model_route": null
     },
     {
       "case_id": "INV-060",
@@ -3609,7 +3668,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1033425
+      "cost_usd": 0.1033425,
+      "model_route": null
     },
     {
       "case_id": "INV-061",
@@ -3628,7 +3688,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.081775
+      "cost_usd": 0.081775,
+      "model_route": null
     },
     {
       "case_id": "INV-062",
@@ -3647,7 +3708,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1653225
+      "cost_usd": 0.1653225,
+      "model_route": "exception_hold"
     },
     {
       "case_id": "INV-063",
@@ -3666,7 +3728,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1726625
+      "cost_usd": 0.1726625,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-064",
@@ -3685,7 +3748,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1746125
+      "cost_usd": 0.1746125,
+      "model_route": "auto_approve"
     },
     {
       "case_id": "INV-065",
@@ -3704,7 +3768,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.16701
+      "cost_usd": 0.16701,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-066",
@@ -3723,7 +3788,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.125105
+      "cost_usd": 0.125105,
+      "model_route": null
     },
     {
       "case_id": "INV-067",
@@ -3742,7 +3808,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1605
+      "cost_usd": 0.1605,
+      "model_route": "route_for_approval"
     },
     {
       "case_id": "INV-068",
@@ -3761,7 +3828,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.1009075
+      "cost_usd": 0.1009075,
+      "model_route": null
     },
     {
       "case_id": "INV-069",
@@ -3780,7 +3848,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.09998
+      "cost_usd": 0.09998,
+      "model_route": null
     },
     {
       "case_id": "INV-070",
@@ -3799,7 +3868,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-071",
@@ -3818,7 +3888,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-072",
@@ -3837,7 +3908,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     },
     {
       "case_id": "INV-073",
@@ -3856,7 +3928,8 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0
+      "cost_usd": 0,
+      "model_route": null
     }
   ]
 }

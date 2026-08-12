@@ -183,6 +183,15 @@ export interface CaseRunRecord {
   iteration_capped: boolean;
   usage: UsageTokens;
   cost_usd: number;
+  /**
+   * The route the model itself asked for on its last `draft_action`, before
+   * policy disposed of it. Persisted on the RECORD rather than left in a
+   * process-local map because a lane is routinely resumed from its checkpoint
+   * in a later invocation: a map rebuilt by running cases is empty for every
+   * lane that was not re-run, and the divergence column then reads a
+   * fabricated zero. Null means "not captured", never "did not diverge".
+   */
+  model_route: string | null;
 }
 
 export interface LaneRunResult {
@@ -222,6 +231,12 @@ export interface LaneRunOptions {
   maxWaitMs?: number;
   sleep?: (ms: number) => Promise<void>;
   log?: (message: string) => void;
+  /**
+   * Resolves a finished run's model-proposed route so it can be persisted on
+   * the record. Called after `toOutcome`, which is when the matrix pipeline
+   * has read the route off the trace.
+   */
+  modelRouteFor?: (runId: string) => string | null;
 }
 
 const wait = (ms: number): Promise<void> =>
@@ -535,6 +550,7 @@ export async function runLane(options: LaneRunOptions): Promise<LaneRunResult> {
       iteration_capped: state.iterationCapped,
       usage: state.usage,
       cost_usd: state.costUsd,
+      model_route: options.modelRouteFor?.(state.session.runId) ?? null,
     });
   }
 

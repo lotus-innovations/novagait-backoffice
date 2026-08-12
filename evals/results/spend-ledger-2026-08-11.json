@@ -6,24 +6,26 @@
   "pricing_verified_on": "2026-08-11",
   "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
   "totals": {
-    "cost_usd": 19.025789400000008,
+    "cost_usd": 19.025802400000007,
     "by_lane": {
       "claude-haiku-4-5:uncached": 3.8054560000000053,
       "claude-haiku-4-5:cached": 2.222765399999999,
       "claude-sonnet-5:uncached": 0.19199800000000003,
       "claude-opus-5:uncached": 9.810469999999993,
       "claude-opus-5:cached": 1.5238105,
-      "unrecorded:swept": 1.4712895
+      "unrecorded:swept": 1.4712895,
+      "credit-probe": 1.3e-05
     },
     "by_model": {
-      "claude-haiku-4-5": 6.044637400000014,
+      "claude-haiku-4-5": 6.044650400000014,
       "claude-sonnet-5": 1.3563835,
       "claude-opus-5": 11.6247685
     },
     "by_channel": {
-      "batch": 19.025789400000008
+      "batch": 19.025789400000008,
+      "interactive": 1.3e-05
     },
-    "entries": 2440
+    "entries": 2441
   },
   "entries": [
     {
@@ -40840,7 +40842,7 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0000175,
+      "cost_usd": 1.75e-05,
       "recorded_at": "2026-08-12T20:40:55.260Z"
     },
     {
@@ -40857,7 +40859,7 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.0000175,
+      "cost_usd": 1.75e-05,
       "recorded_at": "2026-08-12T20:40:55.260Z"
     },
     {
@@ -40874,7 +40876,7 @@
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       },
-      "cost_usd": 0.000036,
+      "cost_usd": 3.6e-05,
       "recorded_at": "2026-08-12T20:40:56.819Z"
     },
     {
@@ -41505,6 +41507,23 @@
       },
       "cost_usd": 0.0311525,
       "recorded_at": "2026-08-12T20:46:03.549Z"
+    },
+    {
+      "key": "credit-probe-2026-08-12",
+      "lane": "credit-probe",
+      "model": "claude-haiku-4-5",
+      "channel": "interactive",
+      "write_ttl": null,
+      "case_id": null,
+      "round": null,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 1,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 1.3e-05,
+      "recorded_at": "2026-08-12T00:00:00.000Z"
     }
   ]
 }

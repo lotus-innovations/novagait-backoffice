@@ -39,6 +39,7 @@ import {
   DEPLOYED_MODEL,
   buildMatrixRows,
   gradeLane,
+  laneDivergence,
   metricCaveats,
   loadBaseline,
   writeMatrixResults,
@@ -175,6 +176,7 @@ test("LOT-105 live matrix", async () => {
         client: batchClient,
         ledger,
         worstCasePerCaseUsd: bounds[lane.model] ?? 0,
+        modelRouteFor: (runId) => modelRoutes.get(runId) ?? null,
         stallTimeoutMs: numberEnv(
           "MATRIX_STALL_TIMEOUT_MS",
           DEFAULT_STALL_TIMEOUT_MS,
@@ -291,17 +293,29 @@ test("LOT-105 live matrix", async () => {
 
   // Model-proposed vs policy-disposed route, per lane. Free data: traceArgs
   // already keeps model_route on draft_action, so this is a join, not a run.
-  const divergenceByLane: Record<string, number> = {};
+  //
+  // CORRECTION 2026-08-12: this used to read the proposal out of the
+  // process-local `modelRoutes` map only. That map is populated by RUNNING a
+  // case, so every lane resumed from a checkpoint had zero entries in it and
+  // the column published 0 - indistinguishable from "the model never asked
+  // for a route policy overrode". The proposal is now persisted on the record,
+  // and a lane with no captured proposals publishes null, not zero.
+  const divergenceByLane: Record<string, number | null> = {};
   for (const [key, outcomes] of outcomesByLane) {
-    const decisions = new Map(
-      outcomes.map((outcome) => [outcome.case_id, outcome.decision] as const),
-    );
-    divergenceByLane[key] = records.filter((record) => {
-      if (record.lane !== key) return false;
-      const proposed = modelRoutes.get(record.run_id);
-      if (proposed === undefined || proposed === null) return false;
-      return proposed !== decisions.get(record.case_id);
-    }).length;
+    const divergence = laneDivergence({
+      lane: key,
+      records,
+      outcomes,
+      fallback: (runId) => modelRoutes.get(runId) ?? null,
+    });
+    divergenceByLane[key] = divergence;
+    if (divergence === null) {
+      notes.push(
+        `DIVERGENCE UNAVAILABLE for ${key}: no model-proposed route was ` +
+          "captured for any case in this lane, so the column is null rather " +
+          "than a zero that would read as agreement with policy.",
+      );
+    }
   }
 
   const emptyLatency = {

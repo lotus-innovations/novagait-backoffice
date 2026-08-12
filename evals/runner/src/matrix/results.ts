@@ -85,12 +85,45 @@ export interface MatrixRow {
   model_policy_divergence: number | null;
 }
 
+/**
+ * Model-proposed vs policy-disposed route for one lane.
+ *
+ * Returns null when NO case in the lane carries a captured proposal: that is
+ * "this run cannot tell", and it must not be rendered as the zero that means
+ * "the model always agreed with policy". The 2026-08-12 correction: the
+ * proposal used to be read from a process-local map that only had entries for
+ * cases run in THAT invocation, so every checkpoint-resumed lane published a
+ * fabricated zero.
+ */
+export function laneDivergence(args: {
+  lane: string;
+  records: CaseRunRecord[];
+  outcomes: RunOutcome[];
+  /** Proposals for cases run in this process, when the record predates them. */
+  fallback?: (runId: string) => string | null;
+}): number | null {
+  const decisions = new Map(
+    args.outcomes.map((outcome) => [outcome.case_id, outcome.decision] as const),
+  );
+  const proposals = args.records
+    .filter((record) => record.lane === args.lane)
+    .map((record) => ({
+      case_id: record.case_id,
+      proposed: record.model_route ?? args.fallback?.(record.run_id) ?? null,
+    }))
+    .filter((entry) => entry.proposed !== null);
+  if (proposals.length === 0) return null;
+  return proposals.filter(
+    (entry) => entry.proposed !== decisions.get(entry.case_id),
+  ).length;
+}
+
 export function buildMatrixRows(args: {
   gradings: LaneGrading[];
   records: CaseRunRecord[];
   latency: LatencyModelStats[];
   /** Per lane key; omit when the divergence column is not being published. */
-  divergenceByLane?: Record<string, number>;
+  divergenceByLane?: Record<string, number | null>;
 }): MatrixRow[] {
   const latencyByModel = new Map(
     args.latency.map((entry) => [entry.model, entry] as const),
