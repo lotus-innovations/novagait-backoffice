@@ -20,7 +20,12 @@ import {
 } from "@novagait/agent";
 import { MockBackend } from "@novagait/mock-backend";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createLivePipeline, openLiveRun, runLivePipeline } from "./live-agent";
+import {
+  createLivePipeline,
+  openLiveRun,
+  runLivePipeline,
+  traceToolCalls,
+} from "./live-agent";
 import { runMockPipeline } from "./mock-agent";
 import { resumeRun } from "./resume";
 import { parseFixture } from "./parse";
@@ -422,6 +427,69 @@ describe("live executors", () => {
     await run.executors.execute_action({ draft_ref: drafted.draft_ref });
     const trace = await readTrace(store, run.runId);
     expect(events(trace, "approval.requested")).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The traced tool.call surface (what the graders actually read)
+// ---------------------------------------------------------------------------
+
+describe("traceToolCalls", () => {
+  it("traces the DISPOSED route, not the route the model proposed", async () => {
+    // INB-006 resolves to no vendor, so policy holds it whatever is asked
+    // for: proposal and disposition differ, which is the only case that can
+    // catch a projector applied before the executor ran.
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-006",
+      mode: "autonomous",
+    });
+    await run.writeRunStart();
+    const traced = traceToolCalls(run, () => 0);
+    const { extraction } = await fixtureFor(backend, "INB-006");
+    await traced.draft_action(draftInput(extraction, "auto_approve") as never);
+
+    const trace = await readTrace(store, run.runId);
+    const draft = trace.find(
+      (event) => event.type === "tool.call" && event.name === "draft_action",
+    ) as Extract<TraceEvent, { type: "tool.call" }>;
+    expect(draft.args.route).toBe("exception_hold");
+    expect(draft.args.model_route).toBe("auto_approve");
+  });
+
+  it("appends nothing to a trace that GR-SCOPE already closed", async () => {
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-015",
+      mode: "autonomous",
+    });
+    const before = await readTrace(store, run.runId);
+    const traced = traceToolCalls(run, () => 0);
+    const refusal = JSON.parse(await traced.kb_search({ query: "anything" }));
+    expect(refusal.error).toMatch(/GR-SCOPE/);
+    const after = await readTrace(store, run.runId);
+    expect(after).toHaveLength(before.length);
+    expect(after.at(-1)?.type).toBe("run.end");
+  });
+
+  it("passes non-draft tool args through untouched", async () => {
+    const run = await openLiveRun({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    await run.writeRunStart();
+    const traced = traceToolCalls(run, () => 2);
+    await traced.lookup_po({ po_id: "PO-2201" });
+    const trace = await readTrace(store, run.runId);
+    const call = trace.find(
+      (event) => event.type === "tool.call" && event.name === "lookup_po",
+    ) as Extract<TraceEvent, { type: "tool.call" }>;
+    expect(call.args).toEqual({ po_id: "PO-2201" });
+    expect(call.node_id).toBe("agent.iter[2].tool[lookup_po]");
   });
 });
 

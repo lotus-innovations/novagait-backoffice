@@ -215,6 +215,7 @@ export class MockBackend {
     fixture: string;
     received_at?: string;
   }): Promise<InboxItem> {
+    await this.friction();
     const items = (await this.readJson<InboxItem[]>(KEYS.inbox)) ?? [];
     if (items.some((candidate) => candidate.id === item.id)) {
       throw new Error(`inbox item already enqueued: ${item.id}`);

@@ -92,6 +92,13 @@ export function resolveThinking(
   return thinking;
 }
 
+/** See RunWorkflowOptions.traceArgs. */
+export type TraceArgsProjector = (
+  name: ToolName,
+  input: Record<string, unknown>,
+  output: string | undefined,
+) => Record<string, Redactable>;
+
 export interface AgentStep {
   message: Anthropic.Beta.BetaMessage;
   latencyMs: number;
@@ -217,14 +224,18 @@ export interface RunWorkflowOptions {
   /**
    * Project a tool call's arguments before they are traced. Defaults to
    * identity. The live pipeline uses it to keep `draft_action` args in the
-   * shape the mock lane records ({route, summary}); the executor has already
-   * run when this is called, so a projector may read state it produced.
+   * shape the mock lane records ({route, summary}).
+   *
+   * `output` is the executor's own result, which is why it is a parameter
+   * rather than something the projector reads out of a closure: the value a
+   * projector needs is produced BY the call it is describing, so passing it
+   * explicitly makes "project after executing" a property of the signature
+   * instead of a rule in a comment that a second implementation can get
+   * wrong. It is undefined when the executor threw.
+   *
    * Redaction still applies afterwards, in the trace writer.
    */
-  traceArgs?: (
-    name: ToolName,
-    input: Record<string, unknown>,
-  ) => Record<string, Redactable>;
+  traceArgs?: TraceArgsProjector;
   // Business outcome comes from the caller (state machine / gate); the loop
   // only knows about breaker outcomes. Default is "held": safe, reviewable.
   // May be async: the live pipeline finalizes its disposition here, and the
@@ -264,15 +275,16 @@ export function traceToolExecutors(params: {
   executors: ToolExecutors;
   /** Current loop iteration, read at call time for the node id. */
   iteration: () => number;
-  traceArgs?: (
-    name: ToolName,
-    input: Record<string, unknown>,
-  ) => Record<string, Redactable>;
+  traceArgs?: TraceArgsProjector;
 }): ToolExecutors {
   const attempts = new Map<string, number>();
-  const projectArgs = (name: ToolName, input: unknown): Record<string, never> =>
+  const projectArgs = (
+    name: ToolName,
+    input: unknown,
+    output: string | undefined,
+  ): Record<string, never> =>
     (params.traceArgs
-      ? params.traceArgs(name, (input ?? {}) as Record<string, unknown>)
+      ? params.traceArgs(name, (input ?? {}) as Record<string, unknown>, output)
       : input) as Record<string, never>;
 
   return Object.fromEntries(
@@ -288,7 +300,7 @@ export function traceToolExecutors(params: {
             type: "tool.call",
             node_id: nodeIds.tool(params.iteration(), name),
             name,
-            args: projectArgs(name, input),
+            args: projectArgs(name, input, String(output)),
             result_summary: String(output).slice(0, 160),
             duration_ms: Date.now() - started,
             attempt,
@@ -299,7 +311,7 @@ export function traceToolExecutors(params: {
             type: "tool.call",
             node_id: nodeIds.tool(params.iteration(), name),
             name,
-            args: projectArgs(name, input),
+            args: projectArgs(name, input, undefined),
             result_summary: `error: ${String(error)}`.slice(0, 160),
             duration_ms: Date.now() - started,
             attempt,

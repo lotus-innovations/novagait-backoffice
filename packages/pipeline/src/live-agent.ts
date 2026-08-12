@@ -58,6 +58,7 @@ import {
   resolveVendorName,
   runWorkflow,
   searchKb,
+  traceToolExecutors,
   type CacheTtl,
   type Decision,
   type DriverName,
@@ -70,7 +71,7 @@ import {
   type RunStep,
   type Store,
   type ToolExecutors,
-  type ToolName,
+  type TraceArgsProjector,
   type VendorProfile,
   type VendorProfileUpdate,
 } from "@novagait/agent";
@@ -106,6 +107,21 @@ export interface LiveDisposition {
   route: Decision | null;
   approvalId: string | null;
   failureCode: string | null;
+}
+
+/**
+ * The disposed route out of a draft_action executor result. Returns null for
+ * anything else (a refusal, a throw, a non-draft tool), so the caller falls
+ * back rather than trusting a shape it did not recognise.
+ */
+function readDisposedRoute(output: string | undefined): Decision | null {
+  if (!output) return null;
+  try {
+    const parsed = JSON.parse(output) as { route?: unknown };
+    return typeof parsed.route === "string" ? (parsed.route as Decision) : null;
+  } catch {
+    return null;
+  }
 }
 
 export interface LiveRunOptions {
@@ -145,11 +161,12 @@ export interface LiveRun {
    * already complete and traced; the model MUST NOT be called.
    */
   shortCircuit: LiveDisposition | null;
-  /** Projector for runWorkflow's `traceArgs` (mock-shaped draft_action args). */
-  traceArgs(
-    name: ToolName,
-    input: Record<string, unknown>,
-  ): Record<string, Redactable>;
+  /**
+   * Projector for runWorkflow's `traceArgs`: mock-shaped draft_action args,
+   * carrying the DISPOSED route. Reads the executor's result, so it can only
+   * be applied after the call it describes (see TraceArgsProjector).
+   */
+  traceArgs: TraceArgsProjector;
   /** Complete the disposition and settle the state machine. Idempotent. */
   finalize(): Promise<LiveDisposition>;
   writeRunStart(): Promise<void>;
@@ -861,15 +878,22 @@ export async function openLiveRun(options: LiveRunOptions): Promise<LiveRun> {
     return settled;
   }
 
-  const traceArgs: LiveRun["traceArgs"] = (name, input) => {
+  const traceArgs: LiveRun["traceArgs"] = (name, input, output) => {
     if (name !== "draft_action") return input as Record<string, Redactable>;
     // Mock-lane shape. The full extraction stays out of the trace on purpose:
     // it lives in run state (where the graders read it from), and tracing it
     // would put it through arg redaction, which rewrites `remit_to` into a
     // digest and makes the extraction unparseable downstream.
+    //
+    // `route` is the DISPOSED route, read from the executor's own result: the
+    // graded `decision` must be what the run did, not what the model asked
+    // for. Taking it from the result rather than from `drafted` means a
+    // caller cannot get it wrong by projecting before executing - there is no
+    // output to read yet if it tries.
+    const disposed = readDisposedRoute(output);
     return {
-      route: drafted?.route ?? (input.route as Redactable),
-      summary: drafted?.summary ?? (input.summary as Redactable),
+      route: (disposed ?? drafted?.route ?? input.route) as Redactable,
+      summary: (drafted?.summary ?? input.summary) as Redactable,
       model_route: (input.route ?? null) as Redactable,
     };
   };
@@ -940,6 +964,37 @@ export function buildUserMessage(
     );
   }
   return parts.join("\n");
+}
+
+/**
+ * Wrap a live run's executors so every tool call is traced, whoever drives
+ * the loop. This is the ONLY correct way to bind a LiveRun to the product's
+ * tracing: it takes the run rather than loose parts, so a caller cannot pair
+ * one run's executors with another's writer, cannot forget the arg projector
+ * (and with it the disposed-route contract), and cannot slip past the
+ * post-run.end refusal guard, because `run.executors` is already the guarded
+ * set on a short-circuited run.
+ *
+ * runWorkflow performs the identical wrap internally via traceToolExecutors;
+ * a caller that drives the executors itself (the batched eval lane) uses this.
+ */
+export function traceToolCalls(
+  run: Pick<LiveRun, "executors" | "writer" | "traceArgs" | "shortCircuit">,
+  getIteration: () => number,
+): ToolExecutors {
+  // A short-circuited run's trace is closed: its run.end is already written.
+  // Refusing inside the executors was not enough, because the wrapper sits
+  // OUTSIDE them and would append a tool.call after the end of the trace -
+  // and that call would show up in the graded tool_calls. Refuse untraced
+  // instead, so "nothing lands after run.end" is a property of this wrapper
+  // rather than a convention every caller has to remember.
+  if (run.shortCircuit) return run.executors;
+  return traceToolExecutors({
+    writer: run.writer,
+    executors: run.executors,
+    traceArgs: run.traceArgs,
+    iteration: getIteration,
+  });
 }
 
 /**
@@ -1169,7 +1224,12 @@ export interface LiveCasePipeline<TOutcome> {
   ): Promise<LiveCaseSession<TOutcome>>;
 }
 
-const EVAL_ENQUEUED_AT = "2026-08-10T00:00:00.000Z";
+/**
+ * Enqueue timestamp for eval-lane inbox items. Exported because
+ * cassettes/record.ts carries the same literal; the two must agree or a
+ * cassette and a live run describe differently-aged documents.
+ */
+export const EVAL_ENQUEUED_AT = "2026-08-10T00:00:00.000Z";
 const evalItemId = (caseId: string) => `EVAL-${caseId}`;
 
 export function createLivePipeline<TOutcome>(
@@ -1227,17 +1287,29 @@ export function createLivePipeline<TOutcome>(
       // nothing else would write it. The short-circuit path wrote its own
       // boundaries already.
       if (!run.shortCircuit) await run.writeRunStart();
-      let projected: TOutcome | null = null;
+      // The PROMISE is memoised, not its value: the guard is checked before
+      // several awaits, so two concurrent calls would both pass a
+      // value-guard, both finalize, and both append a run.end.
+      let projection: Promise<TOutcome> | null = null;
 
       return {
         ...run,
         backend,
         shortCircuited: run.shortCircuit !== null,
-        async toOutcome(
+        toOutcome(
           totals: CaseUsageTotals = {},
           terminal?: CaseTerminalOverride,
         ) {
-          if (projected !== null) return projected;
+          projection ??= project(totals, terminal);
+          return projection;
+        },
+      };
+
+      async function project(
+        totals: CaseUsageTotals,
+        terminal?: CaseTerminalOverride,
+      ): Promise<TOutcome> {
+        {
           let route: Decision | null = null;
           let outcome: RunOutcome;
 
@@ -1270,16 +1342,15 @@ export function createLivePipeline<TOutcome>(
             });
           }
 
-          projected = await options.toOutcome({
+          return options.toOutcome({
             runId: run.runId,
             store,
             backend,
             route,
             outcome,
           });
-          return projected;
-        },
-      };
+        }
+      }
     },
   };
 }
