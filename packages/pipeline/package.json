@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "smoke:live": "vitest run --config scripts/smoke.config.ts"
   },
   "dependencies": {
     "@novagait/agent": "*",
