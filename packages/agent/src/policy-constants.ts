@@ -11,9 +11,18 @@ export const PRICE_TOLERANCE_MIN_CENTS = 2_500;
 
 export const VENDOR_MATCH_THRESHOLD = 0.9; // Jaro-Winkler floor for fuzzy match
 
-export const MAX_ITERATIONS = 8; // loop cap (spec 13 §1)
+export const MAX_ITERATIONS = 10; // loop cap (spec 13 §1, raised 8->10 LOT-119)
 export const RUN_WALL_CLOCK_MS = 90_000;
 export const MAX_RUN_COST_MICRO_USD = 20_000; // $0.02 per run
+
+// Prompt-cache TTLs (LOT-119). The cacheable prefix is system+tools; the
+// breakpoint that marks it lives in loop.ts. Interactive runs are minutes
+// apart at most, so the cheaper 5m write pays for itself on the second run;
+// a batch or eval lane can idle far longer between runs, and the docs
+// recommend the 1h TTL for batches (2x write, but it survives the gap).
+export const CACHE_TTL_INTERACTIVE = "5m" as const;
+export const CACHE_TTL_BATCH = "1h" as const;
+export type CacheTtl = typeof CACHE_TTL_INTERACTIVE | typeof CACHE_TTL_BATCH;
 
 // Containment layers (spec 13 §1, LOT-103).
 export const DAILY_BUDGET_MICRO_USD = 1_000_000; // $1.00/day, then capacity mode

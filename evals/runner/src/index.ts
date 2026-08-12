@@ -4,6 +4,7 @@
 export const EVALS_RUNNER_PACKAGE = "@novagait/evals-runner";
 
 export * from "./golden";
+export * from "./live-lane";
 export * from "./outcome";
 export * from "./normalize";
 export * from "./taxonomy";

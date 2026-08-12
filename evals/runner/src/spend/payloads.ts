@@ -249,7 +249,7 @@ export const PREAMBLE_TEXT =
   "I'll resolve the vendor and the referenced purchase order before deciding.";
 
 /**
- * One turn per tool call. MAX_ITERATIONS is 8 and the recorded sequences run
+ * One turn per tool call. MAX_ITERATIONS is 10 and the recorded sequences run
  * 4-7 calls, so one-call-per-turn is both the observed mock-lane pattern and
  * the conservative (higher-input) reading: parallel tool use would collapse
  * turns and lower the bill.

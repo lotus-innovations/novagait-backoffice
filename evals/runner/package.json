@@ -9,7 +9,8 @@
     "cassettes:record": "vitest run --config src/cassettes/vitest.scripts.config.ts record.script",
     "cassettes:check": "vitest run --config src/cassettes/vitest.scripts.config.ts check.script",
     "cassettes:replay": "vitest run --config src/cassettes/vitest.scripts.config.ts replay.script",
-    "cassettes:baseline": "vitest run --config src/cassettes/vitest.scripts.config.ts baseline.script"
+    "cassettes:baseline": "vitest run --config src/cassettes/vitest.scripts.config.ts baseline.script",
+    "spend:prefix": "vitest run --config src/spend/vitest.scripts.config.ts prefix.script"
   },
   "dependencies": {
     "@novagait/agent": "*",

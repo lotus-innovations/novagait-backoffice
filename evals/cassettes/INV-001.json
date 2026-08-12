@@ -38,7 +38,7 @@
   "recorded_with": {
     "mode": "autonomous",
     "model": "mock-agent",
-    "prompt_version": "1.1.0",
+    "prompt_version": "1.2.0",
     "tools_version": "1.0.0"
   },
   "version": 1

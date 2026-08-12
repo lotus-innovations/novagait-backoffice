@@ -63,6 +63,23 @@ async function countTokens(
   }
 }
 
+/**
+ * The system+tools cacheable prefix, measured on its own.
+ *
+ * This is the span `cache_control` marks in loop.ts: render order is
+ * tools -> system -> messages, so a breakpoint on the last system block
+ * covers both. The one-character user turn is the smallest legal message
+ * list; its handful of tokens sit outside the marked prefix, so the number
+ * returned is a slight OVER-count of the prefix, which is the safe
+ * direction when checking against a per-model cache minimum.
+ */
+export async function measurePrefixTokens(model: string): Promise<number> {
+  return countTokens(model, [{ role: "user", content: "." }], {
+    system: SYSTEM_PROMPT,
+    tools: TOOLS,
+  });
+}
+
 async function mapLimit<T, R>(
   items: T[],
   limit: number,

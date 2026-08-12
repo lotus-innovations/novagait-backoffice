@@ -10,9 +10,11 @@ import Anthropic from "@anthropic-ai/sdk";
 import { VERSION as SDK_VERSION } from "@anthropic-ai/sdk/version";
 import { z } from "zod";
 import {
+  CACHE_TTL_INTERACTIVE,
   MAX_ITERATIONS,
   MAX_RUN_COST_MICRO_USD,
   RUN_WALL_CLOCK_MS,
+  type CacheTtl,
 } from "./policy-constants";
 import { computeCostMicroUsd } from "./pricing";
 import { PROMPT_VERSION, buildSystemPrompt } from "./prompts";
@@ -34,6 +36,64 @@ export const DEFAULT_MAX_TOKENS = 2048;
 
 export type DriverName = "runner" | "raw";
 
+/**
+ * Prompt caching (LOT-119).
+ *
+ * Render order is tools -> system -> messages, so ONE breakpoint on the last
+ * system block covers the whole shared system+tools prefix. Both drivers
+ * build the system block through this function so the cached bytes are
+ * identical between them: the runner and the raw driver share a cache entry.
+ *
+ * The prefix must clear the model's minimum or cache_control is silently
+ * ignored - no error, and cache_creation_input_tokens simply stays 0.
+ * claude-haiku-4-5 (the production model) has the highest minimum of the
+ * matrix at 4,096 tokens; the prefix measures 4,516 at prompt 1.2.0.
+ * `npm run -w @novagait/evals-runner spend:prefix` re-measures it for free
+ * and fails if any matrix model drops under its minimum - run it after any
+ * edit to prompts.ts or the tool surface.
+ */
+export function buildCachedSystem(
+  system: string,
+  ttl: CacheTtl = CACHE_TTL_INTERACTIVE,
+): Anthropic.Beta.BetaTextBlockParam[] {
+  return [
+    { type: "text", text: system, cache_control: { type: "ephemeral", ttl } },
+  ];
+}
+
+/**
+ * Models that accept `thinking: {type: "disabled"}`.
+ *
+ * The matrix models sonnet-5 and opus-5 accept it; claude-haiku-4-5 predates
+ * the parameter, so the production path sends no `thinking` field at all
+ * rather than risk a 400 on the one model the demo actually runs on. This is
+ * an allowlist by design: an unknown model gets the param dropped, never
+ * forwarded on the assumption that it will be accepted.
+ *
+ * On opus-5 `disabled` is additionally rejected above `high` effort. The loop
+ * never sets effort (so it runs at the default `high`), and there is no
+ * effort knob to get this wrong with; if one is ever added, this guard is
+ * where the interaction has to be re-checked.
+ */
+export const THINKING_DISABLE_SUPPORTED: readonly string[] = [
+  "claude-sonnet-5",
+  "claude-opus-5",
+];
+
+export function resolveThinking(
+  model: string,
+  thinking?: Anthropic.Beta.BetaThinkingConfigParam,
+): Anthropic.Beta.BetaThinkingConfigParam | undefined {
+  if (!thinking) return undefined;
+  if (
+    thinking.type === "disabled" &&
+    !THINKING_DISABLE_SUPPORTED.includes(model)
+  ) {
+    return undefined;
+  }
+  return thinking;
+}
+
 export interface AgentStep {
   message: Anthropic.Beta.BetaMessage;
   latencyMs: number;
@@ -43,15 +103,17 @@ interface DriverParams {
   client: Anthropic;
   model: string;
   maxTokens: number;
-  system: string;
+  system: Anthropic.Beta.BetaTextBlockParam[];
   messages: Anthropic.Beta.BetaMessageParam[];
   executors: ToolExecutors;
   maxIterations: number;
+  thinking?: Anthropic.Beta.BetaThinkingConfigParam;
 }
 
 export type AgentDriver = (params: DriverParams) => AsyncGenerator<AgentStep>;
 
 async function* runnerDriver(params: DriverParams): AsyncGenerator<AgentStep> {
+  const thinking = resolveThinking(params.model, params.thinking);
   const runner = params.client.beta.messages.toolRunner({
     model: params.model,
     max_tokens: params.maxTokens,
@@ -59,6 +121,7 @@ async function* runnerDriver(params: DriverParams): AsyncGenerator<AgentStep> {
     tools: buildTools(params.executors),
     max_iterations: params.maxIterations,
     messages: params.messages,
+    ...(thinking ? { thinking } : {}),
   });
   let started = Date.now();
   for await (const message of runner) {
@@ -76,6 +139,7 @@ async function* rawDriver(params: DriverParams): AsyncGenerator<AgentStep> {
     ) as Anthropic.Beta.BetaTool.InputSchema,
   }));
   const messages = [...params.messages];
+  const thinking = resolveThinking(params.model, params.thinking);
   for (let iteration = 0; iteration < params.maxIterations; iteration++) {
     const started = Date.now();
     const message = await params.client.beta.messages.create({
@@ -84,6 +148,7 @@ async function* rawDriver(params: DriverParams): AsyncGenerator<AgentStep> {
       system: params.system,
       tools,
       messages,
+      ...(thinking ? { thinking } : {}),
     });
     yield { message, latencyMs: Date.now() - started };
     if (message.stop_reason !== "tool_use") return;
@@ -137,6 +202,10 @@ export interface RunWorkflowOptions {
   runId?: string;
   driver?: DriverName;
   maxIterations?: number;
+  /** Prompt-cache TTL for the system+tools prefix. Default 5m (interactive). */
+  cacheTtl?: CacheTtl;
+  /** Dropped for models that do not accept it (see resolveThinking). */
+  thinking?: Anthropic.Beta.BetaThinkingConfigParam;
   maxCostMicroUsd?: number;
   wallClockMs?: number;
   // Business outcome comes from the caller (state machine / gate); the loop
@@ -172,6 +241,10 @@ export async function runWorkflow(
   const maxCost = options.maxCostMicroUsd ?? MAX_RUN_COST_MICRO_USD;
   const wallClockMs = options.wallClockMs ?? RUN_WALL_CLOCK_MS;
   const system = options.system ?? buildSystemPrompt();
+  const cachedSystem = buildCachedSystem(
+    system,
+    options.cacheTtl ?? CACHE_TTL_INTERACTIVE,
+  );
 
   const writer = new TraceWriter(options.store, options.runId);
   const totals = {
@@ -240,10 +313,11 @@ export async function runWorkflow(
     client: options.client,
     model,
     maxTokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
-    system,
+    system: cachedSystem,
     messages: [{ role: "user", content: options.userMessage }],
     executors: tracedExecutors,
     maxIterations,
+    thinking: options.thinking,
   });
 
   try {
