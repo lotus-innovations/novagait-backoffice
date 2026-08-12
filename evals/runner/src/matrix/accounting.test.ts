@@ -122,3 +122,50 @@ describe("reconcileSpend", () => {
     expect(spend.superseded[0].reason).toMatch(/re-fetched/);
   });
 });
+
+describe("warm-start detection", () => {
+  it("flags a cached lane whose round 0 only reads as not from-cold", () => {
+    const ledger = ledgerOf([
+      entry({
+        lane: "claude-opus-5:cached",
+        round: 0,
+        usage: {
+          input_tokens: 268,
+          output_tokens: 139,
+          cache_creation_input_tokens: 0,
+          cache_read_input_tokens: 5702,
+        },
+      }),
+      entry({
+        lane: "claude-opus-5:cached",
+        round: 1,
+        usage: {
+          input_tokens: 300,
+          output_tokens: 140,
+          cache_creation_input_tokens: 0,
+          cache_read_input_tokens: 5702,
+        },
+      }),
+    ]);
+    const rendered = renderCacheSection(cacheStatsByLane(ledger));
+    expect(rendered).toContain("NOT A FROM-COLD MEASUREMENT");
+    expect(rendered).toContain("5702");
+  });
+
+  it("does not flag a lane that paid for its own first-round write", () => {
+    const ledger = ledgerOf([
+      entry({
+        lane: "claude-opus-5:cached",
+        round: 0,
+        usage: {
+          input_tokens: 100,
+          output_tokens: 100,
+          cache_creation_input_tokens: 5702,
+          cache_read_input_tokens: 0,
+        },
+      }),
+    ]);
+    const rendered = renderCacheSection(cacheStatsByLane(ledger));
+    expect(rendered).not.toContain("NOT A FROM-COLD MEASUREMENT");
+  });
+});

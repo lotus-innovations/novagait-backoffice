@@ -190,6 +190,27 @@ export function renderCacheSection(lanes: LaneCacheStats[]): string {
   }
   lines.push("");
   for (const lane of cached) {
+    // A lane whose FIRST round pays reads instead of writes did not start
+    // cold: it inherited a prefix an earlier attempt wrote and paid for.
+    // Measured on claude-opus-5:cached, 2026-08-12, where round 0 read 5,702
+    // cached tokens per request and wrote none because a superseded attempt
+    // had written that prefix inside the 1h TTL. Its cache economics are then
+    // cheaper than a from-cold lane's and must not be quoted as one: the
+    // write is real, and it is sitting in the superseded bucket of the spend
+    // reconciliation.
+    const first = lane.rounds.find((round) => round.round === 0);
+    if (
+      first !== undefined &&
+      first.cache_write_tokens === 0 &&
+      first.cache_read_tokens > 0
+    ) {
+      lines.push(
+        `- \`${lane.lane}\`: NOT A FROM-COLD MEASUREMENT. Round 0 read ` +
+          `${first.cache_read_tokens} cached tokens and wrote none, so the ` +
+          "prefix was already warm from an earlier attempt that paid for the " +
+          "write. This lane's cost understates a cold cached lane by that write.",
+      );
+    }
     lines.push(
       lane.cache_inverted
         ? `- \`${lane.lane}\`: caching INVERTED. ${lane.cache_write_tokens} write tokens against ` +

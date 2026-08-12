@@ -23,6 +23,7 @@ import { LIVE_MATRIX_MODELS } from "../live-lane";
 import type { RunOutcome } from "../outcome";
 import { CONTINGENCY, PRICING_VERIFIED_ON } from "../spend/cost";
 import {
+  DEFAULT_MAX_TOKENS,
   DEFAULT_MAX_WAIT_MS,
   DEFAULT_STALL_RETRIES,
   DEFAULT_STALL_TIMEOUT_MS,
@@ -316,6 +317,41 @@ test("LOT-105 live matrix", async () => {
           "than a zero that would read as agreement with policy.",
       );
     }
+  }
+
+  // Provenance for the column itself. It published a fabricated zero on
+  // 2026-08-11 and the correction has to travel with the artifacts.
+  notes.push(
+    "MODEL-VS-POLICY DIVERGENCE was BROKEN in the 2026-08-11 publication and " +
+      "read 0 on every lane. The join took the model's proposed route from a " +
+      "process-local map that only holds cases run in THAT invocation, and " +
+      "every published lane was resumed from a checkpoint, so it joined " +
+      "against nothing and rendered the empty result as zero. The proposal is " +
+      "now persisted on the record; the already-published lanes were " +
+      "recovered from stored batch results (matrix:backfill-routes) at zero " +
+      "spend. Only proposals the driver actually TRACED count: a draft_action " +
+      "truncated by the max_tokens cap, or rejected by the tool schema, is " +
+      "never executed, and counting those fabricated 22 divergences on the " +
+      "opus lane and 1 on haiku:uncached before it was tightened.",
+  );
+  for (const [key, outcomes] of outcomesByLane) {
+    const laneRecords = records.filter((record) => record.lane === key);
+    const captured = laneRecords.filter(
+      (record) => record.model_route !== null,
+    ).length;
+    const undisposed = outcomes.filter(
+      (outcome) => outcome.decision === null,
+    ).length;
+    const capped = laneRecords.filter(
+      (record) => record.stop_reason === "max_tokens",
+    ).length;
+    notes.push(
+      `${key}: ${captured} of ${laneRecords.length} cases carry a traced model ` +
+        `proposal, so the divergence figure is a measurement over ${captured} ` +
+        `cases, not over the lane. ${undisposed} run(s) reached no disposition ` +
+        `at all and ${capped} ended on the ${DEFAULT_MAX_TOKENS}-token output ` +
+        "cap, which is where most of the missing proposals went.",
+    );
   }
 
   const emptyLatency = {
