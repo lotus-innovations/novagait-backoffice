@@ -1,0 +1,3167 @@
+{
+  "generatedOn": "2026-08-11",
+  "pricingVerifiedOn": "2026-08-11",
+  "caseCount": 73,
+  "aggregates": [
+    {
+      "model": "claude-haiku-4-5",
+      "cases": 73,
+      "prefixTokens": 3162,
+      "cacheApplies": false,
+      "totalInputTokens": 1969895,
+      "totalSuffixTokens": 392057,
+      "totalPrefixTokens": 1577838,
+      "totalOutputTokens": 67444,
+      "meanInputTokensPerRun": 26984.86301369863,
+      "meanOutputTokensPerRun": 923.8904109589041,
+      "meanIterations": 6.835616438356165
+    },
+    {
+      "model": "claude-sonnet-5",
+      "cases": 73,
+      "prefixTokens": 3954,
+      "cacheApplies": true,
+      "totalInputTokens": 2473612,
+      "totalSuffixTokens": 500566,
+      "totalPrefixTokens": 1973046,
+      "totalOutputTokens": 80059,
+      "meanInputTokensPerRun": 33885.09589041096,
+      "meanOutputTokensPerRun": 1096.6986301369864,
+      "meanIterations": 6.835616438356165
+    },
+    {
+      "model": "claude-opus-5",
+      "cases": 73,
+      "prefixTokens": 3886,
+      "cacheApplies": true,
+      "totalInputTokens": 2439680,
+      "totalSuffixTokens": 500566,
+      "totalPrefixTokens": 1939114,
+      "totalOutputTokens": 80059,
+      "meanInputTokensPerRun": 33420.27397260274,
+      "meanOutputTokensPerRun": 1096.6986301369864,
+      "meanIterations": 6.835616438356165
+    }
+  ],
+  "matrix": {
+    "uncached": [
+      {
+        "model": "claude-haiku-4-5",
+        "mode": "uncached",
+        "cacheHitRate": null,
+        "inputCostUsd": 0.9849475,
+        "outputCostUsd": 0.16861,
+        "totalUsd": 1.1535575,
+        "costPerRunUsd": 0.015802157534246575
+      },
+      {
+        "model": "claude-sonnet-5",
+        "mode": "uncached",
+        "cacheHitRate": null,
+        "inputCostUsd": 2.4736119999999997,
+        "outputCostUsd": 0.400295,
+        "totalUsd": 2.8739069999999995,
+        "costPerRunUsd": 0.039368589041095886
+      },
+      {
+        "model": "claude-opus-5",
+        "mode": "uncached",
+        "cacheHitRate": null,
+        "inputCostUsd": 6.099200000000001,
+        "outputCostUsd": 1.0007375,
+        "totalUsd": 7.099937500000001,
+        "costPerRunUsd": 0.09725941780821919
+      }
+    ],
+    "cached": {
+      "0.98": [
+        {
+          "model": "claude-haiku-4-5",
+          "mode": "cached",
+          "cacheHitRate": 0.98,
+          "inputCostUsd": 0.9849475,
+          "outputCostUsd": 0.16861,
+          "totalUsd": 1.1535575,
+          "costPerRunUsd": 0.015802157534246575,
+          "note": "prefix 3162 tok < 4096 tok minimum for claude-haiku-4-5: cache_control is silently ignored, so the cached column equals the uncached column"
+        },
+        {
+          "model": "claude-sonnet-5",
+          "mode": "cached",
+          "cacheHitRate": 0.98,
+          "inputCostUsd": 0.772846348,
+          "outputCostUsd": 0.400295,
+          "totalUsd": 1.173141348,
+          "costPerRunUsd": 0.016070429424657532
+        },
+        {
+          "model": "claude-opus-5",
+          "mode": "cached",
+          "cacheHitRate": 0.98,
+          "inputCostUsd": 1.9204093300000002,
+          "outputCostUsd": 1.0007375,
+          "totalUsd": 2.9211468300000005,
+          "costPerRunUsd": 0.04001571000000001
+        }
+      ],
+      "0.90": [
+        {
+          "model": "claude-haiku-4-5",
+          "mode": "cached",
+          "cacheHitRate": 0.9,
+          "inputCostUsd": 0.9849475,
+          "outputCostUsd": 0.16861,
+          "totalUsd": 1.1535575,
+          "costPerRunUsd": 0.015802157534246575,
+          "note": "prefix 3162 tok < 4096 tok minimum for claude-haiku-4-5: cache_control is silently ignored, so the cached column equals the uncached column"
+        },
+        {
+          "model": "claude-sonnet-5",
+          "mode": "cached",
+          "cacheHitRate": 0.9,
+          "inputCostUsd": 1.0727493399999999,
+          "outputCostUsd": 0.400295,
+          "totalUsd": 1.47304434,
+          "costPerRunUsd": 0.020178689589041097
+        },
+        {
+          "model": "claude-opus-5",
+          "mode": "cached",
+          "cacheHitRate": 0.9,
+          "inputCostUsd": 2.6572726500000003,
+          "outputCostUsd": 1.0007375,
+          "totalUsd": 3.6580101500000004,
+          "costPerRunUsd": 0.05010972808219179
+        }
+      ],
+      "0.70": [
+        {
+          "model": "claude-haiku-4-5",
+          "mode": "cached",
+          "cacheHitRate": 0.7,
+          "inputCostUsd": 0.9849475,
+          "outputCostUsd": 0.16861,
+          "totalUsd": 1.1535575,
+          "costPerRunUsd": 0.015802157534246575,
+          "note": "prefix 3162 tok < 4096 tok minimum for claude-haiku-4-5: cache_control is silently ignored, so the cached column equals the uncached column"
+        },
+        {
+          "model": "claude-sonnet-5",
+          "mode": "cached",
+          "cacheHitRate": 0.7,
+          "inputCostUsd": 1.82250682,
+          "outputCostUsd": 0.400295,
+          "totalUsd": 2.22280182,
+          "costPerRunUsd": 0.03044934
+        },
+        {
+          "model": "claude-opus-5",
+          "mode": "cached",
+          "cacheHitRate": 0.7,
+          "inputCostUsd": 4.499430950000001,
+          "outputCostUsd": 1.0007375,
+          "totalUsd": 5.50016845,
+          "costPerRunUsd": 0.07534477328767124
+        }
+      ],
+      "0.30": [
+        {
+          "model": "claude-haiku-4-5",
+          "mode": "cached",
+          "cacheHitRate": 0.3,
+          "inputCostUsd": 0.9849475,
+          "outputCostUsd": 0.16861,
+          "totalUsd": 1.1535575,
+          "costPerRunUsd": 0.015802157534246575,
+          "note": "prefix 3162 tok < 4096 tok minimum for claude-haiku-4-5: cache_control is silently ignored, so the cached column equals the uncached column"
+        },
+        {
+          "model": "claude-sonnet-5",
+          "mode": "cached",
+          "cacheHitRate": 0.3,
+          "inputCostUsd": 3.3220217799999996,
+          "outputCostUsd": 0.400295,
+          "totalUsd": 3.7223167799999994,
+          "costPerRunUsd": 0.0509906408219178
+        },
+        {
+          "model": "claude-opus-5",
+          "mode": "cached",
+          "cacheHitRate": 0.3,
+          "inputCostUsd": 8.183747550000001,
+          "outputCostUsd": 1.0007375,
+          "totalUsd": 9.184485050000001,
+          "costPerRunUsd": 0.12581486369863015
+        }
+      ]
+    }
+  },
+  "judge": [
+    {
+      "model": "claude-sonnet-5",
+      "role": "working",
+      "judgedResults": 219,
+      "inputTokens": 71859,
+      "outputTokens": 31974,
+      "totalUsd": 0.23172900000000002
+    },
+    {
+      "model": "claude-opus-5",
+      "role": "published",
+      "judgedResults": 219,
+      "inputTokens": 71859,
+      "outputTokens": 31974,
+      "totalUsd": 0.5793225
+    }
+  ],
+  "calibration": [
+    {
+      "model": "claude-sonnet-5",
+      "role": "working",
+      "judgedResults": 15,
+      "inputTokens": 4921.8493150684935,
+      "outputTokens": 2190,
+      "totalUsd": 0.015871849315068496
+    },
+    {
+      "model": "claude-opus-5",
+      "role": "published",
+      "judgedResults": 15,
+      "inputTokens": 4921.8493150684935,
+      "outputTokens": 2190,
+      "totalUsd": 0.03967962328767123
+    }
+  ],
+  "latencyPass": {
+    "cases": 12,
+    "models": 3,
+    "repetitions": 3,
+    "runs": 108,
+    "totalUsd": 10.974971835616438,
+    "perModelUsd": [
+      {
+        "model": "claude-haiku-4-5",
+        "totalUsd": 1.1377553424657534
+      },
+      {
+        "model": "claude-sonnet-5",
+        "totalUsd": 2.8345384109589036
+      },
+      {
+        "model": "claude-opus-5",
+        "totalUsd": 7.002678082191782
+      }
+    ]
+  },
+  "totals": {
+    "matrixUncachedUsd": 11.127402,
+    "matrixCachedBestUsd": 5.247845678000001,
+    "matrixCachedWorstUsd": 14.06035933,
+    "judgeUsd": 0.8110515,
+    "calibrationUsd": 0.055551472602739724,
+    "latencyUsd": 10.974971835616438,
+    "rawUsd": 37.02933613821918,
+    "rawUsdCachedBest": 28.21682248621918,
+    "withContingencyUsd": 48.13813697968494,
+    "withContingencyUsdCachedBest": 36.681869232084935
+  },
+  "meta": {
+    "prompt_version": "1.1.0",
+    "tools_version": "1.0.0",
+    "count_tokens_calls": 3363,
+    "live_spend_usd": 0,
+    "iteration_cap": 8,
+    "cases_over_iteration_cap": [
+      {
+        "caseId": "INV-002",
+        "turns": 9
+      },
+      {
+        "caseId": "INV-012",
+        "turns": 9
+      },
+      {
+        "caseId": "INV-018",
+        "turns": 9
+      }
+    ],
+    "per_case_measurements": [
+      {
+        "caseId": "INV-001",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3428, 3578, 3744, 3888, 4069, 4495, 4611, 4749
+        ],
+        "totalInputTokens": 32562,
+        "outputTokensPerIteration": [86, 85, 136, 82, 410, 87, 125, 40],
+        "totalOutputTokens": 1051,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [266, 416, 582, 726, 907, 1333, 1449, 1587],
+        "totalSuffixTokens": 7266
+      },
+      {
+        "caseId": "INV-002",
+        "model": "claude-haiku-4-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          3408, 3566, 3770, 3928, 4070, 4251, 4676, 4792, 4930
+        ],
+        "totalInputTokens": 37391,
+        "outputTokensPerIteration": [90, 85, 85, 134, 82, 409, 87, 125, 40],
+        "totalOutputTokens": 1137,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [
+          246, 404, 608, 766, 908, 1089, 1514, 1630, 1768
+        ],
+        "totalSuffixTokens": 8933
+      },
+      {
+        "caseId": "INV-003",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3363, 3513, 3680, 3822, 4003, 4429, 4545],
+        "totalInputTokens": 27355,
+        "outputTokensPerIteration": [86, 85, 134, 82, 410, 87, 40],
+        "totalOutputTokens": 924,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [201, 351, 518, 660, 841, 1267, 1383],
+        "totalSuffixTokens": 5221
+      },
+      {
+        "caseId": "INV-004",
+        "model": "claude-haiku-4-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [3336, 3493, 3633, 3814, 4203, 4341],
+        "totalInputTokens": 22820,
+        "outputTokensPerIteration": [89, 132, 82, 373, 125, 40],
+        "totalOutputTokens": 841,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [174, 331, 471, 652, 1041, 1179],
+        "totalSuffixTokens": 3848
+      },
+      {
+        "caseId": "INV-005",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3328, 3478, 3644, 3788, 3969, 4385, 4501],
+        "totalInputTokens": 27093,
+        "outputTokensPerIteration": [86, 85, 136, 82, 400, 87, 40],
+        "totalOutputTokens": 916,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [166, 316, 482, 626, 807, 1223, 1339],
+        "totalSuffixTokens": 4959
+      },
+      {
+        "caseId": "INV-006",
+        "model": "claude-haiku-4-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [3321, 3439, 3579, 3760, 4167],
+        "totalInputTokens": 18266,
+        "outputTokensPerIteration": [90, 132, 82, 391, 40],
+        "totalOutputTokens": 735,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [159, 277, 417, 598, 1005],
+        "totalSuffixTokens": 2456
+      },
+      {
+        "caseId": "INV-007",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3325, 3484, 3653, 3797, 3978, 4390, 4528],
+        "totalInputTokens": 27155,
+        "outputTokensPerIteration": [90, 85, 136, 82, 396, 125, 40],
+        "totalOutputTokens": 954,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [163, 322, 491, 635, 816, 1228, 1366],
+        "totalSuffixTokens": 5021
+      },
+      {
+        "caseId": "INV-008",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3356, 3506, 3673, 3817, 3998, 4433, 4571],
+        "totalInputTokens": 27354,
+        "outputTokensPerIteration": [86, 85, 136, 82, 419, 125, 40],
+        "totalOutputTokens": 973,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [194, 344, 511, 655, 836, 1271, 1409],
+        "totalSuffixTokens": 5220
+      },
+      {
+        "caseId": "INV-009",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3322, 3480, 3627, 3759, 3899, 4080, 4495, 4633
+        ],
+        "totalInputTokens": 31295,
+        "outputTokensPerIteration": [90, 85, 85, 132, 82, 399, 125, 40],
+        "totalOutputTokens": 1038,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [160, 318, 465, 597, 737, 918, 1333, 1471],
+        "totalSuffixTokens": 5999
+      },
+      {
+        "caseId": "INV-010",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3403, 3553, 3719, 3864, 4045, 4454, 4592],
+        "totalInputTokens": 27630,
+        "outputTokensPerIteration": [86, 85, 137, 82, 393, 125, 40],
+        "totalOutputTokens": 948,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [241, 391, 557, 702, 883, 1292, 1430],
+        "totalSuffixTokens": 5496
+      },
+      {
+        "caseId": "INV-011",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3368, 3521, 3688, 3830, 4011, 4461, 4599],
+        "totalInputTokens": 27478,
+        "outputTokensPerIteration": [87, 85, 134, 82, 434, 125, 40],
+        "totalOutputTokens": 987,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [206, 359, 526, 668, 849, 1299, 1437],
+        "totalSuffixTokens": 5344
+      },
+      {
+        "caseId": "INV-012",
+        "model": "claude-haiku-4-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          3382, 3540, 3689, 3821, 3964, 4145, 4563, 4679, 4817
+        ],
+        "totalInputTokens": 36600,
+        "outputTokensPerIteration": [90, 85, 85, 135, 82, 402, 87, 125, 40],
+        "totalOutputTokens": 1131,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [
+          220, 378, 527, 659, 802, 983, 1401, 1517, 1655
+        ],
+        "totalSuffixTokens": 8142
+      },
+      {
+        "caseId": "INV-013",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3347, 3497, 3665, 3808, 3989, 4419, 4535],
+        "totalInputTokens": 27260,
+        "outputTokensPerIteration": [86, 85, 135, 82, 414, 87, 40],
+        "totalOutputTokens": 929,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [185, 335, 503, 646, 827, 1257, 1373],
+        "totalSuffixTokens": 5126
+      },
+      {
+        "caseId": "INV-014",
+        "model": "claude-haiku-4-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [3324, 3444, 3610, 3752, 3933, 4336],
+        "totalInputTokens": 22399,
+        "outputTokensPerIteration": [91, 85, 134, 82, 387, 40],
+        "totalOutputTokens": 819,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [162, 282, 448, 590, 771, 1174],
+        "totalSuffixTokens": 3427
+      },
+      {
+        "caseId": "INV-015",
+        "model": "claude-haiku-4-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [3307, 3657],
+        "totalInputTokens": 6964,
+        "outputTokensPerIteration": [334, 40],
+        "totalOutputTokens": 374,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [145, 495],
+        "totalSuffixTokens": 640
+      },
+      {
+        "caseId": "INV-016",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3416, 3569, 3735, 3874, 4055, 4476, 4592, 4730
+        ],
+        "totalInputTokens": 32447,
+        "outputTokensPerIteration": [87, 85, 131, 82, 405, 87, 125, 40],
+        "totalOutputTokens": 1042,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [254, 407, 573, 712, 893, 1314, 1430, 1568],
+        "totalSuffixTokens": 7151
+      },
+      {
+        "caseId": "INV-017",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3418, 3568, 3734, 3878, 4059, 4485, 4601, 4739
+        ],
+        "totalInputTokens": 32482,
+        "outputTokensPerIteration": [86, 85, 136, 82, 410, 87, 125, 40],
+        "totalOutputTokens": 1051,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [256, 406, 572, 716, 897, 1323, 1439, 1577],
+        "totalSuffixTokens": 7186
+      },
+      {
+        "caseId": "INV-018",
+        "model": "claude-haiku-4-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          3386, 3544, 3693, 3825, 3965, 4146, 4571, 4687, 4825
+        ],
+        "totalInputTokens": 36642,
+        "outputTokensPerIteration": [90, 85, 85, 132, 82, 409, 87, 125, 40],
+        "totalOutputTokens": 1135,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [
+          224, 382, 531, 663, 803, 984, 1409, 1525, 1663
+        ],
+        "totalSuffixTokens": 8184
+      },
+      {
+        "caseId": "INV-019",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3407, 3566, 3734, 3872, 4053, 4477, 4593, 4731
+        ],
+        "totalInputTokens": 32433,
+        "outputTokensPerIteration": [90, 85, 130, 82, 408, 87, 125, 40],
+        "totalOutputTokens": 1047,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [245, 404, 572, 710, 891, 1315, 1431, 1569],
+        "totalSuffixTokens": 7137
+      },
+      {
+        "caseId": "INV-020",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3417, 3567, 3733, 3876, 4057, 4483, 4599, 4737
+        ],
+        "totalInputTokens": 32469,
+        "outputTokensPerIteration": [86, 85, 135, 82, 410, 87, 125, 40],
+        "totalOutputTokens": 1050,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [255, 405, 571, 714, 895, 1321, 1437, 1575],
+        "totalSuffixTokens": 7173
+      },
+      {
+        "caseId": "INV-021",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3417, 3575, 3722, 3854, 3996, 4177, 4610, 4748
+        ],
+        "totalInputTokens": 32099,
+        "outputTokensPerIteration": [90, 85, 85, 134, 82, 417, 125, 40],
+        "totalOutputTokens": 1058,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [255, 413, 560, 692, 834, 1015, 1448, 1586],
+        "totalSuffixTokens": 6803
+      },
+      {
+        "caseId": "INV-022",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3444, 3598, 3782, 3927, 4070, 4251, 4685, 4823
+        ],
+        "totalInputTokens": 32580,
+        "outputTokensPerIteration": [88, 85, 85, 135, 82, 418, 125, 40],
+        "totalOutputTokens": 1058,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [282, 436, 620, 765, 908, 1089, 1523, 1661],
+        "totalSuffixTokens": 7284
+      },
+      {
+        "caseId": "INV-023",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3456, 3606, 3790, 3935, 4077, 4258, 4686, 4824
+        ],
+        "totalInputTokens": 32632,
+        "outputTokensPerIteration": [86, 85, 85, 134, 82, 412, 125, 40],
+        "totalOutputTokens": 1049,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [294, 444, 628, 773, 915, 1096, 1524, 1662],
+        "totalSuffixTokens": 7336
+      },
+      {
+        "caseId": "INV-024",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3402, 3567, 3734, 3876, 4057, 4489, 4605, 4743
+        ],
+        "totalInputTokens": 32473,
+        "outputTokensPerIteration": [93, 85, 134, 82, 416, 87, 125, 40],
+        "totalOutputTokens": 1062,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [240, 405, 572, 714, 895, 1327, 1443, 1581],
+        "totalSuffixTokens": 7177
+      },
+      {
+        "caseId": "INV-025",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3388, 3541, 3708, 3849, 4030, 4456, 4572, 4710
+        ],
+        "totalInputTokens": 32254,
+        "outputTokensPerIteration": [87, 85, 133, 82, 410, 87, 125, 40],
+        "totalOutputTokens": 1049,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [226, 379, 546, 687, 868, 1294, 1410, 1548],
+        "totalSuffixTokens": 6958
+      },
+      {
+        "caseId": "INV-026",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3430, 3582, 3749, 3891, 4072, 4494, 4610, 4748
+        ],
+        "totalInputTokens": 32576,
+        "outputTokensPerIteration": [87, 85, 134, 82, 406, 87, 125, 40],
+        "totalOutputTokens": 1046,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [268, 420, 587, 729, 910, 1332, 1448, 1586],
+        "totalSuffixTokens": 7280
+      },
+      {
+        "caseId": "INV-027",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3424, 3577, 3745, 3888, 4069, 4493, 4609, 4747
+        ],
+        "totalInputTokens": 32552,
+        "outputTokensPerIteration": [87, 85, 135, 82, 408, 87, 125, 40],
+        "totalOutputTokens": 1049,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [262, 415, 583, 726, 907, 1331, 1447, 1585],
+        "totalSuffixTokens": 7256
+      },
+      {
+        "caseId": "INV-028",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3368, 3521, 3687, 3831, 4012, 4433, 4549, 4687
+        ],
+        "totalInputTokens": 32088,
+        "outputTokensPerIteration": [87, 85, 136, 82, 405, 87, 125, 40],
+        "totalOutputTokens": 1047,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [206, 359, 525, 669, 850, 1271, 1387, 1525],
+        "totalSuffixTokens": 6792
+      },
+      {
+        "caseId": "INV-029",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3447, 3597, 3763, 3905, 4086, 4512, 4628],
+        "totalInputTokens": 27938,
+        "outputTokensPerIteration": [86, 85, 134, 82, 410, 87, 40],
+        "totalOutputTokens": 924,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [285, 435, 601, 743, 924, 1350, 1466],
+        "totalSuffixTokens": 5804
+      },
+      {
+        "caseId": "INV-030",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3357, 3507, 3674, 3819, 4000, 4426, 4542],
+        "totalInputTokens": 27325,
+        "outputTokensPerIteration": [86, 85, 137, 82, 410, 87, 40],
+        "totalOutputTokens": 927,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [195, 345, 512, 657, 838, 1264, 1380],
+        "totalSuffixTokens": 5191
+      },
+      {
+        "caseId": "INV-031",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3457, 3612, 3779, 3921, 4102, 4530, 4646],
+        "totalInputTokens": 28047,
+        "outputTokensPerIteration": [88, 85, 134, 82, 412, 87, 40],
+        "totalOutputTokens": 928,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [295, 450, 617, 759, 940, 1368, 1484],
+        "totalSuffixTokens": 5913
+      },
+      {
+        "caseId": "INV-032",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3410, 3569, 3737, 3877, 4058, 4482, 4598],
+        "totalInputTokens": 27731,
+        "outputTokensPerIteration": [90, 85, 132, 82, 408, 87, 40],
+        "totalOutputTokens": 924,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [248, 407, 575, 715, 896, 1320, 1436],
+        "totalSuffixTokens": 5597
+      },
+      {
+        "caseId": "INV-033",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3433, 3585, 3752, 3892, 4073, 4495, 4611],
+        "totalInputTokens": 27841,
+        "outputTokensPerIteration": [87, 85, 132, 82, 406, 87, 40],
+        "totalOutputTokens": 919,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [271, 423, 590, 730, 911, 1333, 1449],
+        "totalSuffixTokens": 5707
+      },
+      {
+        "caseId": "INV-034",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3446, 3598, 3765, 3907, 4088, 4510, 4626],
+        "totalInputTokens": 27940,
+        "outputTokensPerIteration": [87, 85, 134, 82, 406, 87, 40],
+        "totalOutputTokens": 921,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [284, 436, 603, 745, 926, 1348, 1464],
+        "totalSuffixTokens": 5806
+      },
+      {
+        "caseId": "INV-035",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3432, 3590, 3737, 3869, 4009, 4190, 4623, 4761
+        ],
+        "totalInputTokens": 32211,
+        "outputTokensPerIteration": [90, 85, 85, 132, 82, 417, 125, 40],
+        "totalOutputTokens": 1056,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [270, 428, 575, 707, 847, 1028, 1461, 1599],
+        "totalSuffixTokens": 6915
+      },
+      {
+        "caseId": "INV-036",
+        "model": "claude-haiku-4-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [3395, 3545, 3688, 3869, 4266, 4404],
+        "totalInputTokens": 23167,
+        "outputTokensPerIteration": [86, 135, 82, 381, 125, 40],
+        "totalOutputTokens": 849,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [233, 383, 526, 707, 1104, 1242],
+        "totalSuffixTokens": 4195
+      },
+      {
+        "caseId": "INV-037",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3384, 3537, 3704, 3841, 4022, 4414, 4552],
+        "totalInputTokens": 27454,
+        "outputTokensPerIteration": [87, 85, 129, 82, 376, 125, 40],
+        "totalOutputTokens": 924,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [222, 375, 542, 679, 860, 1252, 1390],
+        "totalSuffixTokens": 5320
+      },
+      {
+        "caseId": "INV-038",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3367, 3525, 3674, 3806, 3950, 4131, 4550, 4666
+        ],
+        "totalInputTokens": 31669,
+        "outputTokensPerIteration": [90, 85, 85, 136, 82, 403, 87, 40],
+        "totalOutputTokens": 1008,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [205, 363, 512, 644, 788, 969, 1388, 1504],
+        "totalSuffixTokens": 6373
+      },
+      {
+        "caseId": "INV-039",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3398, 3551, 3719, 3859, 4040, 4450, 4588],
+        "totalInputTokens": 27605,
+        "outputTokensPerIteration": [87, 85, 132, 82, 394, 125, 40],
+        "totalOutputTokens": 945,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [236, 389, 557, 697, 878, 1288, 1426],
+        "totalSuffixTokens": 5471
+      },
+      {
+        "caseId": "INV-040",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3356, 3511, 3679, 3820, 4001, 4416, 4532],
+        "totalInputTokens": 27315,
+        "outputTokensPerIteration": [88, 85, 133, 82, 399, 87, 40],
+        "totalOutputTokens": 914,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [194, 349, 517, 658, 839, 1254, 1370],
+        "totalSuffixTokens": 5181
+      },
+      {
+        "caseId": "INV-041",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3362, 3515, 3681, 3823, 4004, 4428, 4544],
+        "totalInputTokens": 27357,
+        "outputTokensPerIteration": [87, 85, 134, 82, 408, 87, 40],
+        "totalOutputTokens": 923,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [200, 353, 519, 661, 842, 1266, 1382],
+        "totalSuffixTokens": 5223
+      },
+      {
+        "caseId": "INV-042",
+        "model": "claude-haiku-4-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [3389, 3505, 3646, 3827, 4240],
+        "totalInputTokens": 18607,
+        "outputTokensPerIteration": [89, 133, 82, 397, 40],
+        "totalOutputTokens": 741,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [227, 343, 484, 665, 1078],
+        "totalSuffixTokens": 2797
+      },
+      {
+        "caseId": "INV-043",
+        "model": "claude-haiku-4-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [3344, 3462, 3601, 3782, 4199],
+        "totalInputTokens": 18388,
+        "outputTokensPerIteration": [90, 131, 82, 401, 40],
+        "totalOutputTokens": 744,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [182, 300, 439, 620, 1037],
+        "totalSuffixTokens": 2578
+      },
+      {
+        "caseId": "INV-044",
+        "model": "claude-haiku-4-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [3375, 3479, 3620, 3801, 4213],
+        "totalInputTokens": 18488,
+        "outputTokensPerIteration": [83, 133, 82, 396, 40],
+        "totalOutputTokens": 734,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [213, 317, 458, 639, 1051],
+        "totalSuffixTokens": 2678
+      },
+      {
+        "caseId": "INV-045",
+        "model": "claude-haiku-4-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [3361, 3471, 3610, 3791, 4179],
+        "totalInputTokens": 18412,
+        "outputTokensPerIteration": [86, 131, 82, 372, 40],
+        "totalOutputTokens": 711,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [199, 309, 448, 629, 1017],
+        "totalSuffixTokens": 2602
+      },
+      {
+        "caseId": "INV-046",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3358, 3511, 3680, 3820, 4001, 4413, 4551],
+        "totalInputTokens": 27334,
+        "outputTokensPerIteration": [87, 85, 132, 82, 396, 125, 40],
+        "totalOutputTokens": 947,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [196, 349, 518, 658, 839, 1251, 1389],
+        "totalSuffixTokens": 5200
+      },
+      {
+        "caseId": "INV-047",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3333, 3483, 3578, 3722, 3903, 4323, 4461],
+        "totalInputTokens": 26803,
+        "outputTokensPerIteration": [86, 85, 136, 82, 404, 125, 40],
+        "totalOutputTokens": 958,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [171, 321, 416, 560, 741, 1161, 1299],
+        "totalSuffixTokens": 4669
+      },
+      {
+        "caseId": "INV-048",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3352, 3505, 3674, 3817, 3998, 4465, 4603],
+        "totalInputTokens": 27414,
+        "outputTokensPerIteration": [87, 85, 135, 82, 451, 125, 40],
+        "totalOutputTokens": 1005,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [190, 343, 512, 655, 836, 1303, 1441],
+        "totalSuffixTokens": 5280
+      },
+      {
+        "caseId": "INV-049",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3368, 3520, 3690, 3832, 4013, 4421, 4559],
+        "totalInputTokens": 27403,
+        "outputTokensPerIteration": [87, 85, 134, 82, 392, 125, 40],
+        "totalOutputTokens": 945,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [206, 358, 528, 670, 851, 1259, 1397],
+        "totalSuffixTokens": 5269
+      },
+      {
+        "caseId": "INV-050",
+        "model": "claude-haiku-4-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [3377, 3535, 3675, 3856, 4269, 4407],
+        "totalInputTokens": 23119,
+        "outputTokensPerIteration": [90, 132, 82, 397, 125, 40],
+        "totalOutputTokens": 866,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [215, 373, 513, 694, 1107, 1245],
+        "totalSuffixTokens": 4147
+      },
+      {
+        "caseId": "INV-051",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3415, 3573, 3777, 3935, 4079, 4260, 4723, 4861
+        ],
+        "totalInputTokens": 32623,
+        "outputTokensPerIteration": [90, 85, 85, 136, 82, 447, 125, 40],
+        "totalOutputTokens": 1090,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [253, 411, 615, 773, 917, 1098, 1561, 1699],
+        "totalSuffixTokens": 7327
+      },
+      {
+        "caseId": "INV-052",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3381, 3539, 3688, 3820, 3961, 4142, 4567, 4683
+        ],
+        "totalInputTokens": 31781,
+        "outputTokensPerIteration": [90, 85, 85, 133, 82, 409, 87, 40],
+        "totalOutputTokens": 1011,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [219, 377, 526, 658, 799, 980, 1405, 1521],
+        "totalSuffixTokens": 6485
+      },
+      {
+        "caseId": "INV-053",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3347, 3497, 3664, 3807, 3988, 4423, 4561],
+        "totalInputTokens": 27287,
+        "outputTokensPerIteration": [86, 85, 135, 82, 419, 125, 40],
+        "totalOutputTokens": 972,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [185, 335, 502, 645, 826, 1261, 1399],
+        "totalSuffixTokens": 5153
+      },
+      {
+        "caseId": "INV-054",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3384, 3538, 3687, 3819, 3961, 4142, 4572, 4710
+        ],
+        "totalInputTokens": 31813,
+        "outputTokensPerIteration": [88, 85, 85, 134, 82, 414, 125, 40],
+        "totalOutputTokens": 1053,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [222, 376, 525, 657, 799, 980, 1410, 1548],
+        "totalSuffixTokens": 6517
+      },
+      {
+        "caseId": "INV-055",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3408, 3562, 3746, 3891, 4034, 4215, 4678, 4816
+        ],
+        "totalInputTokens": 32350,
+        "outputTokensPerIteration": [88, 85, 85, 135, 82, 447, 125, 40],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [246, 400, 584, 729, 872, 1053, 1516, 1654],
+        "totalSuffixTokens": 7054
+      },
+      {
+        "caseId": "INV-056",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3374, 3527, 3694, 3836, 4017, 4452, 4590],
+        "totalInputTokens": 27490,
+        "outputTokensPerIteration": [87, 85, 134, 82, 419, 125, 40],
+        "totalOutputTokens": 972,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [212, 365, 532, 674, 855, 1290, 1428],
+        "totalSuffixTokens": 5356
+      },
+      {
+        "caseId": "INV-057",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3442, 3595, 3762, 3912, 4093, 4501, 4639],
+        "totalInputTokens": 27944,
+        "outputTokensPerIteration": [87, 85, 137, 82, 392, 125, 40],
+        "totalOutputTokens": 948,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [280, 433, 600, 750, 931, 1339, 1477],
+        "totalSuffixTokens": 5810
+      },
+      {
+        "caseId": "INV-058",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3378, 3535, 3701, 3846, 4027, 4414, 4552],
+        "totalInputTokens": 27453,
+        "outputTokensPerIteration": [89, 85, 132, 82, 371, 125, 40],
+        "totalOutputTokens": 924,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [216, 373, 539, 684, 865, 1252, 1390],
+        "totalSuffixTokens": 5319
+      },
+      {
+        "caseId": "INV-059",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3399, 3552, 3719, 3865, 4046, 4453, 4591],
+        "totalInputTokens": 27625,
+        "outputTokensPerIteration": [87, 85, 133, 82, 391, 125, 40],
+        "totalOutputTokens": 943,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [237, 390, 557, 703, 884, 1291, 1429],
+        "totalSuffixTokens": 5491
+      },
+      {
+        "caseId": "INV-060",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3445, 3595, 3761, 3910, 4091, 4500, 4638],
+        "totalInputTokens": 27940,
+        "outputTokensPerIteration": [86, 85, 136, 82, 393, 125, 40],
+        "totalOutputTokens": 947,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [283, 433, 599, 748, 929, 1338, 1476],
+        "totalSuffixTokens": 5806
+      },
+      {
+        "caseId": "INV-061",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3359, 3509, 3676, 3818, 3999, 4449, 4587],
+        "totalInputTokens": 27397,
+        "outputTokensPerIteration": [86, 85, 134, 82, 434, 125, 40],
+        "totalOutputTokens": 986,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [197, 347, 514, 656, 837, 1287, 1425],
+        "totalSuffixTokens": 5263
+      },
+      {
+        "caseId": "INV-062",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3402, 3559, 3725, 3864, 4045, 4486, 4624],
+        "totalInputTokens": 27705,
+        "outputTokensPerIteration": [89, 85, 131, 82, 425, 125, 40],
+        "totalOutputTokens": 977,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [240, 397, 563, 702, 883, 1324, 1462],
+        "totalSuffixTokens": 5571
+      },
+      {
+        "caseId": "INV-063",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3411, 3566, 3734, 3878, 4059, 4521, 4659],
+        "totalInputTokens": 27828,
+        "outputTokensPerIteration": [88, 85, 136, 82, 446, 125, 40],
+        "totalOutputTokens": 1002,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [249, 404, 572, 716, 897, 1359, 1497],
+        "totalSuffixTokens": 5694
+      },
+      {
+        "caseId": "INV-064",
+        "model": "claude-haiku-4-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          3484, 3634, 3800, 3945, 4126, 4547, 4663, 4801
+        ],
+        "totalInputTokens": 33000,
+        "outputTokensPerIteration": [86, 85, 137, 82, 405, 87, 125, 40],
+        "totalOutputTokens": 1047,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [322, 472, 638, 783, 964, 1385, 1501, 1639],
+        "totalSuffixTokens": 7704
+      },
+      {
+        "caseId": "INV-065",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3368, 3520, 3688, 3829, 4010, 4436, 4552],
+        "totalInputTokens": 27403,
+        "outputTokensPerIteration": [87, 85, 133, 82, 410, 87, 40],
+        "totalOutputTokens": 924,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [206, 358, 526, 667, 848, 1274, 1390],
+        "totalSuffixTokens": 5269
+      },
+      {
+        "caseId": "INV-066",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3362, 3512, 3680, 3824, 4005, 4428, 4544],
+        "totalInputTokens": 27355,
+        "outputTokensPerIteration": [86, 85, 136, 82, 407, 87, 40],
+        "totalOutputTokens": 923,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [200, 350, 518, 662, 843, 1266, 1382],
+        "totalSuffixTokens": 5221
+      },
+      {
+        "caseId": "INV-067",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3352, 3505, 3672, 3814, 3995, 4425, 4541],
+        "totalInputTokens": 27304,
+        "outputTokensPerIteration": [87, 85, 134, 82, 414, 87, 40],
+        "totalOutputTokens": 929,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [190, 343, 510, 652, 833, 1263, 1379],
+        "totalSuffixTokens": 5170
+      },
+      {
+        "caseId": "INV-068",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3389, 3542, 3710, 3851, 4032, 4451, 4589],
+        "totalInputTokens": 27564,
+        "outputTokensPerIteration": [87, 85, 133, 82, 403, 125, 40],
+        "totalOutputTokens": 955,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [227, 380, 548, 689, 870, 1289, 1427],
+        "totalSuffixTokens": 5430
+      },
+      {
+        "caseId": "INV-069",
+        "model": "claude-haiku-4-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [3316, 3469, 3636, 3779, 3960, 4377, 4515],
+        "totalInputTokens": 27052,
+        "outputTokensPerIteration": [87, 85, 135, 82, 401, 125, 40],
+        "totalOutputTokens": 955,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [154, 307, 474, 617, 798, 1215, 1353],
+        "totalSuffixTokens": 4918
+      },
+      {
+        "caseId": "INV-070",
+        "model": "claude-haiku-4-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [3260, 3608],
+        "totalInputTokens": 6868,
+        "outputTokensPerIteration": [332, 40],
+        "totalOutputTokens": 372,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [98, 446],
+        "totalSuffixTokens": 544
+      },
+      {
+        "caseId": "INV-071",
+        "model": "claude-haiku-4-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [3348, 3696],
+        "totalInputTokens": 7044,
+        "outputTokensPerIteration": [332, 40],
+        "totalOutputTokens": 372,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [186, 534],
+        "totalSuffixTokens": 720
+      },
+      {
+        "caseId": "INV-072",
+        "model": "claude-haiku-4-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [3382, 3735],
+        "totalInputTokens": 7117,
+        "outputTokensPerIteration": [337, 40],
+        "totalOutputTokens": 377,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [220, 573],
+        "totalSuffixTokens": 793
+      },
+      {
+        "caseId": "INV-073",
+        "model": "claude-haiku-4-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [3347, 3688],
+        "totalInputTokens": 7035,
+        "outputTokensPerIteration": [325, 40],
+        "totalOutputTokens": 365,
+        "prefixTokens": 3162,
+        "suffixTokensPerIteration": [185, 526],
+        "totalSuffixTokens": 711
+      },
+      {
+        "caseId": "INV-001",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4312, 4497, 4688, 4854, 5094, 5631, 5761, 5919
+        ],
+        "totalInputTokens": 40756,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          358, 543, 734, 900, 1140, 1677, 1807, 1965
+        ],
+        "totalSuffixTokens": 9124
+      },
+      {
+        "caseId": "INV-002",
+        "model": "claude-sonnet-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          4293, 4496, 4742, 4918, 5082, 5322, 5863, 5993, 6151
+        ],
+        "totalInputTokens": 46860,
+        "outputTokensPerIteration": [102, 86, 88, 150, 86, 516, 92, 139, 59],
+        "totalOutputTokens": 1318,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          339, 542, 788, 964, 1128, 1368, 1909, 2039, 2197
+        ],
+        "totalSuffixTokens": 11274
+      },
+      {
+        "caseId": "INV-003",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4223, 4408, 4602, 4765, 5005, 5545, 5675],
+        "totalInputTokens": 34223,
+        "outputTokensPerIteration": [94, 86, 149, 86, 515, 92, 59],
+        "totalOutputTokens": 1081,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [269, 454, 648, 811, 1051, 1591, 1721],
+        "totalSuffixTokens": 6545
+      },
+      {
+        "caseId": "INV-004",
+        "model": "claude-sonnet-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4191, 4382, 4545, 4785, 5287, 5445],
+        "totalInputTokens": 28635,
+        "outputTokensPerIteration": [97, 149, 86, 477, 139, 59],
+        "totalOutputTokens": 1007,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [237, 428, 591, 831, 1333, 1491],
+        "totalSuffixTokens": 4911
+      },
+      {
+        "caseId": "INV-005",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4186, 4371, 4561, 4729, 4969, 5499, 5629],
+        "totalInputTokens": 33944,
+        "outputTokensPerIteration": [94, 86, 154, 86, 505, 92, 59],
+        "totalOutputTokens": 1076,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [232, 417, 607, 775, 1015, 1545, 1675],
+        "totalSuffixTokens": 6266
+      },
+      {
+        "caseId": "INV-006",
+        "model": "claude-sonnet-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4183, 4327, 4489, 4729, 5265],
+        "totalInputTokens": 22993,
+        "outputTokensPerIteration": [100, 148, 86, 511, 59],
+        "totalOutputTokens": 904,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [229, 373, 535, 775, 1311],
+        "totalSuffixTokens": 3223
+      },
+      {
+        "caseId": "INV-007",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4171, 4362, 4559, 4726, 4966, 5490, 5648],
+        "totalInputTokens": 33922,
+        "outputTokensPerIteration": [96, 86, 153, 86, 499, 139, 59],
+        "totalOutputTokens": 1118,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [217, 408, 605, 772, 1012, 1536, 1694],
+        "totalSuffixTokens": 6244
+      },
+      {
+        "caseId": "INV-008",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4211, 4396, 4590, 4756, 4996, 5566, 5724],
+        "totalInputTokens": 34239,
+        "outputTokensPerIteration": [94, 86, 152, 86, 545, 139, 59],
+        "totalOutputTokens": 1161,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [257, 442, 636, 802, 1042, 1612, 1770],
+        "totalSuffixTokens": 6561
+      },
+      {
+        "caseId": "INV-009",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4180, 4383, 4550, 4694, 4857, 5097, 5632, 5790
+        ],
+        "totalInputTokens": 39183,
+        "outputTokensPerIteration": [102, 86, 88, 149, 86, 510, 139, 59],
+        "totalOutputTokens": 1219,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [226, 429, 596, 740, 903, 1143, 1678, 1836],
+        "totalSuffixTokens": 7551
+      },
+      {
+        "caseId": "INV-010",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4286, 4471, 4662, 4830, 5070, 5613, 5771],
+        "totalInputTokens": 34703,
+        "outputTokensPerIteration": [94, 86, 154, 86, 518, 139, 59],
+        "totalOutputTokens": 1136,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [332, 517, 708, 876, 1116, 1659, 1817],
+        "totalSuffixTokens": 7025
+      },
+      {
+        "caseId": "INV-011",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4249, 4440, 4633, 4797, 5037, 5617, 5775],
+        "totalInputTokens": 34548,
+        "outputTokensPerIteration": [96, 86, 150, 86, 555, 139, 59],
+        "totalOutputTokens": 1171,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [295, 486, 679, 843, 1083, 1663, 1821],
+        "totalSuffixTokens": 6870
+      },
+      {
+        "caseId": "INV-012",
+        "model": "claude-sonnet-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          4265, 4468, 4636, 4780, 4946, 5186, 5715, 5845, 6003
+        ],
+        "totalInputTokens": 45844,
+        "outputTokensPerIteration": [102, 86, 88, 152, 86, 504, 92, 139, 59],
+        "totalOutputTokens": 1308,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          311, 514, 682, 826, 992, 1232, 1761, 1891, 2049
+        ],
+        "totalSuffixTokens": 10258
+      },
+      {
+        "caseId": "INV-013",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4199, 4384, 4579, 4744, 4984, 5520, 5650],
+        "totalInputTokens": 34060,
+        "outputTokensPerIteration": [94, 86, 151, 86, 511, 92, 59],
+        "totalOutputTokens": 1079,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [245, 430, 625, 790, 1030, 1566, 1696],
+        "totalSuffixTokens": 6382
+      },
+      {
+        "caseId": "INV-014",
+        "model": "claude-sonnet-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4179, 4327, 4518, 4684, 4924, 5453],
+        "totalInputTokens": 28085,
+        "outputTokensPerIteration": [102, 86, 152, 86, 504, 59],
+        "totalOutputTokens": 989,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [225, 373, 564, 730, 970, 1499],
+        "totalSuffixTokens": 4361
+      },
+      {
+        "caseId": "INV-015",
+        "model": "claude-sonnet-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4172, 4630],
+        "totalInputTokens": 8802,
+        "outputTokensPerIteration": [433, 59],
+        "totalOutputTokens": 492,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [218, 676],
+        "totalSuffixTokens": 894
+      },
+      {
+        "caseId": "INV-016",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4297, 4482, 4673, 4836, 5076, 5604, 5734, 5892
+        ],
+        "totalInputTokens": 40594,
+        "outputTokensPerIteration": [94, 86, 149, 86, 503, 92, 139, 59],
+        "totalOutputTokens": 1208,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          343, 528, 719, 882, 1122, 1650, 1780, 1938
+        ],
+        "totalSuffixTokens": 8962
+      },
+      {
+        "caseId": "INV-017",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4303, 4488, 4679, 4845, 5085, 5622, 5752, 5910
+        ],
+        "totalInputTokens": 40684,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          349, 534, 725, 891, 1131, 1668, 1798, 1956
+        ],
+        "totalSuffixTokens": 9052
+      },
+      {
+        "caseId": "INV-018",
+        "model": "claude-sonnet-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          4267, 4470, 4638, 4782, 4947, 5187, 5728, 5858, 6016
+        ],
+        "totalInputTokens": 45893,
+        "outputTokensPerIteration": [102, 86, 88, 151, 86, 516, 92, 139, 59],
+        "totalOutputTokens": 1319,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          313, 516, 684, 828, 993, 1233, 1774, 1904, 2062
+        ],
+        "totalSuffixTokens": 10307
+      },
+      {
+        "caseId": "INV-019",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4283, 4480, 4670, 4832, 5072, 5606, 5736, 5894
+        ],
+        "totalInputTokens": 40573,
+        "outputTokensPerIteration": [100, 86, 148, 86, 509, 92, 139, 59],
+        "totalOutputTokens": 1219,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          329, 526, 716, 878, 1118, 1652, 1782, 1940
+        ],
+        "totalSuffixTokens": 8941
+      },
+      {
+        "caseId": "INV-020",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4307, 4492, 4682, 4848, 5088, 5625, 5755, 5913
+        ],
+        "totalInputTokens": 40710,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          353, 538, 728, 894, 1134, 1671, 1801, 1959
+        ],
+        "totalSuffixTokens": 9078
+      },
+      {
+        "caseId": "INV-021",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4312, 4515, 4682, 4826, 4992, 5232, 5810, 5968
+        ],
+        "totalInputTokens": 40337,
+        "outputTokensPerIteration": [102, 86, 88, 152, 86, 553, 139, 59],
+        "totalOutputTokens": 1265,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          358, 561, 728, 872, 1038, 1278, 1856, 2014
+        ],
+        "totalSuffixTokens": 8705
+      },
+      {
+        "caseId": "INV-022",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4364, 4572, 4785, 4945, 5111, 5351, 5932, 6090
+        ],
+        "totalInputTokens": 41150,
+        "outputTokensPerIteration": [104, 86, 88, 152, 86, 556, 139, 59],
+        "totalOutputTokens": 1270,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          410, 618, 831, 991, 1157, 1397, 1978, 2136
+        ],
+        "totalSuffixTokens": 9518
+      },
+      {
+        "caseId": "INV-023",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4363, 4555, 4768, 4928, 5092, 5332, 5895, 6053
+        ],
+        "totalInputTokens": 40986,
+        "outputTokensPerIteration": [96, 86, 88, 150, 86, 538, 139, 59],
+        "totalOutputTokens": 1242,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          409, 601, 814, 974, 1138, 1378, 1941, 2099
+        ],
+        "totalSuffixTokens": 9354
+      },
+      {
+        "caseId": "INV-024",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4279, 4480, 4671, 4837, 5077, 5617, 5747, 5905
+        ],
+        "totalInputTokens": 40613,
+        "outputTokensPerIteration": [102, 86, 152, 86, 515, 92, 139, 59],
+        "totalOutputTokens": 1231,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          325, 526, 717, 883, 1123, 1663, 1793, 1951
+        ],
+        "totalSuffixTokens": 8981
+      },
+      {
+        "caseId": "INV-025",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4253, 4440, 4631, 4795, 5035, 5569, 5699, 5857
+        ],
+        "totalInputTokens": 40279,
+        "outputTokensPerIteration": [95, 86, 150, 86, 509, 92, 139, 59],
+        "totalOutputTokens": 1216,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          299, 486, 677, 841, 1081, 1615, 1745, 1903
+        ],
+        "totalSuffixTokens": 8647
+      },
+      {
+        "caseId": "INV-026",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4336, 4540, 4734, 4899, 5139, 5678, 5808, 5966
+        ],
+        "totalInputTokens": 41100,
+        "outputTokensPerIteration": [103, 86, 151, 86, 514, 92, 139, 59],
+        "totalOutputTokens": 1230,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          382, 586, 780, 945, 1185, 1724, 1854, 2012
+        ],
+        "totalSuffixTokens": 9468
+      },
+      {
+        "caseId": "INV-027",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4323, 4514, 4708, 4873, 5113, 5649, 5779, 5937
+        ],
+        "totalInputTokens": 40896,
+        "outputTokensPerIteration": [96, 86, 151, 86, 511, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          369, 560, 754, 919, 1159, 1695, 1825, 1983
+        ],
+        "totalSuffixTokens": 9264
+      },
+      {
+        "caseId": "INV-028",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4231, 4416, 4607, 4776, 5016, 5544, 5674, 5832
+        ],
+        "totalInputTokens": 40096,
+        "outputTokensPerIteration": [94, 86, 155, 86, 503, 92, 139, 59],
+        "totalOutputTokens": 1214,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          277, 462, 653, 822, 1062, 1590, 1720, 1878
+        ],
+        "totalSuffixTokens": 8464
+      },
+      {
+        "caseId": "INV-029",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4340, 4525, 4716, 4882, 5122, 5666, 5796],
+        "totalInputTokens": 35047,
+        "outputTokensPerIteration": [94, 86, 152, 86, 519, 92, 59],
+        "totalOutputTokens": 1088,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [386, 571, 762, 928, 1168, 1712, 1842],
+        "totalSuffixTokens": 7369
+      },
+      {
+        "caseId": "INV-030",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4217, 4402, 4596, 4765, 5005, 5545, 5675],
+        "totalInputTokens": 34205,
+        "outputTokensPerIteration": [94, 86, 155, 86, 515, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [263, 448, 642, 811, 1051, 1591, 1721],
+        "totalSuffixTokens": 6527
+      },
+      {
+        "caseId": "INV-031",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4354, 4557, 4750, 4915, 5155, 5705, 5835],
+        "totalInputTokens": 35271,
+        "outputTokensPerIteration": [102, 86, 151, 86, 525, 92, 59],
+        "totalOutputTokens": 1101,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [400, 603, 796, 961, 1201, 1751, 1881],
+        "totalSuffixTokens": 7593
+      },
+      {
+        "caseId": "INV-032",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4283, 4480, 4670, 4832, 5072, 5613, 5743],
+        "totalInputTokens": 34693,
+        "outputTokensPerIteration": [100, 86, 148, 86, 516, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [329, 526, 716, 878, 1118, 1659, 1789],
+        "totalSuffixTokens": 7015
+      },
+      {
+        "caseId": "INV-033",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4341, 4545, 4739, 4901, 5141, 5687, 5817],
+        "totalInputTokens": 35171,
+        "outputTokensPerIteration": [103, 86, 148, 86, 521, 92, 59],
+        "totalOutputTokens": 1095,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [387, 591, 785, 947, 1187, 1733, 1863],
+        "totalSuffixTokens": 7493
+      },
+      {
+        "caseId": "INV-034",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4361, 4565, 4759, 4923, 5163, 5709, 5839],
+        "totalInputTokens": 35319,
+        "outputTokensPerIteration": [103, 86, 150, 86, 521, 92, 59],
+        "totalOutputTokens": 1097,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [407, 611, 805, 969, 1209, 1755, 1885],
+        "totalSuffixTokens": 7641
+      },
+      {
+        "caseId": "INV-035",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4334, 4537, 4704, 4848, 5012, 5252, 5830, 5988
+        ],
+        "totalInputTokens": 40505,
+        "outputTokensPerIteration": [102, 86, 88, 150, 86, 553, 139, 59],
+        "totalOutputTokens": 1263,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          380, 583, 750, 894, 1058, 1298, 1876, 2034
+        ],
+        "totalSuffixTokens": 8873
+      },
+      {
+        "caseId": "INV-036",
+        "model": "claude-sonnet-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4277, 4462, 4627, 4867, 5374, 5532],
+        "totalInputTokens": 29139,
+        "outputTokensPerIteration": [94, 151, 86, 482, 139, 59],
+        "totalOutputTokens": 1011,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [323, 508, 673, 913, 1420, 1578],
+        "totalSuffixTokens": 5415
+      },
+      {
+        "caseId": "INV-037",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4257, 4448, 4641, 4805, 5045, 5566, 5724],
+        "totalInputTokens": 34486,
+        "outputTokensPerIteration": [96, 86, 150, 86, 496, 139, 59],
+        "totalOutputTokens": 1112,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [303, 494, 687, 851, 1091, 1612, 1770],
+        "totalSuffixTokens": 6808
+      },
+      {
+        "caseId": "INV-038",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4247, 4450, 4618, 4762, 4929, 5169, 5707, 5837
+        ],
+        "totalInputTokens": 39719,
+        "outputTokensPerIteration": [102, 86, 88, 153, 86, 513, 92, 59],
+        "totalOutputTokens": 1179,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [293, 496, 664, 808, 975, 1215, 1753, 1883],
+        "totalSuffixTokens": 8087
+      },
+      {
+        "caseId": "INV-039",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4293, 4484, 4678, 4841, 5081, 5623, 5781],
+        "totalInputTokens": 34781,
+        "outputTokensPerIteration": [96, 86, 149, 86, 517, 139, 59],
+        "totalOutputTokens": 1132,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [339, 530, 724, 887, 1127, 1669, 1827],
+        "totalSuffixTokens": 7103
+      },
+      {
+        "caseId": "INV-040",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4241, 4450, 4644, 4807, 5047, 5582, 5712],
+        "totalInputTokens": 34483,
+        "outputTokensPerIteration": [105, 86, 149, 86, 510, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [287, 496, 690, 853, 1093, 1628, 1758],
+        "totalSuffixTokens": 6805
+      },
+      {
+        "caseId": "INV-041",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4227, 4412, 4603, 4769, 5009, 5546, 5676],
+        "totalInputTokens": 34242,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 59],
+        "totalOutputTokens": 1081,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [273, 458, 649, 815, 1055, 1592, 1722],
+        "totalSuffixTokens": 6564
+      },
+      {
+        "caseId": "INV-042",
+        "model": "claude-sonnet-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4271, 4415, 4579, 4819, 5365],
+        "totalInputTokens": 23449,
+        "outputTokensPerIteration": [100, 150, 86, 521, 59],
+        "totalOutputTokens": 916,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [317, 461, 625, 865, 1411],
+        "totalSuffixTokens": 3679
+      },
+      {
+        "caseId": "INV-043",
+        "model": "claude-sonnet-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4221, 4365, 4525, 4765, 5310],
+        "totalInputTokens": 23186,
+        "outputTokensPerIteration": [100, 146, 86, 520, 59],
+        "totalOutputTokens": 911,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [267, 411, 571, 811, 1356],
+        "totalSuffixTokens": 3416
+      },
+      {
+        "caseId": "INV-044",
+        "model": "claude-sonnet-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4255, 4379, 4542, 4782, 5314],
+        "totalInputTokens": 23272,
+        "outputTokensPerIteration": [90, 149, 86, 507, 59],
+        "totalOutputTokens": 891,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [301, 425, 588, 828, 1360],
+        "totalSuffixTokens": 3502
+      },
+      {
+        "caseId": "INV-045",
+        "model": "claude-sonnet-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4245, 4385, 4547, 4787, 5298],
+        "totalInputTokens": 23262,
+        "outputTokensPerIteration": [98, 148, 86, 486, 59],
+        "totalOutputTokens": 877,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [291, 431, 593, 833, 1344],
+        "totalSuffixTokens": 3492
+      },
+      {
+        "caseId": "INV-046",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4228, 4419, 4616, 4779, 5019, 5549, 5707],
+        "totalInputTokens": 34317,
+        "outputTokensPerIteration": [96, 86, 149, 86, 505, 139, 59],
+        "totalOutputTokens": 1120,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [274, 465, 662, 825, 1065, 1595, 1753],
+        "totalSuffixTokens": 6639
+      },
+      {
+        "caseId": "INV-047",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4195, 4380, 4479, 4645, 4885, 5416, 5574],
+        "totalInputTokens": 33574,
+        "outputTokensPerIteration": [94, 86, 152, 86, 506, 139, 59],
+        "totalOutputTokens": 1122,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [241, 426, 525, 691, 931, 1462, 1620],
+        "totalSuffixTokens": 5896
+      },
+      {
+        "caseId": "INV-048",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4213, 4398, 4595, 4760, 5000, 5614, 5772],
+        "totalInputTokens": 34352,
+        "outputTokensPerIteration": [94, 86, 151, 86, 589, 139, 59],
+        "totalOutputTokens": 1204,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [259, 444, 641, 806, 1046, 1660, 1818],
+        "totalSuffixTokens": 6674
+      },
+      {
+        "caseId": "INV-049",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4253, 4457, 4651, 4815, 5055, 5588, 5746],
+        "totalInputTokens": 34565,
+        "outputTokensPerIteration": [103, 86, 150, 86, 508, 139, 59],
+        "totalOutputTokens": 1131,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [299, 503, 697, 861, 1101, 1634, 1792],
+        "totalSuffixTokens": 6887
+      },
+      {
+        "caseId": "INV-050",
+        "model": "claude-sonnet-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4261, 4464, 4626, 4866, 5406, 5564],
+        "totalInputTokens": 29187,
+        "outputTokensPerIteration": [102, 148, 86, 515, 139, 59],
+        "totalOutputTokens": 1049,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [307, 510, 672, 912, 1452, 1610],
+        "totalSuffixTokens": 5463
+      },
+      {
+        "caseId": "INV-051",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4306, 4509, 4755, 4931, 5099, 5339, 5956, 6114
+        ],
+        "totalInputTokens": 41009,
+        "outputTokensPerIteration": [102, 86, 88, 154, 86, 592, 139, 59],
+        "totalOutputTokens": 1306,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          352, 555, 801, 977, 1145, 1385, 2002, 2160
+        ],
+        "totalSuffixTokens": 9377
+      },
+      {
+        "caseId": "INV-052",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4266, 4469, 4637, 4781, 4945, 5185, 5733, 5863
+        ],
+        "totalInputTokens": 39879,
+        "outputTokensPerIteration": [102, 86, 88, 150, 86, 523, 92, 59],
+        "totalOutputTokens": 1186,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [312, 515, 683, 827, 991, 1231, 1779, 1909],
+        "totalSuffixTokens": 8247
+      },
+      {
+        "caseId": "INV-053",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4206, 4391, 4585, 4749, 4989, 5559, 5717],
+        "totalInputTokens": 34196,
+        "outputTokensPerIteration": [94, 86, 150, 86, 545, 139, 59],
+        "totalOutputTokens": 1159,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [252, 437, 631, 795, 1035, 1605, 1763],
+        "totalSuffixTokens": 6518
+      },
+      {
+        "caseId": "INV-054",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4277, 4485, 4654, 4798, 4962, 5202, 5764, 5922
+        ],
+        "totalInputTokens": 40064,
+        "outputTokensPerIteration": [104, 86, 88, 150, 86, 537, 139, 59],
+        "totalOutputTokens": 1249,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          323, 531, 700, 844, 1008, 1248, 1810, 1968
+        ],
+        "totalSuffixTokens": 8432
+      },
+      {
+        "caseId": "INV-055",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4306, 4514, 4727, 4887, 5053, 5293, 5912, 6070
+        ],
+        "totalInputTokens": 40762,
+        "outputTokensPerIteration": [104, 86, 88, 152, 86, 594, 139, 59],
+        "totalOutputTokens": 1308,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          352, 560, 773, 933, 1099, 1339, 1958, 2116
+        ],
+        "totalSuffixTokens": 9130
+      },
+      {
+        "caseId": "INV-056",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4250, 4441, 4634, 4801, 5041, 5615, 5773],
+        "totalInputTokens": 34555,
+        "outputTokensPerIteration": [96, 86, 153, 86, 549, 139, 59],
+        "totalOutputTokens": 1168,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [296, 487, 680, 847, 1087, 1661, 1819],
+        "totalSuffixTokens": 6877
+      },
+      {
+        "caseId": "INV-057",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4330, 4521, 4714, 4890, 5130, 5671, 5829],
+        "totalInputTokens": 35085,
+        "outputTokensPerIteration": [96, 86, 155, 86, 516, 139, 59],
+        "totalOutputTokens": 1137,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [376, 567, 760, 936, 1176, 1717, 1875],
+        "totalSuffixTokens": 7407
+      },
+      {
+        "caseId": "INV-058",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4244, 4435, 4626, 4795, 5035, 5547, 5705],
+        "totalInputTokens": 34387,
+        "outputTokensPerIteration": [97, 86, 148, 86, 487, 139, 59],
+        "totalOutputTokens": 1102,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [290, 481, 672, 841, 1081, 1593, 1751],
+        "totalSuffixTokens": 6709
+      },
+      {
+        "caseId": "INV-059",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4264, 4455, 4646, 4817, 5057, 5595, 5753],
+        "totalInputTokens": 34587,
+        "outputTokensPerIteration": [97, 86, 150, 86, 513, 139, 59],
+        "totalOutputTokens": 1130,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [310, 501, 692, 863, 1103, 1641, 1799],
+        "totalSuffixTokens": 6909
+      },
+      {
+        "caseId": "INV-060",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4335, 4520, 4711, 4885, 5125, 5668, 5826],
+        "totalInputTokens": 35070,
+        "outputTokensPerIteration": [94, 86, 153, 86, 518, 139, 59],
+        "totalOutputTokens": 1135,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [381, 566, 757, 931, 1171, 1714, 1872],
+        "totalSuffixTokens": 7392
+      },
+      {
+        "caseId": "INV-061",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4254, 4439, 4633, 4796, 5036, 5608, 5766],
+        "totalInputTokens": 34532,
+        "outputTokensPerIteration": [94, 86, 149, 86, 547, 139, 59],
+        "totalOutputTokens": 1160,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [300, 485, 679, 842, 1082, 1654, 1812],
+        "totalSuffixTokens": 6854
+      },
+      {
+        "caseId": "INV-062",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4292, 4483, 4674, 4836, 5076, 5642, 5800],
+        "totalInputTokens": 34803,
+        "outputTokensPerIteration": [97, 86, 148, 86, 541, 139, 59],
+        "totalOutputTokens": 1156,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [338, 529, 720, 882, 1122, 1688, 1846],
+        "totalSuffixTokens": 7125
+      },
+      {
+        "caseId": "INV-063",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4314, 4523, 4717, 4884, 5124, 5727, 5885],
+        "totalInputTokens": 35174,
+        "outputTokensPerIteration": [105, 86, 153, 86, 578, 139, 59],
+        "totalOutputTokens": 1206,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [360, 569, 763, 930, 1170, 1773, 1931],
+        "totalSuffixTokens": 7496
+      },
+      {
+        "caseId": "INV-064",
+        "model": "claude-sonnet-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4395, 4580, 4771, 4938, 5178, 5705, 5835, 5993
+        ],
+        "totalInputTokens": 41395,
+        "outputTokensPerIteration": [94, 86, 153, 86, 502, 92, 139, 59],
+        "totalOutputTokens": 1211,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [
+          441, 626, 817, 984, 1224, 1751, 1881, 2039
+        ],
+        "totalSuffixTokens": 9763
+      },
+      {
+        "caseId": "INV-065",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4255, 4459, 4654, 4818, 5058, 5601, 5731],
+        "totalInputTokens": 34576,
+        "outputTokensPerIteration": [103, 86, 150, 86, 518, 92, 59],
+        "totalOutputTokens": 1094,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [301, 505, 700, 864, 1104, 1647, 1777],
+        "totalSuffixTokens": 6898
+      },
+      {
+        "caseId": "INV-066",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4228, 4416, 4611, 4778, 5018, 5559, 5689],
+        "totalInputTokens": 34299,
+        "outputTokensPerIteration": [95, 86, 153, 86, 516, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [274, 462, 657, 824, 1064, 1605, 1735],
+        "totalSuffixTokens": 6621
+      },
+      {
+        "caseId": "INV-067",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4216, 4407, 4600, 4766, 5006, 5543, 5673],
+        "totalInputTokens": 34211,
+        "outputTokensPerIteration": [97, 86, 152, 86, 512, 92, 59],
+        "totalOutputTokens": 1084,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [262, 453, 646, 812, 1052, 1589, 1719],
+        "totalSuffixTokens": 6533
+      },
+      {
+        "caseId": "INV-068",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4286, 4477, 4671, 4835, 5075, 5615, 5773],
+        "totalInputTokens": 34732,
+        "outputTokensPerIteration": [96, 86, 150, 86, 515, 139, 59],
+        "totalOutputTokens": 1131,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [332, 523, 717, 881, 1121, 1661, 1819],
+        "totalSuffixTokens": 7054
+      },
+      {
+        "caseId": "INV-069",
+        "model": "claude-sonnet-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4177, 4368, 4561, 4727, 4967, 5503, 5661],
+        "totalInputTokens": 33964,
+        "outputTokensPerIteration": [96, 86, 152, 86, 511, 139, 59],
+        "totalOutputTokens": 1129,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [223, 414, 607, 773, 1013, 1549, 1707],
+        "totalSuffixTokens": 6286
+      },
+      {
+        "caseId": "INV-070",
+        "model": "claude-sonnet-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4094, 4541],
+        "totalInputTokens": 8635,
+        "outputTokensPerIteration": [422, 59],
+        "totalOutputTokens": 481,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [140, 587],
+        "totalSuffixTokens": 727
+      },
+      {
+        "caseId": "INV-071",
+        "model": "claude-sonnet-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4213, 4657],
+        "totalInputTokens": 8870,
+        "outputTokensPerIteration": [419, 59],
+        "totalOutputTokens": 478,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [259, 703],
+        "totalSuffixTokens": 962
+      },
+      {
+        "caseId": "INV-072",
+        "model": "claude-sonnet-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4267, 4727],
+        "totalInputTokens": 8994,
+        "outputTokensPerIteration": [435, 59],
+        "totalOutputTokens": 494,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [313, 773],
+        "totalSuffixTokens": 1086
+      },
+      {
+        "caseId": "INV-073",
+        "model": "claude-sonnet-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4230, 4670],
+        "totalInputTokens": 8900,
+        "outputTokensPerIteration": [415, 59],
+        "totalOutputTokens": 474,
+        "prefixTokens": 3954,
+        "suffixTokensPerIteration": [276, 716],
+        "totalSuffixTokens": 992
+      },
+      {
+        "caseId": "INV-001",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4244, 4429, 4620, 4786, 5026, 5563, 5693, 5851
+        ],
+        "totalInputTokens": 40212,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          358, 543, 734, 900, 1140, 1677, 1807, 1965
+        ],
+        "totalSuffixTokens": 9124
+      },
+      {
+        "caseId": "INV-002",
+        "model": "claude-opus-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          4225, 4428, 4674, 4850, 5014, 5254, 5795, 5925, 6083
+        ],
+        "totalInputTokens": 46248,
+        "outputTokensPerIteration": [102, 86, 88, 150, 86, 516, 92, 139, 59],
+        "totalOutputTokens": 1318,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          339, 542, 788, 964, 1128, 1368, 1909, 2039, 2197
+        ],
+        "totalSuffixTokens": 11274
+      },
+      {
+        "caseId": "INV-003",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4155, 4340, 4534, 4697, 4937, 5477, 5607],
+        "totalInputTokens": 33747,
+        "outputTokensPerIteration": [94, 86, 149, 86, 515, 92, 59],
+        "totalOutputTokens": 1081,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [269, 454, 648, 811, 1051, 1591, 1721],
+        "totalSuffixTokens": 6545
+      },
+      {
+        "caseId": "INV-004",
+        "model": "claude-opus-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4123, 4314, 4477, 4717, 5219, 5377],
+        "totalInputTokens": 28227,
+        "outputTokensPerIteration": [97, 149, 86, 477, 139, 59],
+        "totalOutputTokens": 1007,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [237, 428, 591, 831, 1333, 1491],
+        "totalSuffixTokens": 4911
+      },
+      {
+        "caseId": "INV-005",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4118, 4303, 4493, 4661, 4901, 5431, 5561],
+        "totalInputTokens": 33468,
+        "outputTokensPerIteration": [94, 86, 154, 86, 505, 92, 59],
+        "totalOutputTokens": 1076,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [232, 417, 607, 775, 1015, 1545, 1675],
+        "totalSuffixTokens": 6266
+      },
+      {
+        "caseId": "INV-006",
+        "model": "claude-opus-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4115, 4259, 4421, 4661, 5197],
+        "totalInputTokens": 22653,
+        "outputTokensPerIteration": [100, 148, 86, 511, 59],
+        "totalOutputTokens": 904,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [229, 373, 535, 775, 1311],
+        "totalSuffixTokens": 3223
+      },
+      {
+        "caseId": "INV-007",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4103, 4294, 4491, 4658, 4898, 5422, 5580],
+        "totalInputTokens": 33446,
+        "outputTokensPerIteration": [96, 86, 153, 86, 499, 139, 59],
+        "totalOutputTokens": 1118,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [217, 408, 605, 772, 1012, 1536, 1694],
+        "totalSuffixTokens": 6244
+      },
+      {
+        "caseId": "INV-008",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4143, 4328, 4522, 4688, 4928, 5498, 5656],
+        "totalInputTokens": 33763,
+        "outputTokensPerIteration": [94, 86, 152, 86, 545, 139, 59],
+        "totalOutputTokens": 1161,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [257, 442, 636, 802, 1042, 1612, 1770],
+        "totalSuffixTokens": 6561
+      },
+      {
+        "caseId": "INV-009",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4112, 4315, 4482, 4626, 4789, 5029, 5564, 5722
+        ],
+        "totalInputTokens": 38639,
+        "outputTokensPerIteration": [102, 86, 88, 149, 86, 510, 139, 59],
+        "totalOutputTokens": 1219,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [226, 429, 596, 740, 903, 1143, 1678, 1836],
+        "totalSuffixTokens": 7551
+      },
+      {
+        "caseId": "INV-010",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4218, 4403, 4594, 4762, 5002, 5545, 5703],
+        "totalInputTokens": 34227,
+        "outputTokensPerIteration": [94, 86, 154, 86, 518, 139, 59],
+        "totalOutputTokens": 1136,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [332, 517, 708, 876, 1116, 1659, 1817],
+        "totalSuffixTokens": 7025
+      },
+      {
+        "caseId": "INV-011",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4181, 4372, 4565, 4729, 4969, 5549, 5707],
+        "totalInputTokens": 34072,
+        "outputTokensPerIteration": [96, 86, 150, 86, 555, 139, 59],
+        "totalOutputTokens": 1171,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [295, 486, 679, 843, 1083, 1663, 1821],
+        "totalSuffixTokens": 6870
+      },
+      {
+        "caseId": "INV-012",
+        "model": "claude-opus-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          4197, 4400, 4568, 4712, 4878, 5118, 5647, 5777, 5935
+        ],
+        "totalInputTokens": 45232,
+        "outputTokensPerIteration": [102, 86, 88, 152, 86, 504, 92, 139, 59],
+        "totalOutputTokens": 1308,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          311, 514, 682, 826, 992, 1232, 1761, 1891, 2049
+        ],
+        "totalSuffixTokens": 10258
+      },
+      {
+        "caseId": "INV-013",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4131, 4316, 4511, 4676, 4916, 5452, 5582],
+        "totalInputTokens": 33584,
+        "outputTokensPerIteration": [94, 86, 151, 86, 511, 92, 59],
+        "totalOutputTokens": 1079,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [245, 430, 625, 790, 1030, 1566, 1696],
+        "totalSuffixTokens": 6382
+      },
+      {
+        "caseId": "INV-014",
+        "model": "claude-opus-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4111, 4259, 4450, 4616, 4856, 5385],
+        "totalInputTokens": 27677,
+        "outputTokensPerIteration": [102, 86, 152, 86, 504, 59],
+        "totalOutputTokens": 989,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [225, 373, 564, 730, 970, 1499],
+        "totalSuffixTokens": 4361
+      },
+      {
+        "caseId": "INV-015",
+        "model": "claude-opus-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4104, 4562],
+        "totalInputTokens": 8666,
+        "outputTokensPerIteration": [433, 59],
+        "totalOutputTokens": 492,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [218, 676],
+        "totalSuffixTokens": 894
+      },
+      {
+        "caseId": "INV-016",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4229, 4414, 4605, 4768, 5008, 5536, 5666, 5824
+        ],
+        "totalInputTokens": 40050,
+        "outputTokensPerIteration": [94, 86, 149, 86, 503, 92, 139, 59],
+        "totalOutputTokens": 1208,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          343, 528, 719, 882, 1122, 1650, 1780, 1938
+        ],
+        "totalSuffixTokens": 8962
+      },
+      {
+        "caseId": "INV-017",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4235, 4420, 4611, 4777, 5017, 5554, 5684, 5842
+        ],
+        "totalInputTokens": 40140,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          349, 534, 725, 891, 1131, 1668, 1798, 1956
+        ],
+        "totalSuffixTokens": 9052
+      },
+      {
+        "caseId": "INV-018",
+        "model": "claude-opus-5",
+        "iterations": 9,
+        "inputTokensPerIteration": [
+          4199, 4402, 4570, 4714, 4879, 5119, 5660, 5790, 5948
+        ],
+        "totalInputTokens": 45281,
+        "outputTokensPerIteration": [102, 86, 88, 151, 86, 516, 92, 139, 59],
+        "totalOutputTokens": 1319,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          313, 516, 684, 828, 993, 1233, 1774, 1904, 2062
+        ],
+        "totalSuffixTokens": 10307
+      },
+      {
+        "caseId": "INV-019",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4215, 4412, 4602, 4764, 5004, 5538, 5668, 5826
+        ],
+        "totalInputTokens": 40029,
+        "outputTokensPerIteration": [100, 86, 148, 86, 509, 92, 139, 59],
+        "totalOutputTokens": 1219,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          329, 526, 716, 878, 1118, 1652, 1782, 1940
+        ],
+        "totalSuffixTokens": 8941
+      },
+      {
+        "caseId": "INV-020",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4239, 4424, 4614, 4780, 5020, 5557, 5687, 5845
+        ],
+        "totalInputTokens": 40166,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          353, 538, 728, 894, 1134, 1671, 1801, 1959
+        ],
+        "totalSuffixTokens": 9078
+      },
+      {
+        "caseId": "INV-021",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4244, 4447, 4614, 4758, 4924, 5164, 5742, 5900
+        ],
+        "totalInputTokens": 39793,
+        "outputTokensPerIteration": [102, 86, 88, 152, 86, 553, 139, 59],
+        "totalOutputTokens": 1265,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          358, 561, 728, 872, 1038, 1278, 1856, 2014
+        ],
+        "totalSuffixTokens": 8705
+      },
+      {
+        "caseId": "INV-022",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4296, 4504, 4717, 4877, 5043, 5283, 5864, 6022
+        ],
+        "totalInputTokens": 40606,
+        "outputTokensPerIteration": [104, 86, 88, 152, 86, 556, 139, 59],
+        "totalOutputTokens": 1270,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          410, 618, 831, 991, 1157, 1397, 1978, 2136
+        ],
+        "totalSuffixTokens": 9518
+      },
+      {
+        "caseId": "INV-023",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4295, 4487, 4700, 4860, 5024, 5264, 5827, 5985
+        ],
+        "totalInputTokens": 40442,
+        "outputTokensPerIteration": [96, 86, 88, 150, 86, 538, 139, 59],
+        "totalOutputTokens": 1242,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          409, 601, 814, 974, 1138, 1378, 1941, 2099
+        ],
+        "totalSuffixTokens": 9354
+      },
+      {
+        "caseId": "INV-024",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4211, 4412, 4603, 4769, 5009, 5549, 5679, 5837
+        ],
+        "totalInputTokens": 40069,
+        "outputTokensPerIteration": [102, 86, 152, 86, 515, 92, 139, 59],
+        "totalOutputTokens": 1231,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          325, 526, 717, 883, 1123, 1663, 1793, 1951
+        ],
+        "totalSuffixTokens": 8981
+      },
+      {
+        "caseId": "INV-025",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4185, 4372, 4563, 4727, 4967, 5501, 5631, 5789
+        ],
+        "totalInputTokens": 39735,
+        "outputTokensPerIteration": [95, 86, 150, 86, 509, 92, 139, 59],
+        "totalOutputTokens": 1216,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          299, 486, 677, 841, 1081, 1615, 1745, 1903
+        ],
+        "totalSuffixTokens": 8647
+      },
+      {
+        "caseId": "INV-026",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4268, 4472, 4666, 4831, 5071, 5610, 5740, 5898
+        ],
+        "totalInputTokens": 40556,
+        "outputTokensPerIteration": [103, 86, 151, 86, 514, 92, 139, 59],
+        "totalOutputTokens": 1230,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          382, 586, 780, 945, 1185, 1724, 1854, 2012
+        ],
+        "totalSuffixTokens": 9468
+      },
+      {
+        "caseId": "INV-027",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4255, 4446, 4640, 4805, 5045, 5581, 5711, 5869
+        ],
+        "totalInputTokens": 40352,
+        "outputTokensPerIteration": [96, 86, 151, 86, 511, 92, 139, 59],
+        "totalOutputTokens": 1220,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          369, 560, 754, 919, 1159, 1695, 1825, 1983
+        ],
+        "totalSuffixTokens": 9264
+      },
+      {
+        "caseId": "INV-028",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4163, 4348, 4539, 4708, 4948, 5476, 5606, 5764
+        ],
+        "totalInputTokens": 39552,
+        "outputTokensPerIteration": [94, 86, 155, 86, 503, 92, 139, 59],
+        "totalOutputTokens": 1214,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          277, 462, 653, 822, 1062, 1590, 1720, 1878
+        ],
+        "totalSuffixTokens": 8464
+      },
+      {
+        "caseId": "INV-029",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4272, 4457, 4648, 4814, 5054, 5598, 5728],
+        "totalInputTokens": 34571,
+        "outputTokensPerIteration": [94, 86, 152, 86, 519, 92, 59],
+        "totalOutputTokens": 1088,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [386, 571, 762, 928, 1168, 1712, 1842],
+        "totalSuffixTokens": 7369
+      },
+      {
+        "caseId": "INV-030",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4149, 4334, 4528, 4697, 4937, 5477, 5607],
+        "totalInputTokens": 33729,
+        "outputTokensPerIteration": [94, 86, 155, 86, 515, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [263, 448, 642, 811, 1051, 1591, 1721],
+        "totalSuffixTokens": 6527
+      },
+      {
+        "caseId": "INV-031",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4286, 4489, 4682, 4847, 5087, 5637, 5767],
+        "totalInputTokens": 34795,
+        "outputTokensPerIteration": [102, 86, 151, 86, 525, 92, 59],
+        "totalOutputTokens": 1101,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [400, 603, 796, 961, 1201, 1751, 1881],
+        "totalSuffixTokens": 7593
+      },
+      {
+        "caseId": "INV-032",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4215, 4412, 4602, 4764, 5004, 5545, 5675],
+        "totalInputTokens": 34217,
+        "outputTokensPerIteration": [100, 86, 148, 86, 516, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [329, 526, 716, 878, 1118, 1659, 1789],
+        "totalSuffixTokens": 7015
+      },
+      {
+        "caseId": "INV-033",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4273, 4477, 4671, 4833, 5073, 5619, 5749],
+        "totalInputTokens": 34695,
+        "outputTokensPerIteration": [103, 86, 148, 86, 521, 92, 59],
+        "totalOutputTokens": 1095,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [387, 591, 785, 947, 1187, 1733, 1863],
+        "totalSuffixTokens": 7493
+      },
+      {
+        "caseId": "INV-034",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4293, 4497, 4691, 4855, 5095, 5641, 5771],
+        "totalInputTokens": 34843,
+        "outputTokensPerIteration": [103, 86, 150, 86, 521, 92, 59],
+        "totalOutputTokens": 1097,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [407, 611, 805, 969, 1209, 1755, 1885],
+        "totalSuffixTokens": 7641
+      },
+      {
+        "caseId": "INV-035",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4266, 4469, 4636, 4780, 4944, 5184, 5762, 5920
+        ],
+        "totalInputTokens": 39961,
+        "outputTokensPerIteration": [102, 86, 88, 150, 86, 553, 139, 59],
+        "totalOutputTokens": 1263,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          380, 583, 750, 894, 1058, 1298, 1876, 2034
+        ],
+        "totalSuffixTokens": 8873
+      },
+      {
+        "caseId": "INV-036",
+        "model": "claude-opus-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4209, 4394, 4559, 4799, 5306, 5464],
+        "totalInputTokens": 28731,
+        "outputTokensPerIteration": [94, 151, 86, 482, 139, 59],
+        "totalOutputTokens": 1011,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [323, 508, 673, 913, 1420, 1578],
+        "totalSuffixTokens": 5415
+      },
+      {
+        "caseId": "INV-037",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4189, 4380, 4573, 4737, 4977, 5498, 5656],
+        "totalInputTokens": 34010,
+        "outputTokensPerIteration": [96, 86, 150, 86, 496, 139, 59],
+        "totalOutputTokens": 1112,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [303, 494, 687, 851, 1091, 1612, 1770],
+        "totalSuffixTokens": 6808
+      },
+      {
+        "caseId": "INV-038",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4179, 4382, 4550, 4694, 4861, 5101, 5639, 5769
+        ],
+        "totalInputTokens": 39175,
+        "outputTokensPerIteration": [102, 86, 88, 153, 86, 513, 92, 59],
+        "totalOutputTokens": 1179,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [293, 496, 664, 808, 975, 1215, 1753, 1883],
+        "totalSuffixTokens": 8087
+      },
+      {
+        "caseId": "INV-039",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4225, 4416, 4610, 4773, 5013, 5555, 5713],
+        "totalInputTokens": 34305,
+        "outputTokensPerIteration": [96, 86, 149, 86, 517, 139, 59],
+        "totalOutputTokens": 1132,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [339, 530, 724, 887, 1127, 1669, 1827],
+        "totalSuffixTokens": 7103
+      },
+      {
+        "caseId": "INV-040",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4173, 4382, 4576, 4739, 4979, 5514, 5644],
+        "totalInputTokens": 34007,
+        "outputTokensPerIteration": [105, 86, 149, 86, 510, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [287, 496, 690, 853, 1093, 1628, 1758],
+        "totalSuffixTokens": 6805
+      },
+      {
+        "caseId": "INV-041",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4159, 4344, 4535, 4701, 4941, 5478, 5608],
+        "totalInputTokens": 33766,
+        "outputTokensPerIteration": [94, 86, 152, 86, 512, 92, 59],
+        "totalOutputTokens": 1081,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [273, 458, 649, 815, 1055, 1592, 1722],
+        "totalSuffixTokens": 6564
+      },
+      {
+        "caseId": "INV-042",
+        "model": "claude-opus-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4203, 4347, 4511, 4751, 5297],
+        "totalInputTokens": 23109,
+        "outputTokensPerIteration": [100, 150, 86, 521, 59],
+        "totalOutputTokens": 916,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [317, 461, 625, 865, 1411],
+        "totalSuffixTokens": 3679
+      },
+      {
+        "caseId": "INV-043",
+        "model": "claude-opus-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4153, 4297, 4457, 4697, 5242],
+        "totalInputTokens": 22846,
+        "outputTokensPerIteration": [100, 146, 86, 520, 59],
+        "totalOutputTokens": 911,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [267, 411, 571, 811, 1356],
+        "totalSuffixTokens": 3416
+      },
+      {
+        "caseId": "INV-044",
+        "model": "claude-opus-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4187, 4311, 4474, 4714, 5246],
+        "totalInputTokens": 22932,
+        "outputTokensPerIteration": [90, 149, 86, 507, 59],
+        "totalOutputTokens": 891,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [301, 425, 588, 828, 1360],
+        "totalSuffixTokens": 3502
+      },
+      {
+        "caseId": "INV-045",
+        "model": "claude-opus-5",
+        "iterations": 5,
+        "inputTokensPerIteration": [4177, 4317, 4479, 4719, 5230],
+        "totalInputTokens": 22922,
+        "outputTokensPerIteration": [98, 148, 86, 486, 59],
+        "totalOutputTokens": 877,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [291, 431, 593, 833, 1344],
+        "totalSuffixTokens": 3492
+      },
+      {
+        "caseId": "INV-046",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4160, 4351, 4548, 4711, 4951, 5481, 5639],
+        "totalInputTokens": 33841,
+        "outputTokensPerIteration": [96, 86, 149, 86, 505, 139, 59],
+        "totalOutputTokens": 1120,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [274, 465, 662, 825, 1065, 1595, 1753],
+        "totalSuffixTokens": 6639
+      },
+      {
+        "caseId": "INV-047",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4127, 4312, 4411, 4577, 4817, 5348, 5506],
+        "totalInputTokens": 33098,
+        "outputTokensPerIteration": [94, 86, 152, 86, 506, 139, 59],
+        "totalOutputTokens": 1122,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [241, 426, 525, 691, 931, 1462, 1620],
+        "totalSuffixTokens": 5896
+      },
+      {
+        "caseId": "INV-048",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4145, 4330, 4527, 4692, 4932, 5546, 5704],
+        "totalInputTokens": 33876,
+        "outputTokensPerIteration": [94, 86, 151, 86, 589, 139, 59],
+        "totalOutputTokens": 1204,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [259, 444, 641, 806, 1046, 1660, 1818],
+        "totalSuffixTokens": 6674
+      },
+      {
+        "caseId": "INV-049",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4185, 4389, 4583, 4747, 4987, 5520, 5678],
+        "totalInputTokens": 34089,
+        "outputTokensPerIteration": [103, 86, 150, 86, 508, 139, 59],
+        "totalOutputTokens": 1131,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [299, 503, 697, 861, 1101, 1634, 1792],
+        "totalSuffixTokens": 6887
+      },
+      {
+        "caseId": "INV-050",
+        "model": "claude-opus-5",
+        "iterations": 6,
+        "inputTokensPerIteration": [4193, 4396, 4558, 4798, 5338, 5496],
+        "totalInputTokens": 28779,
+        "outputTokensPerIteration": [102, 148, 86, 515, 139, 59],
+        "totalOutputTokens": 1049,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [307, 510, 672, 912, 1452, 1610],
+        "totalSuffixTokens": 5463
+      },
+      {
+        "caseId": "INV-051",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4238, 4441, 4687, 4863, 5031, 5271, 5888, 6046
+        ],
+        "totalInputTokens": 40465,
+        "outputTokensPerIteration": [102, 86, 88, 154, 86, 592, 139, 59],
+        "totalOutputTokens": 1306,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          352, 555, 801, 977, 1145, 1385, 2002, 2160
+        ],
+        "totalSuffixTokens": 9377
+      },
+      {
+        "caseId": "INV-052",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4198, 4401, 4569, 4713, 4877, 5117, 5665, 5795
+        ],
+        "totalInputTokens": 39335,
+        "outputTokensPerIteration": [102, 86, 88, 150, 86, 523, 92, 59],
+        "totalOutputTokens": 1186,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [312, 515, 683, 827, 991, 1231, 1779, 1909],
+        "totalSuffixTokens": 8247
+      },
+      {
+        "caseId": "INV-053",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4138, 4323, 4517, 4681, 4921, 5491, 5649],
+        "totalInputTokens": 33720,
+        "outputTokensPerIteration": [94, 86, 150, 86, 545, 139, 59],
+        "totalOutputTokens": 1159,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [252, 437, 631, 795, 1035, 1605, 1763],
+        "totalSuffixTokens": 6518
+      },
+      {
+        "caseId": "INV-054",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4209, 4417, 4586, 4730, 4894, 5134, 5696, 5854
+        ],
+        "totalInputTokens": 39520,
+        "outputTokensPerIteration": [104, 86, 88, 150, 86, 537, 139, 59],
+        "totalOutputTokens": 1249,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          323, 531, 700, 844, 1008, 1248, 1810, 1968
+        ],
+        "totalSuffixTokens": 8432
+      },
+      {
+        "caseId": "INV-055",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4238, 4446, 4659, 4819, 4985, 5225, 5844, 6002
+        ],
+        "totalInputTokens": 40218,
+        "outputTokensPerIteration": [104, 86, 88, 152, 86, 594, 139, 59],
+        "totalOutputTokens": 1308,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          352, 560, 773, 933, 1099, 1339, 1958, 2116
+        ],
+        "totalSuffixTokens": 9130
+      },
+      {
+        "caseId": "INV-056",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4182, 4373, 4566, 4733, 4973, 5547, 5705],
+        "totalInputTokens": 34079,
+        "outputTokensPerIteration": [96, 86, 153, 86, 549, 139, 59],
+        "totalOutputTokens": 1168,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [296, 487, 680, 847, 1087, 1661, 1819],
+        "totalSuffixTokens": 6877
+      },
+      {
+        "caseId": "INV-057",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4262, 4453, 4646, 4822, 5062, 5603, 5761],
+        "totalInputTokens": 34609,
+        "outputTokensPerIteration": [96, 86, 155, 86, 516, 139, 59],
+        "totalOutputTokens": 1137,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [376, 567, 760, 936, 1176, 1717, 1875],
+        "totalSuffixTokens": 7407
+      },
+      {
+        "caseId": "INV-058",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4176, 4367, 4558, 4727, 4967, 5479, 5637],
+        "totalInputTokens": 33911,
+        "outputTokensPerIteration": [97, 86, 148, 86, 487, 139, 59],
+        "totalOutputTokens": 1102,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [290, 481, 672, 841, 1081, 1593, 1751],
+        "totalSuffixTokens": 6709
+      },
+      {
+        "caseId": "INV-059",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4196, 4387, 4578, 4749, 4989, 5527, 5685],
+        "totalInputTokens": 34111,
+        "outputTokensPerIteration": [97, 86, 150, 86, 513, 139, 59],
+        "totalOutputTokens": 1130,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [310, 501, 692, 863, 1103, 1641, 1799],
+        "totalSuffixTokens": 6909
+      },
+      {
+        "caseId": "INV-060",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4267, 4452, 4643, 4817, 5057, 5600, 5758],
+        "totalInputTokens": 34594,
+        "outputTokensPerIteration": [94, 86, 153, 86, 518, 139, 59],
+        "totalOutputTokens": 1135,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [381, 566, 757, 931, 1171, 1714, 1872],
+        "totalSuffixTokens": 7392
+      },
+      {
+        "caseId": "INV-061",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4186, 4371, 4565, 4728, 4968, 5540, 5698],
+        "totalInputTokens": 34056,
+        "outputTokensPerIteration": [94, 86, 149, 86, 547, 139, 59],
+        "totalOutputTokens": 1160,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [300, 485, 679, 842, 1082, 1654, 1812],
+        "totalSuffixTokens": 6854
+      },
+      {
+        "caseId": "INV-062",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4224, 4415, 4606, 4768, 5008, 5574, 5732],
+        "totalInputTokens": 34327,
+        "outputTokensPerIteration": [97, 86, 148, 86, 541, 139, 59],
+        "totalOutputTokens": 1156,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [338, 529, 720, 882, 1122, 1688, 1846],
+        "totalSuffixTokens": 7125
+      },
+      {
+        "caseId": "INV-063",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4246, 4455, 4649, 4816, 5056, 5659, 5817],
+        "totalInputTokens": 34698,
+        "outputTokensPerIteration": [105, 86, 153, 86, 578, 139, 59],
+        "totalOutputTokens": 1206,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [360, 569, 763, 930, 1170, 1773, 1931],
+        "totalSuffixTokens": 7496
+      },
+      {
+        "caseId": "INV-064",
+        "model": "claude-opus-5",
+        "iterations": 8,
+        "inputTokensPerIteration": [
+          4327, 4512, 4703, 4870, 5110, 5637, 5767, 5925
+        ],
+        "totalInputTokens": 40851,
+        "outputTokensPerIteration": [94, 86, 153, 86, 502, 92, 139, 59],
+        "totalOutputTokens": 1211,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [
+          441, 626, 817, 984, 1224, 1751, 1881, 2039
+        ],
+        "totalSuffixTokens": 9763
+      },
+      {
+        "caseId": "INV-065",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4187, 4391, 4586, 4750, 4990, 5533, 5663],
+        "totalInputTokens": 34100,
+        "outputTokensPerIteration": [103, 86, 150, 86, 518, 92, 59],
+        "totalOutputTokens": 1094,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [301, 505, 700, 864, 1104, 1647, 1777],
+        "totalSuffixTokens": 6898
+      },
+      {
+        "caseId": "INV-066",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4160, 4348, 4543, 4710, 4950, 5491, 5621],
+        "totalInputTokens": 33823,
+        "outputTokensPerIteration": [95, 86, 153, 86, 516, 92, 59],
+        "totalOutputTokens": 1087,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [274, 462, 657, 824, 1064, 1605, 1735],
+        "totalSuffixTokens": 6621
+      },
+      {
+        "caseId": "INV-067",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4148, 4339, 4532, 4698, 4938, 5475, 5605],
+        "totalInputTokens": 33735,
+        "outputTokensPerIteration": [97, 86, 152, 86, 512, 92, 59],
+        "totalOutputTokens": 1084,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [262, 453, 646, 812, 1052, 1589, 1719],
+        "totalSuffixTokens": 6533
+      },
+      {
+        "caseId": "INV-068",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4218, 4409, 4603, 4767, 5007, 5547, 5705],
+        "totalInputTokens": 34256,
+        "outputTokensPerIteration": [96, 86, 150, 86, 515, 139, 59],
+        "totalOutputTokens": 1131,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [332, 523, 717, 881, 1121, 1661, 1819],
+        "totalSuffixTokens": 7054
+      },
+      {
+        "caseId": "INV-069",
+        "model": "claude-opus-5",
+        "iterations": 7,
+        "inputTokensPerIteration": [4109, 4300, 4493, 4659, 4899, 5435, 5593],
+        "totalInputTokens": 33488,
+        "outputTokensPerIteration": [96, 86, 152, 86, 511, 139, 59],
+        "totalOutputTokens": 1129,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [223, 414, 607, 773, 1013, 1549, 1707],
+        "totalSuffixTokens": 6286
+      },
+      {
+        "caseId": "INV-070",
+        "model": "claude-opus-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4026, 4473],
+        "totalInputTokens": 8499,
+        "outputTokensPerIteration": [422, 59],
+        "totalOutputTokens": 481,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [140, 587],
+        "totalSuffixTokens": 727
+      },
+      {
+        "caseId": "INV-071",
+        "model": "claude-opus-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4145, 4589],
+        "totalInputTokens": 8734,
+        "outputTokensPerIteration": [419, 59],
+        "totalOutputTokens": 478,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [259, 703],
+        "totalSuffixTokens": 962
+      },
+      {
+        "caseId": "INV-072",
+        "model": "claude-opus-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4199, 4659],
+        "totalInputTokens": 8858,
+        "outputTokensPerIteration": [435, 59],
+        "totalOutputTokens": 494,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [313, 773],
+        "totalSuffixTokens": 1086
+      },
+      {
+        "caseId": "INV-073",
+        "model": "claude-opus-5",
+        "iterations": 2,
+        "inputTokensPerIteration": [4162, 4602],
+        "totalInputTokens": 8764,
+        "outputTokensPerIteration": [415, 59],
+        "totalOutputTokens": 474,
+        "prefixTokens": 3886,
+        "suffixTokensPerIteration": [276, 716],
+        "totalSuffixTokens": 992
+      }
+    ],
+    "judge_measurements": {
+      "working": {
+        "model": "claude-sonnet-5",
+        "meanInputTokens": 328.1232876712329,
+        "meanOutputTokens": 146,
+        "cases": 73
+      },
+      "published": {
+        "model": "claude-opus-5",
+        "meanInputTokens": 328.1232876712329,
+        "meanOutputTokens": 146,
+        "cases": 73
+      }
+    }
+  }
+}

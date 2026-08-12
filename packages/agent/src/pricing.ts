@@ -32,7 +32,7 @@ export const PRICING: readonly PricingEntry[] = [
     cacheReadMultiplier: 0.1,
     verifiedOn: "2026-08-10",
     source: "Anthropic public pricing docs",
-    note: "Introductory pricing through 2026-08-31; re-verify after.",
+    note: "Was introductory through 2026-08-31; docs now state $2/$10 is the standard price and the 2026-09-01 increase will not occur (re-verified 2026-08-11).",
   },
   {
     model: "claude-opus-5",
