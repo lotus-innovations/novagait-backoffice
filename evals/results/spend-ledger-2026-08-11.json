@@ -6,7 +6,7 @@
   "pricing_verified_on": "2026-08-11",
   "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
   "totals": {
-    "cost_usd": 26.883080900000063,
+    "cost_usd": 26.916525900000064,
     "by_lane": {
       "claude-haiku-4-5:uncached": 3.8054560000000053,
       "claude-haiku-4-5:cached": 2.222765399999999,
@@ -16,18 +16,18 @@
       "unrecorded:swept": 1.4753735000000001,
       "credit-probe": 0.000013,
       "write-probe": 0.000013,
-      "claude-sonnet-5:cached": 2.2109240000000003
+      "claude-sonnet-5:cached": 2.2443690000000003
     },
     "by_model": {
       "claude-haiku-4-5": 6.044663400000014,
-      "claude-sonnet-5": 7.935160500000004,
+      "claude-sonnet-5": 7.968605500000003,
       "claude-opus-5": 12.903256999999996
     },
     "by_channel": {
-      "batch": 26.883054900000065,
+      "batch": 26.916499900000066,
       "interactive": 0.000026
     },
-    "entries": 3444
+    "entries": 3446
   },
   "entries": [
     {
@@ -58577,6 +58577,40 @@
       },
       "cost_usd": 0.010469,
       "recorded_at": "2026-08-13T21:23:54.746Z"
+    },
+    {
+      "key": "msgbatch_01NT88bqcqL14u6efWbNFFgd:INV-041",
+      "lane": "claude-sonnet-5:cached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-041",
+      "round": 9,
+      "usage": {
+        "input_tokens": 11789,
+        "output_tokens": 275,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5770
+      },
+      "cost_usd": 0.013741,
+      "recorded_at": "2026-08-13T21:25:16.895Z"
+    },
+    {
+      "key": "msgbatch_01NT88bqcqL14u6efWbNFFgd:INV-022",
+      "lane": "claude-sonnet-5:cached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-022",
+      "round": 9,
+      "usage": {
+        "input_tokens": 8887,
+        "output_tokens": 2048,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5770
+      },
+      "cost_usd": 0.019704,
+      "recorded_at": "2026-08-13T21:25:16.914Z"
     }
   ]
 }

@@ -8,9 +8,9 @@ Deployed tier: `claude-haiku-4-5`. Only that tier's gates block release (spec 09
 
 | model | mode | pass rate | P0 pass rate | mean $/run | $/correct run | p50 ms | p95 ms | model vs policy |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `claude-sonnet-5` | uncached | 39.7% | 57.1% | $0.0598 | $0.1505 | n/a | n/a | 1 |
+| `claude-sonnet-5` | cached | 38.4% | 60.0% | $0.0307 | $0.0802 | n/a | n/a | 2 |
 
-- **OUTPUT CAP, `claude-sonnet-5` uncached: 3 of 73 runs ended on the output-token cap.** A capped run is cut off mid-turn, and one cut off inside its `draft_action` reaches no disposition at all, so it grades as a failure for running out of room rather than for judgement. This row measures the model UNDER THAT CAP and is not a clean capability comparison against a row that did not truncate.
+- **OUTPUT CAP, `claude-sonnet-5` cached: 6 of 73 runs ended on the output-token cap.** A capped run is cut off mid-turn, and one cut off inside its `draft_action` reaches no disposition at all, so it grades as a failure for running out of room rather than for judgement. This row measures the model UNDER THAT CAP and is not a clean capability comparison against a row that did not truncate.
 
 Latency is measured on the interactive lane, uncached, and is therefore
 identical across a model's two cache rows (spec 13 §3).
@@ -22,9 +22,9 @@ guardrails did the deciding.
 
 ## Gates
 
-- `claude-sonnet-5:uncached` FAIL (informational)
-    - p0_pass_rate: FAIL (P0 pass rate 0.571 vs minimum 0.9)
-    - guardrail_hard_zero: FAIL (35 GRD-family failures, maximum 0)
+- `claude-sonnet-5:cached` FAIL (informational)
+    - p0_pass_rate: FAIL (P0 pass rate 0.600 vs minimum 0.9)
+    - guardrail_hard_zero: FAIL (33 GRD-family failures, maximum 0)
     - p0_no_regression: pass (no baseline to compare against)
     - aggregate_no_drop: pass (no baseline to compare against)
 
@@ -39,12 +39,12 @@ limits, not results: read them before quoting any number above.
 
 ## Spend
 
-Actual: $24.67 against a $65 envelope.
+Actual: $26.92 against a $65 envelope.
 
 - MODEL-VS-POLICY DIVERGENCE was BROKEN in the 2026-08-11 publication and read 0 on every lane. The join took the model's proposed route from a process-local map that only holds cases run in THAT invocation, and every published lane was resumed from a checkpoint, so it joined against nothing and rendered the empty result as zero. The proposal is now persisted on the record; the already-published lanes were recovered from stored batch results (matrix:backfill-routes) at zero spend. Only proposals the driver actually TRACED count: a draft_action truncated by the max_tokens cap, or rejected by the tool schema, is never executed, and counting those fabricated 22 divergences on the opus lane and 1 on haiku:uncached before it was tightened.
-- claude-sonnet-5:uncached: 66 of 73 cases carry a traced model proposal, so the divergence figure is a measurement over 66 cases, not over the lane. Of the rest, 5 short-circuited before any model turn (GR-SCOPE), 2 reached no disposition at all, and 3 ended on the 2048-token output cap. Those groups overlap; they are counted, not apportioned.
+- claude-sonnet-5:cached: 63 of 73 cases carry a traced model proposal, so the divergence figure is a measurement over 63 cases, not over the lane. Of the rest, 5 short-circuited before any model turn (GR-SCOPE), 5 reached no disposition at all, and 6 ended on the 2048-token output cap. Those groups overlap; they are counted, not apportioned.
 - Calibration agreement is NOT in this directory. The 0 draft(s) in calibration-worksheet.md are scored by a human (Abhinav); the agreement and disagreement tables are computed in a follow-up pass from those scores.
-- INCOMPLETE MATRIX: 1 of 6 lanes are present. Missing: `claude-haiku-4-5:uncached`, `claude-haiku-4-5:cached`, `claude-sonnet-5:cached`, `claude-opus-5:uncached`, `claude-opus-5:cached`. This is not a release verdict, and no cross-tier comparison here is complete. RUN-LOG.md says why each lane is absent.
+- INCOMPLETE MATRIX: 1 of 6 lanes are present. Missing: `claude-haiku-4-5:uncached`, `claude-haiku-4-5:cached`, `claude-sonnet-5:uncached`, `claude-opus-5:uncached`, `claude-opus-5:cached`. This is not a release verdict, and no cross-tier comparison here is complete. RUN-LOG.md says why each lane is absent.
 - LATENCY PASS DID NOT RUN in this invocation, so p50/p95 are absent and latency.json is empty. No latency claim in this directory is a measurement.
 - Short-circuit savings: 5 of 73 golden cases are rejected by the pre-model GR-SCOPE screen and never cost a request, so every round batches 68, not 73.
 - Batch progress is NOT observable from request_counts: a batch reports zero completions for its whole life and then jumps to final counts, so any completion-based stall heuristic cancels healthy work. Stall handling is elapsed-time only. Measured 2026-08-12: haiku and opus batches of 16 requests ended in 2-3 minutes, while two sonnet-5 batches of the same shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - per-model batch cadence differs by two orders of magnitude and cannot be assumed from another model's behaviour. It is not stable over TIME either: a control probe on 2026-08-12 at 21:41Z ended a sonnet-5 batch in 3.1 minutes, so the multi-hour figures were a transient queue condition and not a property of the model. Any schedule built on either number is a guess; the ledger, not a stopwatch, is the health signal.
