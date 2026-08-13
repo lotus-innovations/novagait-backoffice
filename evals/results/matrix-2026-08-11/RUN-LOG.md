@@ -4,25 +4,34 @@ What actually happened while these artifacts were produced, including the
 lanes that are absent and why. `README.md` and `matrix.json` are regenerated
 by the driver on every invocation; this file is written by hand and is not.
 
-**This run is INCOMPLETE and is not a release verdict.** It stopped on an
-external blocker, not on a decision that the matrix was finished.
+**This run is COMPLETE: all six lanes, both judge passes and the interactive
+latency pass are present.** It is still not a release PASS: the deployed
+tier fails two blocking gates, which is a measured verdict rather than a
+missing measurement. See "The finding that needs a human decision".
 
 ## What is published
 
-Three of six lanes, all resumed from checkpoints written before the stop:
+All six lanes, each from the attempt whose batch ids are recorded in its own
+checkpoint:
 
-| lane | status |
-| --- | --- |
-| `claude-haiku-4-5:uncached` | complete, published |
-| `claude-haiku-4-5:cached` | complete, published |
-| `claude-opus-5:uncached` | complete, published |
-| `claude-sonnet-5:uncached` | ABSENT, see incidents 3 and 10 |
-| `claude-sonnet-5:cached` | ABSENT, see incidents 3 and 10 |
-| `claude-opus-5:cached` | ABSENT, see incidents 4 and 10 (attempted twice) |
+| lane | status | cost | cases |
+| --- | --- | ---: | ---: |
+| `claude-haiku-4-5:uncached` | complete | $1.8036 | 73 |
+| `claude-haiku-4-5:cached` | complete | $1.0180 | 73 |
+| `claude-sonnet-5:uncached` | complete | $4.3638 | 73 |
+| `claude-sonnet-5:cached` | complete | $2.2444 | 73 |
+| `claude-opus-5:uncached` | complete | $9.8105 | 73 |
+| `claude-opus-5:cached` | complete | $5.5836 | 73 |
 
-Also absent: both judge passes, the interactive latency pass, and therefore
-every p50/p95 figure and every judge verdict. `latency.json` is empty by
-construction, not by measurement.
+Also present, and absent from the 2026-08-12 publication: both judge passes
+(working $0.6329, published $1.8852, verdicts attached per case as
+`judge_score`) and the 108-run interactive latency pass ($9.3498), which is
+where every p50 and p95 in the matrix comes from. `latency.json` holds 108
+samples: 12 P0 cases x 3 models x 3 repetitions, nearest-rank percentiles.
+
+The three lanes that were absent on 2026-08-12 were recovered on 2026-08-13
+after the workspace usage limit was raised. Nothing in this directory is
+resumed from a superseded attempt: attribution is by batch id throughout.
 
 ## Incidents
 
@@ -226,6 +235,48 @@ construction, not by measurement.
     discards the results while stopping the reader does not. The lane's spend
     is superseded and itemised by batch id.
 
+16. **The cache table was scoped to the wrong thing, and it would have
+    published an inflated round 0.** `cacheStatsByLane` grouped by (lane,
+    round) across the WHOLE ledger with no attempt filter. Three lanes ran
+    more than once (`claude-opus-5:cached` three times, both haiku lanes
+    twice), so the published cache table would have folded every attempt's
+    round 0 together: more requests than the lane ever submitted and a write
+    total that belonged to attempts nobody published. This is the same defect
+    that incident 11 fixed for SPEND attribution, still open for cache stats.
+    Fixed on 2026-08-13: `cacheStatsByLane` takes the published batch-id set
+    and ignores everything else, with a regression test that fails on the old
+    behaviour (unscoped 2 requests / 5,100 write tokens versus scoped 1 / 100).
+    Measured effect: each cached lane's round 0 now reports exactly its 68
+    requests.
+
+17. **The ledger's per-lane totals disagreed with its own total.** After
+    `MATRIX_SWEEP=1` appended swept entries, `matrix:augment` refreshed only
+    `totals.cost_usd` and `totals.entries`, leaving `by_lane`, `by_model` and
+    `by_channel` stale. The published file therefore showed
+    `unrecorded:swept` at $1.4754 while its own entries summed to $1.5603, and
+    the per-lane figures added to $44.3682 against a stated total of $44.4528.
+
+    The enforcement path was never wrong: `SpendLedger.open` recomputes totals
+    from entries on every load and never trusts them from disk, so the hard
+    stop always saw the true number. What was wrong was the published surface,
+    which is what a human reads. Fixed by exporting the ledger's canonical
+    `recomputeTotals` and refreshing the whole block after a sweep; the file
+    was then recomputed from its own entries. The TOTAL never moved, so no
+    spend was misstated, only its breakdown.
+
+18. **Control probes are in the swept line and are named here.** Two probes
+    were submitted deliberately to measure queue cadence and were not
+    ledgered at the time, because writing to the ledger from a second process
+    while the driver held it would have been a read-modify-write race that
+    could drop the driver's entries. They were swept up afterwards and are
+    part of `unrecorded:swept`:
+    - `msgbatch_01Sm87KYJCbJ2NucgtPYnDnn`, 2 opus requests, ended after 71.2
+      minutes with 2 of 2 succeeded.
+    - `msgbatch_01V2ctSU7MjSgTAjGqFG4pEL`, 2 sonnet requests, ended after 1.8
+      minutes with 2 of 2 succeeded.
+    They are deliberate measurements, NOT cancelled work, and the swept line
+    should not be read as if all of it were abandoned batches.
+
 ## The finding that needs a human decision
 
 Across all three published lanes the dominant failure is `GRD-004`,
@@ -253,31 +304,35 @@ should be resolved before anyone quotes the pass rates in this directory.
 ## Spend
 
 Reconciled by `matrix:augment` with `MATRIX_SWEEP=1`; the assertion that
-published plus superseded equals the ledger total passed.
+published plus superseded equals the ledger total passed. Attribution is by
+BATCH ID for all six lanes (every checkpoint carries `batch_ids`), so a lane
+that ran more than once contributes only the attempt that survived into this
+matrix.
 
 | line | USD |
 | --- | ---: |
-| ledger total | 20.0286 |
-| published (the three lanes above) | 12.6320 |
-| superseded `claude-opus-5:cached` (both attempts) | 2.5225 |
+| ledger total | 44.4528 |
+| published (six lanes + both judges + latency) | 36.6916 |
+| superseded `claude-opus-5:cached` (two dead attempts) | 2.8023 |
 | superseded `claude-haiku-4-5:uncached` (first attempt) | 1.9915 |
-| superseded `unrecorded:swept` | 1.4754 |
+| superseded `unrecorded:swept` | 1.5603 |
 | superseded `claude-haiku-4-5:cached` (first attempt) | 1.2048 |
-| superseded `claude-sonnet-5:uncached` | 0.1920 |
+| superseded `claude-sonnet-5:uncached` (first attempt) | 0.1920 |
 | superseded manual reconciliation | 0.0104 |
 
-Against a $65 hard envelope, so $44.97 of headroom was left unspent when the
-workspace limit stopped the run. The `unrecorded:swept` line is money spent on
-requests that completed and were billed but whose results the driver never
-read, largely because of incidents 1 and 3. It is published as swept rather
-than netted out.
+Against a $65 hard envelope and a $55 soft line, neither of which was
+reached: $20.55 of headroom was left unspent. The published figure includes
+$9.3498 of interactive latency spend and $2.5181 across the two judge passes.
 
-The published figure is attributed by BATCH ID, not by lane name (incident 11),
-so a lane that was run twice contributes only the attempt that survived into
-this matrix.
+The `unrecorded:swept` line is money spent on requests that completed and
+were billed but whose results the driver never read. It is published as swept
+rather than netted out. It is NOT all cancelled work: incident 18 names the
+two deliberate control probes inside it, and the rest is largely the
+cancelled-by-heuristic batches of incidents 1 and 3 plus the chunk left in
+flight when `claude-opus-5:cached` was abandoned by decision (incident 15).
 
-Still absent, and therefore not measurements: both judge passes, the
-interactive latency pass, every p50/p95 figure, and the judge-vs-human
-calibration agreement. `latency.json` is empty by construction.
+Every figure in this section is a measurement from the ledger's own entries.
+The per-lane breakdown was wrong in the published file until incident 17 was
+found and fixed; the total was never affected.
 
 - L. Fox (Systems Architect)

@@ -49,6 +49,45 @@ const usage = (write: number, read: number) => ({
 });
 
 describe("cacheStatsByLane", () => {
+  it("scopes rounds to the published attempt when batch ids are given", () => {
+    // A lane that ran twice: a superseded attempt and the published one, both
+    // writing a round 0. Folding them together doubles the round's request
+    // count and its write tokens, which is how the cached column ends up
+    // describing an attempt nobody published.
+    const entries = [
+      entry({
+        key: "batch_dead:INV-001",
+        round: 0,
+        usage: {
+          input_tokens: 0,
+          output_tokens: 0,
+          cache_creation_input_tokens: 5000,
+          cache_read_input_tokens: 0,
+        },
+      }),
+      entry({
+        key: "batch_live:INV-001",
+        round: 0,
+        usage: {
+          input_tokens: 0,
+          output_tokens: 0,
+          cache_creation_input_tokens: 100,
+          cache_read_input_tokens: 900,
+        },
+      }),
+    ];
+
+    const unscoped = cacheStatsByLane(ledgerOf(entries));
+    expect(unscoped[0].rounds[0].requests).toBe(2);
+    expect(unscoped[0].rounds[0].cache_write_tokens).toBe(5100);
+
+    const scoped = cacheStatsByLane(ledgerOf(entries), new Set(["batch_live"]));
+    expect(scoped[0].rounds[0].requests).toBe(1);
+    expect(scoped[0].rounds[0].cache_write_tokens).toBe(100);
+    expect(scoped[0].rounds[0].cache_read_tokens).toBe(900);
+    expect(scoped[0].cache_inverted).toBe(false);
+  });
+
   it("reports a lane where the cache held", () => {
     const stats = cacheStatsByLane(
       ledgerOf([

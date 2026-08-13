@@ -27,7 +27,12 @@ import {
   renderCacheSection,
   renderSpendSection,
 } from "./accounting";
-import { costUsd, pricingAlias, type LedgerFile } from "./ledger";
+import {
+  costUsd,
+  pricingAlias,
+  recomputeTotals,
+  type LedgerFile,
+} from "./ledger";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "../../../..");
@@ -109,11 +114,9 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
   const ledger = JSON.parse(await readFile(LEDGER_PATH, "utf8")) as LedgerFile;
   const swept = await sweepUnrecordedSpend(ledger);
   if (swept > 0) {
-    ledger.totals.cost_usd = ledger.entries.reduce(
-      (a, entry) => a + entry.cost_usd,
-      0,
-    );
-    ledger.totals.entries = ledger.entries.length;
+    // Refresh the whole totals block, not just the scalar fields: a partial
+    // update leaves by_lane/by_model/by_channel contradicting the total.
+    ledger.totals = recomputeTotals(ledger.entries);
     await writeFile(
       LEDGER_PATH,
       `${JSON.stringify(ledger, null, 2)}\n`,
@@ -189,7 +192,7 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
       (SUPERSEDED_BEFORE === "" ? "" : ` with cutoff ${SUPERSEDED_BEFORE}`),
   );
 
-  const cache = cacheStatsByLane(ledger);
+  const cache = cacheStatsByLane(ledger, published);
   const spend = reconcileSpend(ledger, published);
 
   matrix.cache_accounting = cache;

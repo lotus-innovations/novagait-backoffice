@@ -1,5 +1,15 @@
 # LOT-105 live matrix: handoff
 
+> **SUPERSEDED 2026-08-13. THE RUN IS COMPLETE.** All six lanes, both judge
+> passes and the 108-run latency pass are published. This document describes a
+> mid-run state that no longer exists (three lanes, a live unattended driver,
+> a $6.22 ledger) and is kept only as provenance for how the run was handed
+> over. For what actually happened, read `RUN-LOG.md`; for results, `README.md`.
+>
+> Its operating rules were inherited and held up: ledger movement rather than
+> `request_counts` as the health signal, elapsed-time-only stall handling,
+> control probes before queue theories, and spend attribution by batch id.
+
 Written 2026-08-12 by the LOT-105 agent, mid-run, for whoever finishes it.
 Read this instead of the thread.
 

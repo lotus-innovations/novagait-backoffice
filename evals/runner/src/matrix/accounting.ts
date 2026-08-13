@@ -45,11 +45,33 @@ export interface LaneCacheStats {
 const isMatrixLane = (entry: LedgerEntry): boolean =>
   entry.channel === "batch" && !entry.lane.startsWith("judge:");
 
-export function cacheStatsByLane(ledger: LedgerFile): LaneCacheStats[] {
+/**
+ * Per-round cache behaviour for each lane.
+ *
+ * `publishedBatchIds` scopes the table to the attempt that was actually
+ * PUBLISHED. Without it, a lane that ran more than once folds every attempt's
+ * rounds together: `claude-opus-5:cached` was attempted three times and both
+ * haiku lanes twice, so round 0 would report the sum of several attempts'
+ * requests and write tokens and the cached column would misdescribe the lane
+ * in the matrix. This is the same defect that `reconcileSpend` fixed for spend
+ * attribution (incident 11) and it was still open for cache stats. Omitting
+ * the set keeps the old whole-ledger behaviour for callers that have no
+ * checkpoint to attribute from.
+ */
+export function cacheStatsByLane(
+  ledger: LedgerFile,
+  publishedBatchIds?: Set<string>,
+): LaneCacheStats[] {
   const lanes = new Map<string, Map<number, RoundCacheStats>>();
 
   for (const entry of ledger.entries) {
     if (!isMatrixLane(entry)) continue;
+    if (
+      publishedBatchIds !== undefined &&
+      !publishedBatchIds.has(entry.key.split(":")[0])
+    ) {
+      continue;
+    }
     const round = entry.round ?? 0;
     const rounds = lanes.get(entry.lane) ?? new Map<number, RoundCacheStats>();
     const stats = rounds.get(round) ?? {

@@ -151,7 +151,16 @@ function emptyTotals(): LedgerTotals {
   };
 }
 
-function recompute(entries: LedgerEntry[]): LedgerTotals {
+/**
+ * Derives every total from the entries.
+ *
+ * Exported because anything that appends to a ledger file out of band (the
+ * MATRIX_SWEEP pass) must refresh the WHOLE totals block. Updating only
+ * `cost_usd` and `entries` leaves `by_lane`, `by_model` and `by_channel`
+ * disagreeing with the entries they summarise, which is how a published
+ * ledger ends up with per-lane figures that do not add up to its own total.
+ */
+export function recomputeTotals(entries: LedgerEntry[]): LedgerTotals {
   const totals = emptyTotals();
   for (const entry of entries) {
     totals.cost_usd += entry.cost_usd;
@@ -216,7 +225,7 @@ export class SpendLedger {
     }
     // Totals are derived, never trusted from disk: a hand-edited or partially
     // written file must not be able to raise the remaining envelope.
-    file.totals = recompute(file.entries);
+    file.totals = recomputeTotals(file.entries);
     return new SpendLedger(
       path,
       file,
@@ -259,7 +268,7 @@ export class SpendLedger {
     };
     this.file.entries.push(recorded);
     this.keys.add(entry.key);
-    this.file.totals = recompute(this.file.entries);
+    this.file.totals = recomputeTotals(this.file.entries);
     await this.save();
     return cost;
   }
