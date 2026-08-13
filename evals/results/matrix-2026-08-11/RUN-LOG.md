@@ -172,15 +172,27 @@ construction, not by measurement.
     `write-probe-2026-08-12`, 8 input and 1 output token, and confirmed at
     batch scale moments later when a 16-request batch was accepted.
 
-13. **A from-cold cached lane pays about THREE prefix writes, not one.**
-    Measured on the fresh `claude-opus-5:cached` attempt, round 0: total cache
-    writes were 17,106 tokens, which is exactly 3 x 5,702, and all of them were
-    billed inside the FIRST chunk. A batch's requests process concurrently, so
-    three of the first sixteen raced each other to write the prefix and the
-    remaining sixty-one read it at 0.1x. Anyone sizing a cached lane as "pay
-    one write, then read N times" will under-estimate it. This attempt was also
-    genuinely from cold: the superseded attempts' prefixes had died with the 1h
-    TTL more than eight hours earlier, so nothing was inherited.
+13. **A from-cold cached lane pays the prefix write SEVERAL times over, and
+    the multiplier is not fixed.** A batch's requests process concurrently, so
+    the first ones to run race each other to write the cache prefix and only
+    the losers of that race get to read it. Measured on two lanes:
+
+    | lane | round 0 | requests that WROTE the prefix | prefix size |
+    | --- | ---: | ---: | ---: |
+    | `claude-opus-5:cached` | 48 requests recorded | 3 | 5,702 tok |
+    | `claude-sonnet-5:cached` | 68 requests | 9 | 5,770 tok |
+
+    CORRECTION: this entry first said "about THREE writes", which was the opus
+    figure generalised into a rule after seeing one lane. Sonnet then paid NINE.
+    The honest claim is that a from-cold cached lane pays some small multiple of
+    the prefix write, the multiple varies by lane and must be MEASURED rather
+    than assumed, and sizing a cached lane as "pay one write, then read N times"
+    under-estimates it either way. The opus count is over the 48 requests
+    recorded before that lane was abandoned, so a full opus round 0 may have
+    raced slightly higher.
+
+    Both attempts were genuinely from cold: the superseded attempts' prefixes
+    had died with the 1h TTL hours earlier, so nothing was inherited.
 
 14. **Batch cadence is a transient property of the QUEUE, and the evidence is
     now decisive.** Incident 3 read multi-hour sonnet batches as a model
