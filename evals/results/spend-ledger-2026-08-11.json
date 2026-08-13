@@ -6,7 +6,7 @@
   "pricing_verified_on": "2026-08-11",
   "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
   "totals": {
-    "cost_usd": 36.184360500000025,
+    "cost_usd": 37.52243170000002,
     "by_lane": {
       "claude-haiku-4-5:uncached": 3.8054560000000053,
       "claude-haiku-4-5:cached": 2.222765399999999,
@@ -20,18 +20,18 @@
       "judge:working": 0.6328700000000002,
       "judge:published": 1.8851750000000003,
       "latency:claude-haiku-4-5": 0.7952617,
-      "latency:claude-sonnet-5": 0.3709584000000001
+      "latency:claude-sonnet-5": 1.7090295999999998
     },
     "by_model": {
       "claude-haiku-4-5": 6.839925100000012,
-      "claude-sonnet-5": 8.972433900000004,
+      "claude-sonnet-5": 10.310505100000006,
       "claude-opus-5": 20.372001500000014
     },
     "by_channel": {
       "batch": 35.01811440000004,
-      "interactive": 1.1662461
+      "interactive": 2.5043173
     },
-    "entries": 4230
+    "entries": 4257
   },
   "entries": [
     {
@@ -71943,6 +71943,465 @@
       },
       "cost_usd": 0.046748,
       "recorded_at": "2026-08-13T22:42:06.255Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-016:0",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-016",
+      "round": 0,
+      "usage": {
+        "input_tokens": 11773,
+        "output_tokens": 2028,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0513908,
+      "recorded_at": "2026-08-13T22:42:26.946Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-017:0",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-017",
+      "round": 0,
+      "usage": {
+        "input_tokens": 11891,
+        "output_tokens": 1972,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0510668,
+      "recorded_at": "2026-08-13T22:42:48.857Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-018:0",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-018",
+      "round": 0,
+      "usage": {
+        "input_tokens": 13708,
+        "output_tokens": 2161,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44128
+      },
+      "cost_usd": 0.057851599999999996,
+      "recorded_at": "2026-08-13T22:43:12.310Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-019:0",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-019",
+      "round": 0,
+      "usage": {
+        "input_tokens": 11758,
+        "output_tokens": 2181,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0528908,
+      "recorded_at": "2026-08-13T22:43:35.158Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-020:0",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-020",
+      "round": 0,
+      "usage": {
+        "input_tokens": 11744,
+        "output_tokens": 2067,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.051722800000000006,
+      "recorded_at": "2026-08-13T22:43:56.118Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-001:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-001",
+      "round": 1,
+      "usage": {
+        "input_tokens": 11882,
+        "output_tokens": 2108,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.052408800000000005,
+      "recorded_at": "2026-08-13T22:44:17.623Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-002:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-002",
+      "round": 1,
+      "usage": {
+        "input_tokens": 14157,
+        "output_tokens": 2305,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44128
+      },
+      "cost_usd": 0.060189599999999996,
+      "recorded_at": "2026-08-13T22:44:41.806Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-010:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-010",
+      "round": 1,
+      "usage": {
+        "input_tokens": 10213,
+        "output_tokens": 2320,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0511908,
+      "recorded_at": "2026-08-13T22:45:07.442Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-011:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-011",
+      "round": 1,
+      "usage": {
+        "input_tokens": 9394,
+        "output_tokens": 2587,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31520
+      },
+      "cost_usd": 0.050962,
+      "recorded_at": "2026-08-13T22:45:36.949Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-012:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-012",
+      "round": 1,
+      "usage": {
+        "input_tokens": 14101,
+        "output_tokens": 2482,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44128
+      },
+      "cost_usd": 0.061847599999999996,
+      "recorded_at": "2026-08-13T22:46:05.197Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-013:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-013",
+      "round": 1,
+      "usage": {
+        "input_tokens": 8102,
+        "output_tokens": 2128,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31520
+      },
+      "cost_usd": 0.043788,
+      "recorded_at": "2026-08-13T22:46:26.030Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-015:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-015",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1130,
+        "output_tokens": 988,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 12608
+      },
+      "cost_usd": 0.0146616,
+      "recorded_at": "2026-08-13T22:46:36.779Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-016:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-016",
+      "round": 1,
+      "usage": {
+        "input_tokens": 11920,
+        "output_tokens": 2094,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.052344800000000004,
+      "recorded_at": "2026-08-13T22:46:58.366Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-017:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-017",
+      "round": 1,
+      "usage": {
+        "input_tokens": 12156,
+        "output_tokens": 2056,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.052436800000000006,
+      "recorded_at": "2026-08-13T22:47:20.528Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-018:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-018",
+      "round": 1,
+      "usage": {
+        "input_tokens": 13418,
+        "output_tokens": 1978,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44128
+      },
+      "cost_usd": 0.0554416,
+      "recorded_at": "2026-08-13T22:47:42.322Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-019:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-019",
+      "round": 1,
+      "usage": {
+        "input_tokens": 8055,
+        "output_tokens": 1756,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31520
+      },
+      "cost_usd": 0.039974,
+      "recorded_at": "2026-08-13T22:48:01.124Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-020:1",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-020",
+      "round": 1,
+      "usage": {
+        "input_tokens": 11774,
+        "output_tokens": 2033,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.051442800000000004,
+      "recorded_at": "2026-08-13T22:48:22.468Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-001:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-001",
+      "round": 2,
+      "usage": {
+        "input_tokens": 11977,
+        "output_tokens": 2052,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0520388,
+      "recorded_at": "2026-08-13T22:48:43.165Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-002:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-002",
+      "round": 2,
+      "usage": {
+        "input_tokens": 14603,
+        "output_tokens": 2216,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44128
+      },
+      "cost_usd": 0.0601916,
+      "recorded_at": "2026-08-13T22:49:06.571Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-010:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-010",
+      "round": 2,
+      "usage": {
+        "input_tokens": 10262,
+        "output_tokens": 2433,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0524188,
+      "recorded_at": "2026-08-13T22:49:33.380Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-011:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-011",
+      "round": 2,
+      "usage": {
+        "input_tokens": 9341,
+        "output_tokens": 2579,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31520
+      },
+      "cost_usd": 0.050776,
+      "recorded_at": "2026-08-13T22:50:03.601Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-012:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-012",
+      "round": 2,
+      "usage": {
+        "input_tokens": 17069,
+        "output_tokens": 3012,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44128
+      },
+      "cost_usd": 0.07308360000000001,
+      "recorded_at": "2026-08-13T22:50:41.486Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-013:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-013",
+      "round": 2,
+      "usage": {
+        "input_tokens": 8118,
+        "output_tokens": 2074,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31520
+      },
+      "cost_usd": 0.04328,
+      "recorded_at": "2026-08-13T22:51:02.809Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-015:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-015",
+      "round": 2,
+      "usage": {
+        "input_tokens": 1126,
+        "output_tokens": 904,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 12608
+      },
+      "cost_usd": 0.0138136,
+      "recorded_at": "2026-08-13T22:51:12.279Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-016:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-016",
+      "round": 2,
+      "usage": {
+        "input_tokens": 8579,
+        "output_tokens": 1852,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31520
+      },
+      "cost_usd": 0.041982,
+      "recorded_at": "2026-08-13T22:51:31.159Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-017:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-017",
+      "round": 2,
+      "usage": {
+        "input_tokens": 11792,
+        "output_tokens": 2007,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0512188,
+      "recorded_at": "2026-08-13T22:51:52.270Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-018:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-018",
+      "round": 2,
+      "usage": {
+        "input_tokens": 10141,
+        "output_tokens": 1981,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.047656800000000006,
+      "recorded_at": "2026-08-13T22:52:13.484Z"
     }
   ]
 }
