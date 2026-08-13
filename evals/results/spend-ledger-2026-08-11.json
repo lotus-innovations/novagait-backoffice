@@ -6,13 +6,13 @@
   "pricing_verified_on": "2026-08-11",
   "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
   "totals": {
-    "cost_usd": 27.595709900000063,
+    "cost_usd": 27.945590900000063,
     "by_lane": {
       "claude-haiku-4-5:uncached": 3.8054560000000053,
       "claude-haiku-4-5:cached": 2.222765399999999,
       "claude-sonnet-5:uncached": 4.555767000000004,
       "claude-opus-5:uncached": 9.810469999999993,
-      "claude-opus-5:cached": 3.4814829999999977,
+      "claude-opus-5:cached": 3.831363999999998,
       "unrecorded:swept": 1.4753735000000001,
       "credit-probe": 0.000013,
       "write-probe": 0.000013,
@@ -21,13 +21,13 @@
     "by_model": {
       "claude-haiku-4-5": 6.044663400000014,
       "claude-sonnet-5": 7.968605500000003,
-      "claude-opus-5": 13.582440999999996
+      "claude-opus-5": 13.932322000000001
     },
     "by_channel": {
-      "batch": 27.595683900000065,
+      "batch": 27.945564900000065,
       "interactive": 0.000026
     },
-    "entries": 3530
+    "entries": 3582
   },
   "entries": [
     {
@@ -60039,6 +60039,890 @@
       },
       "cost_usd": 0.006673,
       "recorded_at": "2026-08-13T21:37:30.259Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-033",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-033",
+      "round": 1,
+      "usage": {
+        "input_tokens": 877,
+        "output_tokens": 252,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006768,
+      "recorded_at": "2026-08-13T21:39:33.587Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-029",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-029",
+      "round": 1,
+      "usage": {
+        "input_tokens": 862,
+        "output_tokens": 245,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006643,
+      "recorded_at": "2026-08-13T21:39:33.603Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-019",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-019",
+      "round": 1,
+      "usage": {
+        "input_tokens": 804,
+        "output_tokens": 247,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006523,
+      "recorded_at": "2026-08-13T21:39:33.612Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-031",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-031",
+      "round": 1,
+      "usage": {
+        "input_tokens": 890,
+        "output_tokens": 246,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0067255,
+      "recorded_at": "2026-08-13T21:39:33.624Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-028",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-028",
+      "round": 1,
+      "usage": {
+        "input_tokens": 753,
+        "output_tokens": 256,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006508,
+      "recorded_at": "2026-08-13T21:39:33.634Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-025",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-025",
+      "round": 1,
+      "usage": {
+        "input_tokens": 782,
+        "output_tokens": 304,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0071805,
+      "recorded_at": "2026-08-13T21:39:33.646Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-030",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-030",
+      "round": 1,
+      "usage": {
+        "input_tokens": 742,
+        "output_tokens": 260,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0065305,
+      "recorded_at": "2026-08-13T21:39:33.650Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-023",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-023",
+      "round": 1,
+      "usage": {
+        "input_tokens": 914,
+        "output_tokens": 233,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006623,
+      "recorded_at": "2026-08-13T21:39:33.654Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-032",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-032",
+      "round": 1,
+      "usage": {
+        "input_tokens": 804,
+        "output_tokens": 232,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0063355,
+      "recorded_at": "2026-08-13T21:39:33.658Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-024",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-024",
+      "round": 1,
+      "usage": {
+        "input_tokens": 801,
+        "output_tokens": 238,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006403,
+      "recorded_at": "2026-08-13T21:39:33.662Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-021",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-021",
+      "round": 1,
+      "usage": {
+        "input_tokens": 966,
+        "output_tokens": 231,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006728,
+      "recorded_at": "2026-08-13T21:39:33.665Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-022",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-022",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1091,
+        "output_tokens": 281,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0076655,
+      "recorded_at": "2026-08-13T21:39:33.668Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-018",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-018",
+      "round": 1,
+      "usage": {
+        "input_tokens": 770,
+        "output_tokens": 225,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006163,
+      "recorded_at": "2026-08-13T21:39:33.671Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-027",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-027",
+      "round": 1,
+      "usage": {
+        "input_tokens": 854,
+        "output_tokens": 244,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0066105,
+      "recorded_at": "2026-08-13T21:39:33.677Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-020",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-020",
+      "round": 1,
+      "usage": {
+        "input_tokens": 828,
+        "output_tokens": 229,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006358,
+      "recorded_at": "2026-08-13T21:39:33.681Z"
+    },
+    {
+      "key": "msgbatch_01FYtP3k9y93pEnvwxPPqBkF:INV-026",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-026",
+      "round": 1,
+      "usage": {
+        "input_tokens": 872,
+        "output_tokens": 255,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006793,
+      "recorded_at": "2026-08-13T21:39:33.685Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-047",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-047",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1241,
+        "output_tokens": 261,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0077905,
+      "recorded_at": "2026-08-13T21:41:36.843Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-040",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-040",
+      "round": 1,
+      "usage": {
+        "input_tokens": 772,
+        "output_tokens": 240,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0063555,
+      "recorded_at": "2026-08-13T21:41:36.862Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-049",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-049",
+      "round": 1,
+      "usage": {
+        "input_tokens": 781,
+        "output_tokens": 226,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006203,
+      "recorded_at": "2026-08-13T21:41:36.872Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-043",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-043",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1126,
+        "output_tokens": 253,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.007403,
+      "recorded_at": "2026-08-13T21:41:36.881Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-038",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-038",
+      "round": 1,
+      "usage": {
+        "input_tokens": 750,
+        "output_tokens": 303,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.007088,
+      "recorded_at": "2026-08-13T21:41:36.888Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-039",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-039",
+      "round": 1,
+      "usage": {
+        "input_tokens": 829,
+        "output_tokens": 179,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0057355,
+      "recorded_at": "2026-08-13T21:41:36.894Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-042",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-042",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1080,
+        "output_tokens": 249,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.007238,
+      "recorded_at": "2026-08-13T21:41:36.901Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-037",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-037",
+      "round": 1,
+      "usage": {
+        "input_tokens": 787,
+        "output_tokens": 163,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0054305,
+      "recorded_at": "2026-08-13T21:41:36.905Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-048",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-048",
+      "round": 1,
+      "usage": {
+        "input_tokens": 741,
+        "output_tokens": 305,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0070905,
+      "recorded_at": "2026-08-13T21:41:36.909Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-034",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-034",
+      "round": 1,
+      "usage": {
+        "input_tokens": 897,
+        "output_tokens": 254,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006843,
+      "recorded_at": "2026-08-13T21:41:36.913Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-041",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-041",
+      "round": 1,
+      "usage": {
+        "input_tokens": 749,
+        "output_tokens": 286,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006873,
+      "recorded_at": "2026-08-13T21:41:36.916Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-035",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-035",
+      "round": 1,
+      "usage": {
+        "input_tokens": 836,
+        "output_tokens": 282,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0070405,
+      "recorded_at": "2026-08-13T21:41:36.919Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-045",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-045",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1530,
+        "output_tokens": 184,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0075505,
+      "recorded_at": "2026-08-13T21:41:36.923Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-044",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-044",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1060,
+        "output_tokens": 235,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.007013,
+      "recorded_at": "2026-08-13T21:41:36.926Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-036",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-036",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1141,
+        "output_tokens": 204,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006828,
+      "recorded_at": "2026-08-13T21:41:36.930Z"
+    },
+    {
+      "key": "msgbatch_015qXMzAVjiJXVUEyunZ1XHF:INV-046",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-046",
+      "round": 1,
+      "usage": {
+        "input_tokens": 762,
+        "output_tokens": 235,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006268,
+      "recorded_at": "2026-08-13T21:41:36.939Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-057",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-057",
+      "round": 1,
+      "usage": {
+        "input_tokens": 860,
+        "output_tokens": 232,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0064755,
+      "recorded_at": "2026-08-13T21:43:39.713Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-051",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-051",
+      "round": 1,
+      "usage": {
+        "input_tokens": 887,
+        "output_tokens": 206,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006218,
+      "recorded_at": "2026-08-13T21:43:39.723Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-054",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-054",
+      "round": 1,
+      "usage": {
+        "input_tokens": 784,
+        "output_tokens": 242,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0064105,
+      "recorded_at": "2026-08-13T21:43:39.731Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-064",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-064",
+      "round": 1,
+      "usage": {
+        "input_tokens": 917,
+        "output_tokens": 325,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0077805,
+      "recorded_at": "2026-08-13T21:43:39.739Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-055",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-055",
+      "round": 1,
+      "usage": {
+        "input_tokens": 857,
+        "output_tokens": 291,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0072055,
+      "recorded_at": "2026-08-13T21:43:39.745Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-058",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-058",
+      "round": 1,
+      "usage": {
+        "input_tokens": 766,
+        "output_tokens": 237,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006303,
+      "recorded_at": "2026-08-13T21:43:39.751Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-050",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-050",
+      "round": 1,
+      "usage": {
+        "input_tokens": 1091,
+        "output_tokens": 234,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.007078,
+      "recorded_at": "2026-08-13T21:43:39.755Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-056",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-056",
+      "round": 1,
+      "usage": {
+        "input_tokens": 780,
+        "output_tokens": 294,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0070505,
+      "recorded_at": "2026-08-13T21:43:39.759Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-060",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-060",
+      "round": 1,
+      "usage": {
+        "input_tokens": 857,
+        "output_tokens": 265,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0068805,
+      "recorded_at": "2026-08-13T21:43:39.763Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-062",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-062",
+      "round": 1,
+      "usage": {
+        "input_tokens": 814,
+        "output_tokens": 236,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0064105,
+      "recorded_at": "2026-08-13T21:43:39.767Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-053",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-053",
+      "round": 1,
+      "usage": {
+        "input_tokens": 731,
+        "output_tokens": 288,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006853,
+      "recorded_at": "2026-08-13T21:43:39.770Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-065",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-065",
+      "round": 1,
+      "usage": {
+        "input_tokens": 792,
+        "output_tokens": 250,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0065305,
+      "recorded_at": "2026-08-13T21:43:39.773Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-052",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-052",
+      "round": 1,
+      "usage": {
+        "input_tokens": 769,
+        "output_tokens": 252,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006498,
+      "recorded_at": "2026-08-13T21:43:39.776Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-063",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-063",
+      "round": 1,
+      "usage": {
+        "input_tokens": 869,
+        "output_tokens": 238,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.006573,
+      "recorded_at": "2026-08-13T21:43:39.779Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-059",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-059",
+      "round": 1,
+      "usage": {
+        "input_tokens": 786,
+        "output_tokens": 234,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0063155,
+      "recorded_at": "2026-08-13T21:43:39.782Z"
+    },
+    {
+      "key": "msgbatch_01WSEv5SPP9HniJX7zHAtUTp:INV-061",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-061",
+      "round": 1,
+      "usage": {
+        "input_tokens": 831,
+        "output_tokens": 303,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0072905,
+      "recorded_at": "2026-08-13T21:43:39.785Z"
+    },
+    {
+      "key": "msgbatch_01AqShnJDfBdiVEB7KUhE5ta:INV-066",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-066",
+      "round": 1,
+      "usage": {
+        "input_tokens": 757,
+        "output_tokens": 307,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0071555,
+      "recorded_at": "2026-08-13T21:46:02.982Z"
+    },
+    {
+      "key": "msgbatch_01AqShnJDfBdiVEB7KUhE5ta:INV-067",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-067",
+      "round": 1,
+      "usage": {
+        "input_tokens": 743,
+        "output_tokens": 302,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.007058,
+      "recorded_at": "2026-08-13T21:46:02.999Z"
+    },
+    {
+      "key": "msgbatch_01AqShnJDfBdiVEB7KUhE5ta:INV-069",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-069",
+      "round": 1,
+      "usage": {
+        "input_tokens": 707,
+        "output_tokens": 237,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0061555,
+      "recorded_at": "2026-08-13T21:46:03.008Z"
+    },
+    {
+      "key": "msgbatch_01AqShnJDfBdiVEB7KUhE5ta:INV-068",
+      "lane": "claude-opus-5:cached",
+      "model": "claude-opus-5",
+      "channel": "batch",
+      "write_ttl": "1h",
+      "case_id": "INV-068",
+      "round": 1,
+      "usage": {
+        "input_tokens": 817,
+        "output_tokens": 229,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 5702
+      },
+      "cost_usd": 0.0063305,
+      "recorded_at": "2026-08-13T21:46:03.017Z"
     }
   ]
 }
