@@ -6,7 +6,7 @@
   "pricing_verified_on": "2026-08-11",
   "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
   "totals": {
-    "cost_usd": 37.52243170000002,
+    "cost_usd": 39.987182300000015,
     "by_lane": {
       "claude-haiku-4-5:uncached": 3.8054560000000053,
       "claude-haiku-4-5:cached": 2.222765399999999,
@@ -20,18 +20,19 @@
       "judge:working": 0.6328700000000002,
       "judge:published": 1.8851750000000003,
       "latency:claude-haiku-4-5": 0.7952617,
-      "latency:claude-sonnet-5": 1.7090295999999998
+      "latency:claude-sonnet-5": 1.8106651999999999,
+      "latency:claude-opus-5": 2.3631150000000005
     },
     "by_model": {
       "claude-haiku-4-5": 6.839925100000012,
-      "claude-sonnet-5": 10.310505100000006,
-      "claude-opus-5": 20.372001500000014
+      "claude-sonnet-5": 10.412140700000005,
+      "claude-opus-5": 22.735116500000014
     },
     "by_channel": {
       "batch": 35.01811440000004,
-      "interactive": 2.5043173
+      "interactive": 4.969067900000001
     },
-    "entries": 4257
+    "entries": 4272
   },
   "entries": [
     {
@@ -72402,6 +72403,261 @@
       },
       "cost_usd": 0.047656800000000006,
       "recorded_at": "2026-08-13T22:52:13.484Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-019:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-019",
+      "round": 2,
+      "usage": {
+        "input_tokens": 11637,
+        "output_tokens": 1993,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.0507688,
+      "recorded_at": "2026-08-13T22:52:35.498Z"
+    },
+    {
+      "key": "latency:claude-sonnet-5:INV-020:2",
+      "lane": "latency:claude-sonnet-5",
+      "model": "claude-sonnet-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-020",
+      "round": 2,
+      "usage": {
+        "input_tokens": 11871,
+        "output_tokens": 1956,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37824
+      },
+      "cost_usd": 0.050866800000000004,
+      "recorded_at": "2026-08-13T22:52:55.908Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-001:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-001",
+      "round": 0,
+      "usage": {
+        "input_tokens": 20186,
+        "output_tokens": 3313,
+        "cache_creation_input_tokens": 6236,
+        "cache_read_input_tokens": 37416
+      },
+      "cost_usd": 0.241438,
+      "recorded_at": "2026-08-13T22:53:38.475Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-002:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-002",
+      "round": 0,
+      "usage": {
+        "input_tokens": 16964,
+        "output_tokens": 3071,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.183421,
+      "recorded_at": "2026-08-13T22:54:18.064Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-010:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-010",
+      "round": 0,
+      "usage": {
+        "input_tokens": 22896,
+        "output_tokens": 5531,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.274581,
+      "recorded_at": "2026-08-13T22:55:25.957Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-011:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-011",
+      "round": 0,
+      "usage": {
+        "input_tokens": 11062,
+        "output_tokens": 3273,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31180
+      },
+      "cost_usd": 0.152725,
+      "recorded_at": "2026-08-13T22:56:08.580Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-012:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-012",
+      "round": 0,
+      "usage": {
+        "input_tokens": 17159,
+        "output_tokens": 3327,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.190796,
+      "recorded_at": "2026-08-13T22:56:53.219Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-013:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-013",
+      "round": 0,
+      "usage": {
+        "input_tokens": 10929,
+        "output_tokens": 3101,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 31180
+      },
+      "cost_usd": 0.14776,
+      "recorded_at": "2026-08-13T22:57:32.825Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-015:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-015",
+      "round": 0,
+      "usage": {
+        "input_tokens": 1553,
+        "output_tokens": 1728,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 12472
+      },
+      "cost_usd": 0.057201,
+      "recorded_at": "2026-08-13T22:57:56.047Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-016:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-016",
+      "round": 0,
+      "usage": {
+        "input_tokens": 16991,
+        "output_tokens": 3124,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.184881,
+      "recorded_at": "2026-08-13T22:58:36.101Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-017:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-017",
+      "round": 0,
+      "usage": {
+        "input_tokens": 18591,
+        "output_tokens": 3490,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.202031,
+      "recorded_at": "2026-08-13T22:59:22.863Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-018:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-018",
+      "round": 0,
+      "usage": {
+        "input_tokens": 17005,
+        "output_tokens": 3353,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.190676,
+      "recorded_at": "2026-08-13T23:00:05.430Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-019:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-019",
+      "round": 0,
+      "usage": {
+        "input_tokens": 12694,
+        "output_tokens": 2946,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 37416
+      },
+      "cost_usd": 0.155828,
+      "recorded_at": "2026-08-13T23:00:43.283Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-020:0",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-020",
+      "round": 0,
+      "usage": {
+        "input_tokens": 19601,
+        "output_tokens": 3111,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.197606,
+      "recorded_at": "2026-08-13T23:01:21.850Z"
+    },
+    {
+      "key": "latency:claude-opus-5:INV-001:1",
+      "lane": "latency:claude-opus-5",
+      "model": "claude-opus-5",
+      "channel": "interactive",
+      "write_ttl": "5m",
+      "case_id": "INV-001",
+      "round": 1,
+      "usage": {
+        "input_tokens": 17149,
+        "output_tokens": 3064,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 43652
+      },
+      "cost_usd": 0.184171,
+      "recorded_at": "2026-08-13T23:02:02.733Z"
     }
   ]
 }
