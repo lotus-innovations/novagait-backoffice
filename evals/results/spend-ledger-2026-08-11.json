@@ -6,11 +6,11 @@
   "pricing_verified_on": "2026-08-11",
   "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
   "totals": {
-    "cost_usd": 24.468418900000046,
+    "cost_usd": 24.672156900000044,
     "by_lane": {
       "claude-haiku-4-5:uncached": 3.8054560000000053,
       "claude-haiku-4-5:cached": 2.222765399999999,
-      "claude-sonnet-5:uncached": 4.3520290000000035,
+      "claude-sonnet-5:uncached": 4.555767000000004,
       "claude-opus-5:uncached": 9.810469999999993,
       "claude-opus-5:cached": 2.8022989999999988,
       "unrecorded:swept": 1.4753735000000001,
@@ -19,14 +19,14 @@
     },
     "by_model": {
       "claude-haiku-4-5": 6.044663400000014,
-      "claude-sonnet-5": 5.5204985,
+      "claude-sonnet-5": 5.724236500000001,
       "claude-opus-5": 12.903256999999996
     },
     "by_channel": {
-      "batch": 24.468392900000048,
+      "batch": 24.672130900000045,
       "interactive": 0.000026
     },
-    "entries": 3040
+    "entries": 3052
   },
   "entries": [
     {
@@ -51708,6 +51708,210 @@
       },
       "cost_usd": 0.013266,
       "recorded_at": "2026-08-13T19:24:59.308Z"
+    },
+    {
+      "key": "msgbatch_01W9xvQ4p36BfCDPCzDcGAcT:INV-041",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-041",
+      "round": 7,
+      "usage": {
+        "input_tokens": 14307,
+        "output_tokens": 81,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.014712,
+      "recorded_at": "2026-08-13T19:26:01.434Z"
+    },
+    {
+      "key": "msgbatch_01W9xvQ4p36BfCDPCzDcGAcT:INV-035",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-035",
+      "round": 7,
+      "usage": {
+        "input_tokens": 13984,
+        "output_tokens": 83,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.014399,
+      "recorded_at": "2026-08-13T19:26:01.452Z"
+    },
+    {
+      "key": "msgbatch_01W9xvQ4p36BfCDPCzDcGAcT:INV-021",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-021",
+      "round": 7,
+      "usage": {
+        "input_tokens": 12654,
+        "output_tokens": 82,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.013064,
+      "recorded_at": "2026-08-13T19:26:01.460Z"
+    },
+    {
+      "key": "msgbatch_01W9xvQ4p36BfCDPCzDcGAcT:INV-052",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-052",
+      "round": 7,
+      "usage": {
+        "input_tokens": 14372,
+        "output_tokens": 1393,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.021337,
+      "recorded_at": "2026-08-13T19:26:01.467Z"
+    },
+    {
+      "key": "msgbatch_01W9xvQ4p36BfCDPCzDcGAcT:INV-023",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-023",
+      "round": 7,
+      "usage": {
+        "input_tokens": 12279,
+        "output_tokens": 89,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.012724,
+      "recorded_at": "2026-08-13T19:26:01.474Z"
+    },
+    {
+      "key": "msgbatch_01W9xvQ4p36BfCDPCzDcGAcT:INV-040",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-040",
+      "round": 7,
+      "usage": {
+        "input_tokens": 14066,
+        "output_tokens": 615,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.017141,
+      "recorded_at": "2026-08-13T19:26:01.479Z"
+    },
+    {
+      "key": "msgbatch_016aBXk7R79SDWAir9G6AqUs:INV-021",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-021",
+      "round": 8,
+      "usage": {
+        "input_tokens": 12767,
+        "output_tokens": 638,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.015957,
+      "recorded_at": "2026-08-13T19:28:04.506Z"
+    },
+    {
+      "key": "msgbatch_016aBXk7R79SDWAir9G6AqUs:INV-041",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-041",
+      "round": 8,
+      "usage": {
+        "input_tokens": 14470,
+        "output_tokens": 600,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.01747,
+      "recorded_at": "2026-08-13T19:28:04.528Z"
+    },
+    {
+      "key": "msgbatch_016aBXk7R79SDWAir9G6AqUs:INV-035",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-035",
+      "round": 8,
+      "usage": {
+        "input_tokens": 14098,
+        "output_tokens": 599,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.017093,
+      "recorded_at": "2026-08-13T19:28:04.537Z"
+    },
+    {
+      "key": "msgbatch_016aBXk7R79SDWAir9G6AqUs:INV-052",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-052",
+      "round": 8,
+      "usage": {
+        "input_tokens": 15853,
+        "output_tokens": 789,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.019798,
+      "recorded_at": "2026-08-13T19:28:04.545Z"
+    },
+    {
+      "key": "msgbatch_016aBXk7R79SDWAir9G6AqUs:INV-023",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-023",
+      "round": 8,
+      "usage": {
+        "input_tokens": 12399,
+        "output_tokens": 702,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.015909,
+      "recorded_at": "2026-08-13T19:28:04.553Z"
+    },
+    {
+      "key": "msgbatch_01QjCan9DkPoWMXKzEeoa4xE:INV-052",
+      "lane": "claude-sonnet-5:uncached",
+      "model": "claude-sonnet-5",
+      "channel": "batch",
+      "write_ttl": null,
+      "case_id": "INV-052",
+      "round": 9,
+      "usage": {
+        "input_tokens": 16814,
+        "output_tokens": 1464,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.024134,
+      "recorded_at": "2026-08-13T19:29:06.436Z"
     }
   ]
 }
