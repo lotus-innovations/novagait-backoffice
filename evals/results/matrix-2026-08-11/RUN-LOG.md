@@ -162,6 +162,58 @@ construction, not by measurement.
     $12.6320; the difference is the haiku lanes' superseded first attempts,
     which are now itemised as what they are.
 
+12. **Writes were restored, and verified the only way that proves anything.**
+    The workspace API usage limit of incident 10 was raised by the principal
+    on 2026-08-12, and credits were loaded. `count_tokens` is free and kept
+    working through BOTH of this run's blockers, so it never distinguished a
+    live account from a blocked one; the check that does is a real billed
+    request. `matrix:probe` is that check, kept as a script rather than run ad
+    hoc because the next resumption will ask the same question. Recorded as
+    `write-probe-2026-08-12`, 8 input and 1 output token, and confirmed at
+    batch scale moments later when a 16-request batch was accepted.
+
+13. **A from-cold cached lane pays about THREE prefix writes, not one.**
+    Measured on the fresh `claude-opus-5:cached` attempt, round 0: total cache
+    writes were 17,106 tokens, which is exactly 3 x 5,702, and all of them were
+    billed inside the FIRST chunk. A batch's requests process concurrently, so
+    three of the first sixteen raced each other to write the prefix and the
+    remaining sixty-one read it at 0.1x. Anyone sizing a cached lane as "pay
+    one write, then read N times" will under-estimate it. This attempt was also
+    genuinely from cold: the superseded attempts' prefixes had died with the 1h
+    TTL more than eight hours earlier, so nothing was inherited.
+
+14. **Batch cadence is a transient property of the QUEUE, and the evidence is
+    now decisive.** Incident 3 read multi-hour sonnet batches as a model
+    property; incident 10 already doubted it. This is what settles it, measured
+    2026-08-13:
+    - A 2-request opus CONTROL batch, the smallest useful probe, took **71.2
+      minutes** and ended with 2 of 2 succeeded, against 2 to 3 minutes for the
+      same shape the day before.
+    - An abandoned lane's 16-request opus chunk ran **190.2 minutes** and ended
+      with 16 of 16 succeeded. Nothing was stuck; it was slow.
+    - Decisively, inside ONE sonnet lane and one round: chunk 0 took **141
+      minutes**, and the next four chunks of the same lane and the same shape
+      took **2.1, 7.8, 2.4 and 2.4 minutes**, minutes apart.
+    Same model, same request shape, two orders of magnitude apart within a
+    single round. No schedule, threshold or fallback may be built on a cadence
+    figure, and "sonnet is slow" is retired as a reading of incident 3.
+
+    The operational consequence is that riding batches out is correct and
+    cancelling them is not: every long batch this run waited on completed
+    successfully, and every batch it cancelled cost money for results nobody
+    read.
+
+15. **`claude-opus-5:cached` was abandoned mid-round by decision, not by
+    failure.** With congestion making a single round exceed 2h41m against a 1h
+    cache TTL, condition (a) of the pre-authorized fallback was met on
+    measurement. The lane was stopped in favour of `claude-sonnet-5:uncached`,
+    which was the only remaining lane that adds a MISSING TIER to the table
+    rather than a second cache column for a tier already present. The driver
+    was stopped without cancelling anything: its in-flight chunk was left to
+    complete server-side and is swept, because cancelling bills the work and
+    discards the results while stopping the reader does not. The lane's spend
+    is superseded and itemised by batch id.
+
 ## The finding that needs a human decision
 
 Across all three published lanes the dominant failure is `GRD-004`,
