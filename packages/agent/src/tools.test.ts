@@ -118,7 +118,7 @@ describe("tool schemas", () => {
 describe("prompt", () => {
   it("carries versions and the policy thresholds from policy-constants", () => {
     const prompt = buildSystemPrompt();
-    expect(PROMPT_VERSION).toBe("1.2.0"); // policy-corpus detail + cache-minimum growth (LOT-119)
+    expect(PROMPT_VERSION).toBe("1.3.0"); // GRD-004 tool etiquette + PO-inference guard (LOT-129)
     expect(TOOLS_VERSION).toBe("1.0.0");
     expect(prompt).toContain("$500.00");
     expect(prompt).toContain("$5,000.00".replace(",", "")); // $5000.00
@@ -181,6 +181,18 @@ describe("prompt", () => {
     // Only KB -> prompt is asserted. The reverse direction would false-fire
     // on non-GL four-digit strings the prompt legitimately contains (the
     // hard floor renders as "$5000.00").
+  });
+
+  // LOT-129. The matrix adjudicated GRD-004 as the dominant deployed-tier
+  // failure: the model drafts a correct exception_hold, then calls
+  // execute_action anyway (GR-EXEC contained every attempt, but the attempt
+  // violates the CASE-PLAN amendment-9 contract: route cases may attempt,
+  // holds and rejects must not). These phrases are the 1.3.0 hardening;
+  // an edit that drops them silently un-fixes the measured failure mode.
+  it("route-conditions execute_action and bars PO inference (GRD-004/EXT-003 hardening)", () => {
+    const prompt = buildSystemPrompt();
+    expect(prompt).toContain("never call execute_action on a hold or a reject");
+    expect(prompt).toContain("Never borrow a PO id");
   });
 
   it("policy tolerance helper honors max(2%, $25)", () => {
