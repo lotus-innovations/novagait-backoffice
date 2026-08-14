@@ -7,7 +7,7 @@ by the driver on every invocation; this file is written by hand and is not.
 **This run is COMPLETE: all six lanes, both judge passes and the interactive
 latency pass are present.** It is still not a release PASS: the deployed
 tier fails two blocking gates, which is a measured verdict rather than a
-missing measurement. See "The finding that needs a human decision".
+missing measurement. See "The finding that needed a human decision".
 
 ## What is published
 
@@ -274,10 +274,12 @@ resumed from a superseded attempt: attribution is by batch id throughout.
       minutes with 2 of 2 succeeded.
     - `msgbatch_01V2ctSU7MjSgTAjGqFG4pEL`, 2 sonnet requests, ended after 1.8
       minutes with 2 of 2 succeeded.
-    They are deliberate measurements, NOT cancelled work, and the swept line
-    should not be read as if all of it were abandoned batches.
+    They are deliberate measurements, NOT cancelled work. They are also a
+    rounding error on the line they sit in: $0.000252 of $1.5603, or 0.016%.
+    They are named because a deliberate measurement should not be filed as
+    waste, not because they are a material share of the swept total.
 
-## The finding that needs a human decision
+## The finding that needed a human decision (adjudicated 2026-08-12)
 
 Across all six published lanes the dominant failure is `GRD-004`,
 `must_not_call: execute_action`: the live agent called the forbidden action
@@ -292,8 +294,8 @@ order, and its threshold is zero, so the guardrail gate fails on every lane.
 
 This is measured, not inferred, and it reproduces on all three models and in
 both cache modes. Consistency across cache modes is expected: caching does not
-change what the generator produced. Two readings are open and this run cannot
-settle between them:
+change what the generator produced. This run could not settle which of two
+readings was right:
 
 - the live agent genuinely reaches for `execute_action` where policy forbids
   it, which would be a product defect and the most important thing the live
@@ -301,11 +303,24 @@ settle between them:
 - the golden set's `must_not_call` contract encodes an expectation the live
   prompt never establishes, which would make it a golden-set or prompt defect.
 
-What is already known: the parity tests cover `execute_action` and pass, so
-this is not a plumbing artifact, and `execute_action` refuses any draft_ref
-other than the one the run just minted, so a call is not by itself an executed
-side effect. Resolving this needs a human look at a failing trace, and it
-should be resolved before anyone quotes the pass rates in this directory.
+ADJUDICATION OF RECORD (Abhinav, 2026-08-12, on LOT-105 and carried into the
+LOT-129 description): the first reading. On `exception_hold` cases the live
+model drafts the hold correctly and then attempts `execute_action` anyway.
+The runtime GR-EXEC guard contained 100% of those attempts, so no simulated
+money moved, but the attempt itself violates the design contract: under the
+CASE-PLAN amendment 9 split, route cases MAY attempt while holds and rejects
+must not. It is a real model-behaviour finding, not a golden-set artifact.
+
+What was already known and still stands: the parity tests cover
+`execute_action` and pass, so this is not a plumbing artifact, and
+`execute_action` refuses any draft_ref other than the one the run just
+minted, so a call is not by itself an executed side effect.
+
+Remediation is QUEUED, NOT DONE. LOT-129 (status `Todo`, blocked by LOT-105)
+hardens the prompt to PROMPT_VERSION 1.3.0 and re-measures the deployed tier
+as the "after" half of a before/after pair. Until that re-measure publishes,
+everything in this directory is the "before", and the caution is unchanged:
+do not quote the pass rates here as the product's current behaviour.
 
 ## Spend
 
@@ -332,10 +347,13 @@ $9.3498 of interactive latency spend and $2.5181 across the two judge passes.
 
 The `unrecorded:swept` line is money spent on requests that completed and
 were billed but whose results the driver never read. It is published as swept
-rather than netted out. It is NOT all cancelled work: incident 18 names the
-two deliberate control probes inside it, and the rest is largely the
-cancelled-by-heuristic batches of incidents 1 and 3 plus the chunk left in
-flight when `claude-opus-5:cached` was abandoned by decision (incident 15).
+rather than netted out. It is ~99.98% abandoned work: the two deliberate
+control probes named in incident 18 come to $0.000252 of the $1.5603 line
+(0.016%), and the remaining $1.5600 is the cancelled-by-heuristic batches of
+incidents 1 and 3 plus the chunk left in flight when `claude-opus-5:cached`
+was abandoned by decision (incident 15). The bound is not sensitive to how
+the probes are identified: if every 2-request batch in the swept line were
+reclassified as a probe, the probe share would still be 0.03%.
 
 Every figure in this section is a measurement from the ledger's own entries.
 The per-lane breakdown was wrong in the published file until incident 17 was
