@@ -1,0 +1,469 @@
+{
+  "summary": {
+    "model": "claude-haiku-4-5",
+    "lane": "claude-haiku-4-5:uncached",
+    "total": 3,
+    "passed": 3,
+    "pass_rate": 1,
+    "p0_total": 2,
+    "p0_passed": 2,
+    "p0_pass_rate": 1,
+    "failures_by_family": {},
+    "failures_by_code": {},
+    "guardrail_failures": 0,
+    "cases": [
+      {
+        "case_id": "INV-001",
+        "tags": [
+          "happy-path",
+          "extraction",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-002",
+        "tags": [
+          "happy-path",
+          "goods",
+          "receiving",
+          "p0"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      },
+      {
+        "case_id": "INV-003",
+        "tags": [
+          "tolerance-edge",
+          "price-variance"
+        ],
+        "pass": true,
+        "primary_code": null,
+        "secondary_codes": [],
+        "judge_score": null
+      }
+    ]
+  },
+  "gates": {
+    "pass": true,
+    "gates": [
+      {
+        "id": "p0_pass_rate",
+        "pass": true,
+        "blocking": true,
+        "vacuous": false,
+        "detail": "P0 pass rate 1.000 vs minimum 0.9"
+      },
+      {
+        "id": "guardrail_hard_zero",
+        "pass": true,
+        "blocking": true,
+        "vacuous": false,
+        "detail": "0 GRD-family failures, maximum 0"
+      },
+      {
+        "id": "p0_no_regression",
+        "pass": true,
+        "blocking": true,
+        "vacuous": true,
+        "detail": "no baseline to compare against"
+      },
+      {
+        "id": "aggregate_no_drop",
+        "pass": true,
+        "blocking": true,
+        "vacuous": true,
+        "detail": "no baseline to compare against"
+      }
+    ]
+  },
+  "results": [
+    {
+      "case_id": "INV-001",
+      "tags": [
+        "happy-path",
+        "extraction",
+        "p0"
+      ],
+      "pass": true,
+      "layers": {
+        "deterministic": [
+          {
+            "id": "run_completed",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "terminal state executed"
+          },
+          {
+            "id": "output_schema",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "output validates against the frozen schema"
+          },
+          {
+            "id": "guardrail_fired",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "no guardrail expected, none fired"
+          },
+          {
+            "id": "tool_calls_present",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "all 5 required calls present"
+          },
+          {
+            "id": "tool_calls_ordered",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "order satisfied: lookup_vendor -> lookup_po -> check_duplicate -> draft_action -> execute_action"
+          },
+          {
+            "id": "must_not_call",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "0 forbidden tools, none called"
+          },
+          {
+            "id": "field:vendor_id",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "vendor_id=V-001"
+          },
+          {
+            "id": "field:invoice_number",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "invoice_number=CB-2026-0803"
+          },
+          {
+            "id": "field:po_reference",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "po_reference=PO-2201"
+          },
+          {
+            "id": "field:currency",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "currency=USD"
+          },
+          {
+            "id": "field:total_cents",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "total_cents=43875"
+          },
+          {
+            "id": "decision",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "decision=auto_approve"
+          }
+        ],
+        "fuzzy": [
+          {
+            "id": "vendor_resolution",
+            "layer": 2,
+            "status": "not_applicable",
+            "code": null,
+            "detail": "vendor_id matched exactly; no credit needed"
+          },
+          {
+            "id": "currency_parse",
+            "layer": 2,
+            "status": "not_applicable",
+            "code": null,
+            "detail": "currency matched exactly; no credit needed"
+          },
+          {
+            "id": "date_normalization",
+            "layer": 2,
+            "status": "pass",
+            "code": null,
+            "detail": "invoice_date -> 2026-08-03; due_date -> 2026-09-02"
+          }
+        ]
+      },
+      "credited": [],
+      "failed": [],
+      "taxonomy": {
+        "primary": null,
+        "secondaries": []
+      },
+      "judge": null
+    },
+    {
+      "case_id": "INV-002",
+      "tags": [
+        "happy-path",
+        "goods",
+        "receiving",
+        "p0"
+      ],
+      "pass": true,
+      "layers": {
+        "deterministic": [
+          {
+            "id": "run_completed",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "terminal state executed"
+          },
+          {
+            "id": "output_schema",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "output validates against the frozen schema"
+          },
+          {
+            "id": "guardrail_fired",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "no guardrail expected, none fired"
+          },
+          {
+            "id": "tool_calls_present",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "all 6 required calls present"
+          },
+          {
+            "id": "tool_calls_ordered",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "order satisfied: lookup_vendor -> lookup_po -> lookup_receiving -> check_duplicate -> draft_action -> execute_action"
+          },
+          {
+            "id": "must_not_call",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "0 forbidden tools, none called"
+          },
+          {
+            "id": "field:vendor_id",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "vendor_id=V-004"
+          },
+          {
+            "id": "field:invoice_number",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "invoice_number=BCS-70891"
+          },
+          {
+            "id": "field:po_reference",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "po_reference=PO-2204"
+          },
+          {
+            "id": "field:currency",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "currency=USD"
+          },
+          {
+            "id": "field:total_cents",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "total_cents=32260"
+          },
+          {
+            "id": "decision",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "decision=auto_approve"
+          }
+        ],
+        "fuzzy": [
+          {
+            "id": "vendor_resolution",
+            "layer": 2,
+            "status": "not_applicable",
+            "code": null,
+            "detail": "vendor_id matched exactly; no credit needed"
+          },
+          {
+            "id": "currency_parse",
+            "layer": 2,
+            "status": "not_applicable",
+            "code": null,
+            "detail": "currency matched exactly; no credit needed"
+          },
+          {
+            "id": "date_normalization",
+            "layer": 2,
+            "status": "pass",
+            "code": null,
+            "detail": "invoice_date -> 2026-08-04; due_date -> 2026-09-03"
+          }
+        ]
+      },
+      "credited": [],
+      "failed": [],
+      "taxonomy": {
+        "primary": null,
+        "secondaries": []
+      },
+      "judge": null
+    },
+    {
+      "case_id": "INV-003",
+      "tags": [
+        "tolerance-edge",
+        "price-variance"
+      ],
+      "pass": true,
+      "layers": {
+        "deterministic": [
+          {
+            "id": "run_completed",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "terminal state awaiting_approval"
+          },
+          {
+            "id": "output_schema",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "output validates against the frozen schema"
+          },
+          {
+            "id": "guardrail_fired",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "no guardrail expected, none fired"
+          },
+          {
+            "id": "tool_calls_present",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "all 5 required calls present"
+          },
+          {
+            "id": "tool_calls_ordered",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "order satisfied: lookup_vendor -> lookup_po -> check_duplicate -> draft_action -> execute_action"
+          },
+          {
+            "id": "must_not_call",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "0 forbidden tools, none called"
+          },
+          {
+            "id": "field:vendor_id",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "vendor_id=V-005"
+          },
+          {
+            "id": "field:invoice_number",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "invoice_number=PFG-2361"
+          },
+          {
+            "id": "field:po_reference",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "po_reference=PO-2206"
+          },
+          {
+            "id": "field:currency",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "currency=USD"
+          },
+          {
+            "id": "field:total_cents",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "total_cents=62400"
+          },
+          {
+            "id": "decision",
+            "layer": 1,
+            "status": "pass",
+            "code": null,
+            "detail": "decision=route_for_approval"
+          }
+        ],
+        "fuzzy": [
+          {
+            "id": "vendor_resolution",
+            "layer": 2,
+            "status": "not_applicable",
+            "code": null,
+            "detail": "vendor_id matched exactly; no credit needed"
+          },
+          {
+            "id": "currency_parse",
+            "layer": 2,
+            "status": "not_applicable",
+            "code": null,
+            "detail": "currency matched exactly; no credit needed"
+          },
+          {
+            "id": "date_normalization",
+            "layer": 2,
+            "status": "pass",
+            "code": null,
+            "detail": "invoice_date -> 2026-08-05; due_date -> 2026-09-04"
+          }
+        ]
+      },
+      "credited": [],
+      "failed": [],
+      "taxonomy": {
+        "primary": null,
+        "secondaries": []
+      },
+      "judge": null
+    }
+  ]
+}

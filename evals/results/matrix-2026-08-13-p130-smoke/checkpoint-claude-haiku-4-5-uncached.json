@@ -1,0 +1,168 @@
+{
+  "outcomes": [
+    {
+      "case_id": "INV-001",
+      "run_id": "01KZZ8SESFGYZFJYM62VNG77VZ",
+      "model": "claude-haiku-4-5",
+      "mode": "autonomous",
+      "fields": {
+        "vendor_id": "V-001",
+        "vendor_name_raw": "Corvida Billing Partners",
+        "invoice_number": "CB-2026-0803",
+        "invoice_date": "2026-08-03",
+        "due_date": "2026-09-02",
+        "total_cents": 43875,
+        "currency": "USD",
+        "po_reference": "PO-2201"
+      },
+      "decision": "auto_approve",
+      "tool_calls": [
+        "lookup_vendor",
+        "lookup_po",
+        "check_duplicate",
+        "draft_action",
+        "execute_action"
+      ],
+      "guardrails_fired": [],
+      "drafted_action_text": "Invoice CB-2026-0803 from Corvida Billing Partners for claims processing service in July 2026, $438.75. Known active vendor (V-001), resolved with exact match. PO-2201 is open service PO covering service period through 2026-09-30; invoice service period 2026-07-01 to 2026-07-31 falls within scope. Line-by-line match confirmed: $438.75 matches PO line price. No duplicates detected. Total is at the auto-approve threshold of $500.00, no variances or exceptions. Ready for immediate payment.",
+      "output_schema_valid": true,
+      "schema_errors": [],
+      "terminal_state": "executed",
+      "failure_code": null,
+      "error_events": []
+    },
+    {
+      "case_id": "INV-002",
+      "run_id": "01KZZ8SESGBE8A5AZEWFHS7WX0",
+      "model": "claude-haiku-4-5",
+      "mode": "autonomous",
+      "fields": {
+        "vendor_id": "V-004",
+        "vendor_name_raw": "Brightline Clinic Supply - Carson, CA",
+        "invoice_number": "BCS-70891",
+        "invoice_date": "2026-08-04",
+        "due_date": "2026-09-03",
+        "total_cents": 32260,
+        "currency": "USD",
+        "po_reference": "PO-2204"
+      },
+      "decision": "auto_approve",
+      "tool_calls": [
+        "lookup_vendor",
+        "lookup_po",
+        "lookup_receiving",
+        "check_duplicate",
+        "draft_action",
+        "execute_action"
+      ],
+      "guardrails_fired": [],
+      "drafted_action_text": "Invoice BCS-70891 from Brightline Clinic Supply (V-004) for $322.60 USD matches PO-2204 completely: all three line items (kinesiology tape, resistance bands, sanitizing wipes) are exact matches on quantity, unit price, and amount. Receiving record RCV-1101 confirms all quantities were received on 2026-08-01. No exceptions or duplicates. Total is under the $500.00 auto-approve threshold. Ready for payment on due date 2026-09-03.",
+      "output_schema_valid": true,
+      "schema_errors": [],
+      "terminal_state": "executed",
+      "failure_code": null,
+      "error_events": []
+    },
+    {
+      "case_id": "INV-003",
+      "run_id": "01KZZ8SESHDRSSYKF9C21RE813",
+      "model": "claude-haiku-4-5",
+      "mode": "autonomous",
+      "fields": {
+        "vendor_id": "V-005",
+        "vendor_name_raw": "Pelora Facilities Group",
+        "invoice_number": "PFG-2361",
+        "invoice_date": "2026-08-05",
+        "due_date": "2026-09-04",
+        "total_cents": 62400,
+        "currency": "USD",
+        "po_reference": "PO-2206"
+      },
+      "decision": "route_for_approval",
+      "tool_calls": [
+        "lookup_vendor",
+        "lookup_po",
+        "check_duplicate",
+        "draft_action",
+        "execute_action"
+      ],
+      "guardrails_fired": [],
+      "drafted_action_text": "Invoice PFG-2361 from Pelora Facilities Group for $624.00 in clinic cleaning services for July 2026. Vendor resolves to active vendor V-005 (exact match). PO-2206 is open and issued to the same vendor. Service period 2026-07-01 to 2026-07-31 falls within the PO's annual service window (2026-01-01 to 2026-12-31). The invoice bills the contracted monthly rate of $612.00 plus a $12.00 supply surcharge for filter stock, totaling $624.00. All matching criteria satisfied. Amount exceeds the $500.00 auto-approve threshold and therefore requires human approval.",
+      "output_schema_valid": true,
+      "schema_errors": [],
+      "terminal_state": "awaiting_approval",
+      "failure_code": null,
+      "error_events": []
+    }
+  ],
+  "records": [
+    {
+      "case_id": "INV-001",
+      "run_id": "01KZZ8SESFGYZFJYM62VNG77VZ",
+      "lane": "claude-haiku-4-5:uncached",
+      "model": "claude-haiku-4-5",
+      "mode": "uncached",
+      "iterations": 4,
+      "short_circuit": false,
+      "stop_reason": "end_turn",
+      "transport_error": null,
+      "iteration_capped": false,
+      "usage": {
+        "input_tokens": 25074,
+        "output_tokens": 2164,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.017946999999999998,
+      "model_route": "auto_approve"
+    },
+    {
+      "case_id": "INV-002",
+      "run_id": "01KZZ8SESGBE8A5AZEWFHS7WX0",
+      "lane": "claude-haiku-4-5:uncached",
+      "model": "claude-haiku-4-5",
+      "mode": "uncached",
+      "iterations": 6,
+      "short_circuit": false,
+      "stop_reason": "end_turn",
+      "transport_error": null,
+      "iteration_capped": false,
+      "usage": {
+        "input_tokens": 37926,
+        "output_tokens": 2312,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.024743,
+      "model_route": "auto_approve"
+    },
+    {
+      "case_id": "INV-003",
+      "run_id": "01KZZ8SESHDRSSYKF9C21RE813",
+      "lane": "claude-haiku-4-5:uncached",
+      "model": "claude-haiku-4-5",
+      "mode": "uncached",
+      "iterations": 6,
+      "short_circuit": false,
+      "stop_reason": "end_turn",
+      "transport_error": null,
+      "iteration_capped": false,
+      "usage": {
+        "input_tokens": 39222,
+        "output_tokens": 2862,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "cost_usd": 0.026766,
+      "model_route": "route_for_approval"
+    }
+  ],
+  "batch_ids": [
+    "msgbatch_01LhTJEB4SnvW4zoSreqTuWx",
+    "msgbatch_015DhJzYSruGCezHHE7ra6HK",
+    "msgbatch_01CQTouka22DHqu5ZM38qguY",
+    "msgbatch_014QD6ArwwTmXk4sKmNZWDQJ",
+    "msgbatch_01RK3e3bjtJsuTP673p9ogHP",
+    "msgbatch_01B2JGtP2tRFR7AGzFzvCK3i"
+  ]
+}
