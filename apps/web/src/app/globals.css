@@ -210,3 +210,53 @@ button {
   font-size: 1rem;
   cursor: pointer;
 }
+
+/* /eval report (LOT-109) */
+.stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 14rem;
+  flex: 1;
+}
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.stat-label {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.cellbar {
+  display: inline-block;
+  width: 9rem;
+  max-width: 40vw;
+  height: 0.6rem;
+  background: var(--panel);
+  border-radius: 4px;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.cellbar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+}
+.cellbar-value {
+  display: inline-block;
+  min-width: 2ch;
+  margin-right: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}

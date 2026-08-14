@@ -67,6 +67,18 @@ test.describe("@axe accessibility gate", () => {
     await scan(page, `/runs/${executedRunId}`);
   });
 
+  test("@axe eval report (/eval)", async ({ page }) => {
+    await page.goto("/eval");
+    // Scan with the caveat/drill-down <details> expanded: collapsed content
+    // is not reachable by the scanner.
+    await page
+      .locator("details")
+      .evaluateAll((nodes) =>
+        nodes.forEach((node) => ((node as HTMLDetailsElement).open = true)),
+      );
+    await scan(page, "/eval");
+  });
+
   test("@axe memory tables (/memory)", async ({ page }) => {
     await page.goto("/memory");
     await scan(page, "/memory");

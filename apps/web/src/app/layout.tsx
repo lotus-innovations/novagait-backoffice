@@ -20,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Link href="/runs">Runs</Link>
             <Link href="/memory">Memory</Link>
             <Link href="/backend">Backend</Link>
+            <Link href="/eval">Evals</Link>
           </nav>
         </header>
         {children}

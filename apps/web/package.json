@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "gen:eval-data": "node scripts/generate-eval-data.mjs && prettier --write src/lib/eval-data.generated.ts",
     "e2e": "playwright test --grep-invert @axe",
     "e2e:axe": "playwright test --grep @axe",
     "e2e:all": "playwright test"
