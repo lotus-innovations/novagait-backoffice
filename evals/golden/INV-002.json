@@ -2,7 +2,9 @@
   "id": "INV-002",
   "tags": ["happy-path", "goods", "receiving", "p0"],
   "difficulty": "easy",
-  "input": { "fixture": "inbox/2026-08-04-brightline-supplies.md" },
+  "input": {
+    "fixture": "inbox/2026-08-04-brightline-supplies.md"
+  },
   "expected": {
     "fields": {
       "vendor_id": "V-004",
@@ -17,7 +19,8 @@
       "lookup_po",
       "lookup_receiving",
       "check_duplicate",
-      "draft_action"
+      "draft_action",
+      "execute_action"
     ],
     "must_not_call": [],
     "guardrail": null

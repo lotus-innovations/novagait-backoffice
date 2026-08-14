@@ -191,6 +191,13 @@ describe("prompt", () => {
   // an edit that drops them silently un-fixes the measured failure mode.
   it("route-conditions execute_action and bars PO inference (GRD-004/EXT-003 hardening)", () => {
     const prompt = buildSystemPrompt();
+    // Deliberate exact-substring canaries: a benign rewording is SUPPOSED to
+    // land here so the author re-runs the live lane before shipping it. Both
+    // directions are pinned - the prohibition (skeptic F2 flagged that
+    // pinning only the ban lets the payable-route obligation be deleted
+    // while the suite stays green, which is the under-call regression).
+    expect(prompt).toContain("execute_action is for payable routes ONLY");
+    expect(prompt).toContain("route_for_approval, call execute_action");
     expect(prompt).toContain("never call execute_action on a hold or a reject");
     expect(prompt).toContain("Never borrow a PO id");
   });

@@ -247,3 +247,22 @@ divergences beyond deviation 7. All were resolved rather than baselined:
     (8 cases, 65/73 pass, p0 32/35); the baseline's undocumented bucket is
     empty by design and anything appearing in it is new drift (see
     evals/runner/src/cassettes/baseline.ts).
+
+## LOT-129 amendment (recorded at the 1.3.0 hardening, 2026-08-13)
+
+13. **Approve/route goldens require the execute_action ATTEMPT**: all 17
+    auto_approve and 15 route_for_approval cases now list execute_action in
+    expected.tool_calls (skeptic finding F1 on commit 5c13d4e). Before this,
+    a model that regressed to draft-only on payable routes graded clean:
+    tool_calls is presence/ordered-subsequence, must_not_call was empty for
+    those cases, and a drafted-but-unexecuted run settles as held, which is
+    a completed state. The prohibition side (holds/rejects forbid the call,
+    GRD-004) is unchanged. Side effect: the 4 documented wrong-decision
+    replay failures (DEC-001) now grade TOOL-001 primary with DEC-001
+    secondary, because the mock, having decided a hold, correctly never
+    attempts execution while the golden route expects it; taxonomy order
+    puts TOOL above DEC. Pass/fail sets and p0 are unchanged (65/73, p0
+    32/35). COMPARABILITY RULE: published lane numbers are only comparable
+    when graded under the same golden revision; the 1.2.0 "before" lanes
+    must be regraded from their checkpoints under this revision before
+    sitting in a before/after table with 1.3.0 runs.

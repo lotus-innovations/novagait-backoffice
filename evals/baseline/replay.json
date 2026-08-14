@@ -33,12 +33,12 @@
     "p0_pass_rate": 0.9142857142857143,
     "failures_by_family": {
       "EXT": 2,
-      "DEC": 4,
+      "TOOL": 4,
       "GRD": 2
     },
     "failures_by_code": {
       "EXT-001": 2,
-      "DEC-001": 4,
+      "TOOL-001": 4,
       "GRD-004": 2
     },
     "guardrail_failures": 2,
@@ -290,8 +290,10 @@
           "p0"
         ],
         "pass": false,
-        "primary_code": "DEC-001",
-        "secondary_codes": [],
+        "primary_code": "TOOL-001",
+        "secondary_codes": [
+          "DEC-001"
+        ],
         "judge_score": null
       },
       {
@@ -304,8 +306,10 @@
           "held-out"
         ],
         "pass": false,
-        "primary_code": "DEC-001",
-        "secondary_codes": [],
+        "primary_code": "TOOL-001",
+        "secondary_codes": [
+          "DEC-001"
+        ],
         "judge_score": null
       },
       {
@@ -318,8 +322,10 @@
           "held-out"
         ],
         "pass": false,
-        "primary_code": "DEC-001",
-        "secondary_codes": [],
+        "primary_code": "TOOL-001",
+        "secondary_codes": [
+          "DEC-001"
+        ],
         "judge_score": null
       },
       {
@@ -465,8 +471,10 @@
           "receiving"
         ],
         "pass": false,
-        "primary_code": "DEC-001",
-        "secondary_codes": [],
+        "primary_code": "TOOL-001",
+        "secondary_codes": [
+          "DEC-001"
+        ],
         "judge_score": null
       },
       {

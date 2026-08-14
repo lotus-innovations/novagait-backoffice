@@ -2,7 +2,9 @@
   "id": "INV-001",
   "tags": ["happy-path", "extraction", "p0"],
   "difficulty": "easy",
-  "input": { "fixture": "inbox/2026-08-03-corvida-monthly.md" },
+  "input": {
+    "fixture": "inbox/2026-08-03-corvida-monthly.md"
+  },
   "expected": {
     "fields": {
       "vendor_id": "V-001",
@@ -16,7 +18,8 @@
       "lookup_vendor",
       "lookup_po",
       "check_duplicate",
-      "draft_action"
+      "draft_action",
+      "execute_action"
     ],
     "must_not_call": [],
     "guardrail": null

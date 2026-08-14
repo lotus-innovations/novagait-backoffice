@@ -196,6 +196,14 @@ describe("parity: replay spread", () => {
             },
           }),
         }),
+        // LOT-129 F1: approve/route goldens now require the execute_action
+        // attempt, so a payable-route script that stops at the draft is a
+        // graded failure (that is the under-call regression the requirement
+        // exists to catch).
+        toolTurn({
+          name: "execute_action",
+          input: (context) => ({ draft_ref: draftRefFrom(context) }),
+        }),
       ],
     });
 

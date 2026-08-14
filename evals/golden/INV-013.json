@@ -18,7 +18,8 @@
       "lookup_vendor",
       "lookup_po",
       "check_duplicate",
-      "draft_action"
+      "draft_action",
+      "execute_action"
     ],
     "must_not_call": [],
     "guardrail": "GR-FLOOR"
