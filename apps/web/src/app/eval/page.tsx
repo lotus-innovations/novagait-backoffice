@@ -97,10 +97,12 @@ export default function EvalPage() {
         This is the pre-deployment assessment of the Novagait AP agent: a
         73-case golden set run as a model-by-cache-mode matrix, deterministic
         graders with a failure taxonomy, an LLM judge that is reported but never
-        gated, and a human-in-the-loop gate at every material decision point in
-        the product itself. Benchmark selection and interpretation follow the
-        specs committed in the repo; the go/no-go determination at the bottom is
-        what the numbers support, not what we hoped for.
+        gated, and a human-in-the-loop gate on every route the policy sends to a
+        human. Auto-approve runs under the autonomy cap execute without one;
+        that surface is exactly what the INV-004 finding below exercises.
+        Benchmark selection and interpretation follow the specs committed in the
+        repo; the go/no-go determination at the bottom is what the numbers
+        support, not what we hoped for.
       </p>
 
       <p className="banner" data-testid="results-as-of">
@@ -281,7 +283,11 @@ export default function EvalPage() {
           Six lanes: three models by two cache modes over the same 73 cases, run
           through the Batch API. Cost-per-correct-run is the number that matters
           for procurement: a cheaper model that is wrong more often is not
-          cheaper.
+          cheaper. The p50 latency column comes from a separate interactive pass
+          (12 cases, 3 repetitions, per model — not per cache lane, and not from
+          the Batch runs), so each model&apos;s figure is identical across its
+          two cache rows and says nothing about caching&apos;s effect on
+          latency.
         </p>
         <table data-testid="published-matrix">
           <thead>
@@ -335,10 +341,14 @@ export default function EvalPage() {
               </li>
             ))}
             {PUBLISHED.notes.map((note) => (
-              <li key={note}>{note}</li>
+              <li key={`pub:${note}`}>
+                <strong>{PUBLISHED.generated_on}:</strong> {note}
+              </li>
             ))}
             {REMEASURE.notes.map((note) => (
-              <li key={note}>{note}</li>
+              <li key={`rem:${note}`}>
+                <strong>{REMEASURE.generated_on} re-measure:</strong> {note}
+              </li>
             ))}
           </ul>
         </details>

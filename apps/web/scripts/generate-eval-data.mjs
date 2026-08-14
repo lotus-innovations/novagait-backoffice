@@ -106,7 +106,9 @@ async function verifyContainmentAnchors() {
     join(REMEASURE_DIR, "skeptic2-findings.md"),
     "utf8",
   );
-  for (const anchor of ["28/29", "INV-004", "terminal_state"]) {
+  // "| 27 | 0 |" pins the cached lane's attempts/escapes table row, so a
+  // re-verification that moves either deployed-tier number breaks generation.
+  for (const anchor of ["28/29", "| 27 | 0 |", "INV-004", "terminal_state"]) {
     if (!text.includes(anchor)) {
       throw new Error(
         `skeptic2-findings.md no longer contains "${anchor}"; update ` +

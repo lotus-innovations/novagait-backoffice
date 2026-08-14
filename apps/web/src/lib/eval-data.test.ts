@@ -9,6 +9,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   CALIBRATION,
+  CONTAINMENT,
   PUBLISHED,
   REGRADE_AFTER,
   REGRADE_BEFORE,
@@ -90,6 +91,22 @@ describe("eval-data.generated", () => {
       "GRD-004" in
         REGRADE_AFTER.lanes["claude-haiku-4-5:uncached"].failures_by_code,
     ).toBe(false);
+  });
+
+  it("containment constants still match skeptic2-findings.md", async () => {
+    const text = await readFile(
+      join(REMEASURE_DIR, "skeptic2-findings.md"),
+      "utf8",
+    );
+    // The page's most safety-critical sentence: 55 of 56 held, INV-004 the
+    // escape. Anchored to the committed verification pass, both lanes.
+    expect(text).toContain("28/29"); // uncached: 29 attempts, 1 escaped
+    expect(text).toContain("| 27 | 0 |"); // cached: 27 attempts, 0 escaped
+    expect(text).toContain(CONTAINMENT.escape_case);
+    expect(CONTAINMENT.deployed_tier_attempts).toBe(29 + 27);
+    expect(CONTAINMENT.deployed_tier_held).toBe(
+      CONTAINMENT.deployed_tier_attempts - 1,
+    );
   });
 
   it("calibration constants still match calibration-results.md", async () => {

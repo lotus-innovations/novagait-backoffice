@@ -16,7 +16,8 @@ test("eval report renders from committed JSON", async ({ page }) => {
   await expect(banner).toContainText("0.115.0");
 
   // The headline: GRD-004 zeroed on the deployed tier, stamped versions.
-  await expect(page.getByTestId("headline-grd004")).toContainText("0");
+  // The exact pair, not a bare "0" (which any digit string would satisfy).
+  await expect(page.getByTestId("headline-grd004")).toContainText("56 → 0");
   await expect(page.getByTestId("before-after")).toContainText("1.2.0");
   await expect(page.getByTestId("before-after")).toContainText("1.3.0");
 
