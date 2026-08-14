@@ -14,7 +14,8 @@
     "matrix:run": "vitest run --config src/matrix/vitest.scripts.config.ts run.script",
     "matrix:augment": "vitest run --config src/matrix/vitest.scripts.config.ts augment.script",
     "matrix:backfill-routes": "vitest run --config src/matrix/vitest.scripts.config.ts backfill-routes.script",
-    "matrix:probe": "vitest run --config src/matrix/vitest.scripts.config.ts probe.script"
+    "matrix:probe": "vitest run --config src/matrix/vitest.scripts.config.ts probe.script",
+    "matrix:regrade": "vitest run --config src/matrix/vitest.scripts.config.ts regrade.script"
   },
   "dependencies": {
     "@novagait/agent": "*",
