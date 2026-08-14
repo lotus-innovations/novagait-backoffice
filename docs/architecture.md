@@ -28,8 +28,8 @@ prompt instruction.
 ```mermaid
 flowchart TB
   subgraph web["apps/web — Next.js (Vercel)"]
-    UI["Routes: / · /runs · /approvals · /memory · /backend · /eval · /admin"]
-    API["Route handlers: /api/intake · /api/dev/run · /api/maintenance/reset · /api/admin/*"]
+    UI["Pages: / · /runs · /runs/[id] · /approvals/[id] · /memory · /backend · /eval"]
+    API["Route handlers: /api/intake · /api/dev/run · /api/approvals/[id] · /api/runs/[id]/trace.jsonl · /api/maintenance/reset · /api/admin/* · /admin"]
   end
 
   subgraph pipeline["packages/pipeline — orchestration"]
@@ -167,7 +167,9 @@ Rules the machine enforces rather than documents:
 - **The revision cycle** `awaiting_approval → decided` is the single loop in
   the graph. A rejection reason re-enters the agent exactly once
   (`MAX_REVISIONS = 1`); a second rejection holds.
-- Run state carries a 24h TTL; the nightly reset clears the demo.
+- Run state carries a 24h TTL; the nightly reset clears the demo surfaces it
+  can enumerate. Per-IP rate and per-session counters are deliberately left
+  alone (not enumerable, and TTL-bounded already).
 
 ## 5. Deployment view
 
@@ -207,14 +209,14 @@ Recorded because a prospect's first question is usually "why didn't you use
 X." Each was a real choice with a real trade-off, and each is falsifiable
 against this repo.
 
-| Decision                                     | What we did                                                                                                               | Why                                                                                                                                                                               | What we gave up                                                |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| **Single repository**                        | App, agent, mock backend, and evals in one workspace graph                                                                | The eval harness imports the same agent code the app runs; a split would let them drift silently, and the drift is exactly what the demo is about                                 | Independent release cadence per component                      |
-| **No vector database**                       | Three named, bounded, schema'd memory stores + BM25 retrieval over a 9-document policy corpus                             | The corpus is small and the retrieval requirement is citation, not semantic recall. "No vector DB needed, and here is the eval that shows it" is a stronger claim than adding one | Semantic search over a large corpus (not needed at this scale) |
-| **Managed Agents / raw SDK agent rejected**  | Owned orchestrator wrapping the SDK tool runner, with a raw-loop fallback behind one interface (`AGENT_LOOP=runner\|raw`) | Per-turn intervention hooks are the product: the approval gate, guardrails, and trace writer all need to sit between turns. A managed loop puts that seam out of reach            | Less framework leverage; we maintain the loop                  |
-| **Langfuse rejected**                        | Purpose-built trace schema, own Store, JSONL export, in-app viewer                                                        | Langfuse cannot run on Vercel, and the trace viewer should be part of the demo rather than a vendor tab a prospect cannot see. Zero new vendors                                   | Off-the-shelf dashboards, cross-project analytics              |
-| **Mock ERP rather than a real integration**  | Synthetic vendors, POs, receiving records, ledger, compiled fixtures                                                      | The demo must be resettable, deterministic, and safe to hand to a stranger. A real integration proves nothing about the agent                                                     | Real-world data messiness (which a real engagement supplies)   |
-| **Approval gate in code, not in the prompt** | GR-EXEC in `approval.ts`, evaluated on the disposed route                                                                 | Measured: the model attempted to bypass the approval path on 56 deployed-tier cases before prompt hardening. A prompt instruction alone would have been the only defense          | Nothing                                                        |
+| Decision                                     | What we did                                                                                                               | Why                                                                                                                                                                                                                                         | What we gave up                                                |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Single repository**                        | App, agent, mock backend, and evals in one workspace graph                                                                | The eval harness imports the same agent code the app runs; a split would let them drift silently, and the drift is exactly what the demo is about                                                                                           | Independent release cadence per component                      |
+| **No vector database**                       | Three named, bounded, schema'd memory stores + BM25 retrieval over a 9-document policy corpus                             | The corpus is small and the retrieval requirement is citation, not semantic recall. "No vector DB needed, and here is the eval that shows it" is a stronger claim than adding one                                                           | Semantic search over a large corpus (not needed at this scale) |
+| **Managed Agents / raw SDK agent rejected**  | Owned orchestrator wrapping the SDK tool runner, with a raw-loop fallback behind one interface (`AGENT_LOOP=runner\|raw`) | Per-turn intervention hooks are the product: the approval gate, guardrails, and trace writer all need to sit between turns. A managed loop puts that seam out of reach                                                                      | Less framework leverage; we maintain the loop                  |
+| **Langfuse rejected**                        | Purpose-built trace schema, own Store, JSONL export, in-app viewer                                                        | Langfuse cannot run on Vercel, and the trace viewer should be part of the demo rather than a vendor tab a prospect cannot see. Zero new vendors                                                                                             | Off-the-shelf dashboards, cross-project analytics              |
+| **Mock ERP rather than a real integration**  | Synthetic vendors, POs, receiving records, ledger, compiled fixtures                                                      | The demo must be resettable, deterministic, and safe to hand to a stranger. A real integration proves nothing about the agent                                                                                                               | Real-world data messiness (which a real engagement supplies)   |
+| **Approval gate in code, not in the prompt** | GR-EXEC in `approval.ts`, evaluated on the disposed route                                                                 | Measured: before prompt hardening the model attempted to bypass the approval path 56 times across the two deployed-tier lanes (29 uncached + 27 cached over the same 73 cases). A prompt instruction alone would have been the only defense | Nothing                                                        |
 
 The gate decision has a measured caveat worth stating plainly: because
 GR-EXEC keys off the **disposed** route, a case the model wrongly routes to
@@ -250,7 +252,10 @@ formalization, and the version was bumped the same day.
    ended the run and `run.end` carries outcome `error`).
 2. **`EventBase.mode` formalized.** The run's mode (`shadow` | `assisted` |
    `autonomous`) is echoed onto every event so that any single event is
-   self-describing without joining back to `run.start`.
+   self-describing without joining back to `run.start`. (Validation requires
+   `mode` on `run.start` specifically; elsewhere it is optional-by-type, and
+   "echoed onto every event" describes what the writer does, not what the
+   validator enforces.)
 
 **Why `mode` did not itself break the v1 freeze.** It was introduced during
 v1 as an **additive-optional** field. Validation is type-driven and
@@ -276,7 +281,8 @@ The eval harness is a first-class component, not a test folder.
 - **Failure taxonomy** as data (`evals/taxonomy.json`) with precedence
   SYS > GRD > FMT > TOOL > EXT > DEC, so every failure gets one primary code.
 - **Gates** (`evals/thresholds.json`): P0 pass rate ≥ 0.90, guardrail-family
-  hard zero, no P0 regression, no aggregate drop.
+  hard zero, no P0 regression, and no aggregate drop beyond a 2-point
+  allowance (`aggregate_drop_max_points`).
 - **Replay lane**: 73 byte-identical cassettes and a committed baseline, so
   CI can re-record and diff without an API key.
 - **Paid matrix**: `evals/runner/matrix` drives models over the Batch API

@@ -28,7 +28,8 @@ That sentence is the architecture. Two paths, not one:
   arrive at a human with the extraction, the evidence, the match table, and
   the policy line that produced the decision.
 
-Nothing in the system is allowed to turn a hard one into an easy one.
+No component may quietly turn a hard one into an easy one. Section 5 covers
+the one measured case where that protection was not enough, and why.
 
 > **For your engagement:** your autonomy cap, tolerance band, and hard floor
 > are configuration, not code. In this build they live in one file
@@ -60,15 +61,19 @@ AI pilots:
 **The gate is code.** The decision about whether a human must see something is
 not a sentence in a prompt asking the model to behave. It is a function that
 runs on every attempted posting and reads the route the system actually
-assigned. We can show you the measurement that made us build it that way: on
-56 test cases, an earlier version of the model drafted a correct hold and then
-tried to post anyway. The gate stopped 55 of them. (The one that got through
-is discussed honestly in section 5 — it is the most useful thing in this
-document.)
+assigned. We can show you the measurement that made us build it that way:
+across two measured runs of our 73-case test set, an earlier version of the
+model drafted a correct hold and then tried to post anyway **56 times**. The
+gate stopped 55 of them. (The one that got through is discussed honestly in
+section 5 — it is the most useful thing in this document.)
 
-**Every field is quoted.** The agent may not report a value it cannot point at
-on the page. A purchase-order number that is not printed on the invoice is a
-missing PO, not an inferred one.
+**Every field is quoted.** The agent must supply a source span for every value
+it extracts: a purchase-order number that is not printed on the invoice is a
+missing PO, not an inferred one. Being straight about which side of the
+code/prompt line this sits on: the span is required by the output schema, but
+the instruction not to invent one is prompt-enforced, not verified against the
+document text. That is precisely how the one escaped case happened, and it is
+on our list to harden.
 
 > **For your engagement:** your queue is where this system's value shows up or
 > doesn't. We would spend the first week watching your team work exceptions
@@ -135,10 +140,18 @@ The acceptance contract is a 73-case labeled dataset and a set of gates (see
 
 - On the deployed model, the approval-bypass failure mode was measured at
   **56 attempts**, then eliminated (**0**) after a prompt fix, re-measured on
-  the same 73 cases under the same rubric.
-- The overall correctness gate **still fails**: 0.886 and 0.829 against a
-  0.900 minimum. What remains is the agent being _too conservative_ — holding
-  invoices your policy would pay.
+  the same 73 cases under the same rubric. Scope, stated plainly: two lanes
+  of the deployed model, one run each. The larger models were not
+  re-measured, and one run is not a proof of absence. Note also that the
+  rubric itself moved (we tightened it so that an agent which simply stopped
+  posting could not score as "fixed"), so the before numbers were re-graded
+  under the new rubric to keep the comparison fair.
+- The **P0 correctness gate still fails**: 0.886 and 0.829 against a 0.900
+  minimum, on the priority cases. Overall pass rate across all 73 cases is
+  80.8% and 79.5%. The largest remaining failure class (8 of 14 on the
+  measured lane) is the agent being _too conservative_ — holding invoices
+  your policy would pay; the rest are formatting, extraction, and limit
+  faults.
 - Therefore: **autonomous mode is a no-go today.** Assisted and shadow modes
   are supported and are what we would deploy.
 
