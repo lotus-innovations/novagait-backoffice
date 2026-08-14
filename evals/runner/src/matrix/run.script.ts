@@ -51,14 +51,22 @@ import { MATRIX_MODES, laneKey, type LaneId } from "./types";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "../../../..");
 const GOLDEN_DIR = join(REPO, "evals/golden");
-const RESULTS_DIR = join(REPO, "evals/results/matrix-2026-08-11");
+// LOT-129: results dir and run date are env-overridable so a re-measure on a
+// new PROMPT_VERSION writes (and checkpoints) into its own directory instead
+// of silently resuming the published run's checkpoints. The LEDGER stays
+// shared on purpose: the $65 envelope is cumulative across the matrix and
+// every re-measure, so the breaker guards the program, not one invocation.
+const RESULTS_DIR = join(
+  REPO,
+  process.env.MATRIX_RESULTS_DIR ?? "evals/results/matrix-2026-08-11",
+);
 const LEDGER_PATH = join(REPO, "evals/results/spend-ledger-2026-08-11.json");
 const ESTIMATE_PATH = join(
   REPO,
   "evals/spend-estimate-2026-08-11-post-lot119.json",
 );
 const BASELINE_PATH = join(REPO, "evals/baseline/latest.json");
-const RUN_DATE = "2026-08-11";
+const RUN_DATE = process.env.MATRIX_RUN_DATE ?? "2026-08-11";
 
 /**
  * Smoke controls. This script spends real money and had never run end to end,
