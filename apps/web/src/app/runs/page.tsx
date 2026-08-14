@@ -11,10 +11,10 @@ export default async function RunsPage() {
     <main>
       <h1>Runs</h1>
       <p>
-        Every run is fully audited: each model call, tool call, guardrail check,
-        approval event, and backend write appears in its trace with a
-        correlation id (<code>run_id</code> / <code>node_id</code>) and a
-        measured cost.
+        Every run is fully audited. Each model call, tool call, guardrail check,
+        approval event, and backend write appears in its trace. Every entry
+        carries a correlation id (<code>run_id</code> and <code>node_id</code>)
+        and a measured cost.
       </p>
       {runs.length === 0 ? (
         <div className="empty">

@@ -94,15 +94,18 @@ export default function EvalPage() {
     <main>
       <h1>Evaluation report</h1>
       <p>
-        This is the pre-deployment assessment of the Novagait AP agent: a
-        73-case golden set run as a model-by-cache-mode matrix, deterministic
-        graders with a failure taxonomy, an LLM judge that is reported but never
-        gated, and a human-in-the-loop gate on every route the policy sends to a
-        human. Auto-approve runs under the autonomy cap execute without one;
-        that surface is exactly what the INV-004 finding below exercises.
-        Benchmark selection and interpretation follow the specs committed in the
-        repo; the go/no-go determination at the bottom is what the numbers
-        support, not what we hoped for.
+        This is the pre-deployment assessment of the Novagait AP agent. It runs
+        a 73-case golden set as a model-by-cache-mode matrix. Deterministic
+        graders score every case against a failure taxonomy. An LLM judge is
+        reported but never gated. A human-in-the-loop gate covers every route
+        the policy sends to a human.
+      </p>
+      <p>
+        Auto-approve runs under the autonomy cap execute without that gate, and
+        that surface is what the INV-004 finding below exercises. The specs
+        committed in this repo govern how the benchmark is selected and read.
+        The go/no-go determination at the bottom is what the numbers support,
+        not what we hoped for.
       </p>
 
       <p className="banner" data-testid="results-as-of">
@@ -142,34 +145,35 @@ export default function EvalPage() {
               {afterUncached.p0_pass_rate.toFixed(3)}
             </span>
             <span className="stat-label">
-              P0 pass rate, uncached lane (gate minimum 0.900 — still failing)
+              P0 pass rate, uncached lane (gate minimum 0.900, still failing)
             </span>
           </div>
         </div>
         <p>
-          The 2026-08-11 matrix surfaced the failure mode: on cases the policy
+          The 2026-08-11 matrix surfaced the failure mode. On cases the policy
           holds for a human, the model drafted the hold and then called{" "}
           <code>execute_action</code> anyway. The code-side approval gate held{" "}
           {CONTAINMENT.deployed_tier_held} of{" "}
-          {CONTAINMENT.deployed_tier_attempts} deployed-tier attempts; on{" "}
+          {CONTAINMENT.deployed_tier_attempts} deployed-tier attempts. On{" "}
           <code>{CONTAINMENT.escape_case}</code> it could not, because{" "}
-          {CONTAINMENT.escape_mechanism}. The prompt was hardened
-          (route-conditioned execution plus a guard against inferring PO
-          references the document does not print), and the deployed tier was
-          re-measured on the same harness. That measure, fix, re-measure loop is
-          the product being demonstrated.
+          {CONTAINMENT.escape_mechanism}.
+        </p>
+        <p>
+          The hardened prompt makes execution conditional on the route, and
+          guards against inferring PO references the document does not print. We
+          then re-measured the deployed tier on the same harness. That measure,
+          fix, re-measure loop is the product being demonstrated.
         </p>
       </section>
 
       <section aria-labelledby="beforeafter-h">
         <h2 id="beforeafter-h">Deployed tier, before and after</h2>
         <p>
-          Both columns are graded under the same golden revision (the current
-          one, which requires the execution attempt on payable routes — so a
-          model that stopped executing entirely could not fake this
-          improvement). The before column is the paid 2026-08-11 outcomes
-          regraded at zero cost; regrading left its published pass counts
-          unchanged.
+          Both columns are graded under the same golden revision. That revision
+          requires the execution attempt on payable routes. A model that stopped
+          executing entirely could not fake this improvement. The before column
+          is the paid 2026-08-11 outcomes, regraded at zero cost. Regrading left
+          its published pass counts unchanged.
         </p>
         <table data-testid="before-after">
           <thead>
@@ -214,14 +218,15 @@ export default function EvalPage() {
           </tbody>
         </table>
         <p>
-          Gate board after the fix: <em>guardrail hard zero</em> passes both
-          lanes (0 guardrail-family failures across the 41 execution-forbidden
-          cases per lane); <em>P0 pass rate</em> fails both lanes (
-          {afterUncached.p0_pass_rate.toFixed(3)} /{" "}
-          {afterCached.p0_pass_rate.toFixed(3)} against 0.900); the two
-          baseline-comparison gates passed vacuously (no baseline wired), so the
-          overall gate set is <strong>not green</strong> and this page does not
-          claim otherwise.
+          The gate board after the fix reads as follows.{" "}
+          <em>Guardrail hard zero</em> passes both lanes, with 0
+          guardrail-family failures across the 41 execution-forbidden cases per
+          lane. <em>P0 pass rate</em> fails both lanes, at{" "}
+          {afterUncached.p0_pass_rate.toFixed(3)} and{" "}
+          {afterCached.p0_pass_rate.toFixed(3)} against 0.900. The two
+          baseline-comparison gates passed vacuously, because no baseline is
+          wired. The overall gate set is therefore <strong>not green</strong>,
+          and this page does not claim otherwise.
         </p>
       </section>
 
@@ -229,10 +234,10 @@ export default function EvalPage() {
         <h2 id="taxonomy-h">What still fails, by taxonomy family</h2>
         <p>
           Uncached lane, failures grouped by taxonomy family. The guardrail
-          family went to zero; what remains is dominated by wrong-route
-          conservatism — the model holding an invoice the policy says is
-          payable, then correctly refusing to execute its own hold. Wrong routes
-          measured directly: 9 before, 9 after; the fix did not buy decision
+          family went to zero. What remains is dominated by wrong-route
+          conservatism. The model holds an invoice the policy says is payable,
+          then correctly refuses to execute its own hold. Wrong routes measured
+          directly are 9 before and 9 after. The fix did not buy decision
           accuracy, and did not cost any either.
         </p>
         <table>
@@ -268,8 +273,8 @@ export default function EvalPage() {
         </table>
         <p className="muted">
           Taxonomy precedence puts a missing required call (TOOL) above a wrong
-          route (DEC), so a wrong-route hold that skips execution grades
-          TOOL-001 primary. The counts above are family counts as graded; the
+          route (DEC). A wrong-route hold that skips execution therefore grades
+          TOOL-001 primary. The counts above are family counts as graded. The
           wrong-route reading in the prose is from case-level adjudication.
         </p>
       </section>
@@ -282,12 +287,12 @@ export default function EvalPage() {
         <p>
           Six lanes: three models by two cache modes over the same 73 cases, run
           through the Batch API. Cost-per-correct-run is the number that matters
-          for procurement: a cheaper model that is wrong more often is not
-          cheaper. The p50 latency column comes from a separate interactive pass
-          (12 cases, 3 repetitions, per model — not per cache lane, and not from
-          the Batch runs), so each model&apos;s figure is identical across its
-          two cache rows and says nothing about caching&apos;s effect on
-          latency.
+          for procurement, because a cheaper model that is wrong more often is
+          not cheaper. The p50 latency column comes from a separate interactive
+          pass of 12 cases and 3 repetitions per model. That pass is per model,
+          not per cache lane, and it is not from the Batch runs. Each
+          model&apos;s figure is therefore identical across its two cache rows.
+          It says nothing about the effect of caching on latency.
         </p>
         <table data-testid="published-matrix">
           <thead>
@@ -324,10 +329,10 @@ export default function EvalPage() {
         <p>
           The deployed-tier re-measure ({REMEASURE.generated_on}, prompt{" "}
           {REMEASURE.prompt_version}) covers the two{" "}
-          <code>{PUBLISHED.deployed_model}</code> lanes only; the other four
+          <code>{PUBLISHED.deployed_model}</code> lanes only. The other four
           lanes above have not been re-measured since the fix, so their numbers
           describe prompt {PUBLISHED.prompt_version}. Latency was not re-run
-          either; the after-lanes averaged fewer tool iterations per run, so the
+          either. The after-lanes averaged fewer tool iterations per run, so the
           latency column above is likely conservative for the current prompt.
         </p>
         <details>
@@ -408,11 +413,13 @@ export default function EvalPage() {
           verdict agreement at <strong>{CALIBRATION.verdict_agreement}</strong>{" "}
           with a mean absolute score difference of{" "}
           {CALIBRATION.mean_abs_score_diff}. Direction is{" "}
-          {CALIBRATION.direction}. Scope: {CALIBRATION.scope_note}. Judge
-          verdicts are computed once per model on the uncached outcomes and
-          stamped onto both cache columns; drafts differ between cache lanes
-          under sampling variance, so the cached column&apos;s judge scores are
-          not an independent measurement of the cached drafts.
+          {CALIBRATION.direction}. Scope: {CALIBRATION.scope_note}.
+        </p>
+        <p>
+          Judge verdicts are computed once per model on the uncached outcomes,
+          then stamped onto both cache columns. Drafts differ between cache
+          lanes under sampling variance. The judge scores in the cached column
+          are therefore not an independent measurement of the cached drafts.
         </p>
       </section>
 
@@ -421,18 +428,19 @@ export default function EvalPage() {
         <div className="banner" data-testid="go-no-go">
           <p>
             <strong>Autonomous mode: NO-GO</strong> at current thresholds. The
-            P0 gate fails on the deployed tier (
-            {afterUncached.p0_pass_rate.toFixed(3)} uncached /{" "}
+            P0 gate fails on the deployed tier, at{" "}
+            {afterUncached.p0_pass_rate.toFixed(3)} uncached and{" "}
             {afterCached.p0_pass_rate.toFixed(3)} cached against a 0.900
-            minimum), and the remaining failure mass is wrong-route decisions —
-            exactly the class a human approver exists to catch.
+            minimum. The remaining failure mass is wrong-route decisions, which
+            is exactly the class a human approver exists to catch.
           </p>
           <p>
             <strong>Assisted and shadow modes: supported.</strong> With the
-            approval gate in the loop, the measured guardrail behavior is clean:
-            zero approval-bypass attempts after the fix, zero executions on
-            cases the model itself routed for a human. That is the deployment
-            posture this demo ships in, and the one the data supports today.
+            approval gate in the loop, the measured guardrail behavior is clean.
+            There were zero approval-bypass attempts after the fix, and zero
+            executions on cases the model itself routed for a human. That is the
+            deployment posture this demo ships in, and the one the data supports
+            today.
           </p>
         </div>
       </section>
@@ -440,14 +448,14 @@ export default function EvalPage() {
       <section aria-labelledby="provenance-h">
         <h2 id="provenance-h">Provenance</h2>
         <p className="muted">
-          Compiled at build time from the committed artifacts in{" "}
+          This page is compiled at build time from the committed artifacts in{" "}
           <code>evals/results/matrix-2026-08-11/</code> and{" "}
-          <code>evals/results/matrix-2026-08-13-p130/</code>: the matrix tables,
-          per-lane checkpoints, regrades under the current golden revision, the
-          spend ledger, calibration results, and the independent verification
-          notes. Prompt versions are stamped into every run&apos;s trace; the
-          golden set, graders, taxonomy, and thresholds are versioned in the
-          same repo.
+          <code>evals/results/matrix-2026-08-13-p130/</code>. Those artifacts
+          are the matrix tables, the per-lane checkpoints, and the regrades
+          under the current golden revision. They also include the spend ledger,
+          the calibration results, and the independent verification notes.
+          Prompt versions are stamped into every run&apos;s trace. The golden
+          set, graders, taxonomy, and thresholds are versioned in the same repo.
         </p>
       </section>
     </main>

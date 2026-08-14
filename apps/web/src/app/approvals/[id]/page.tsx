@@ -74,8 +74,8 @@ export default async function ApprovalPage({
           <code>{approval.run_id.slice(-8)}</code>
         </Link>{" "}
         drafted an action and stopped. The execution tool checked mode and
-        policy in code and refused to proceed without you; approving here is the
-        only way it executes.
+        policy in code, and refused to proceed without you. Approving here is
+        the only way it executes.
       </p>
 
       {formError ? (

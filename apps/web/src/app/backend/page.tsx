@@ -41,8 +41,9 @@ export default async function BackendPage() {
       <p>
         The fictional back office the agent works against, reachable by the
         agent only through its tool schemas. <mark>Highlighted rows</mark> were
-        written by an agent run and link to the run that wrote them: an approved
-        invoice visibly lands here. Read-only; resets nightly.
+        written by an agent run, and link to the run that wrote them. An
+        approved invoice visibly lands here. The tables are read-only, and they
+        reset nightly.
       </p>
 
       <section aria-labelledby="vendors-h">

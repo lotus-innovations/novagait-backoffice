@@ -23,10 +23,10 @@ export default async function MemoryPage() {
     <main>
       <h1>Memory</h1>
       <p>
-        The agent&apos;s memory is deliberately boring: three named, bounded
-        stores, every read and write traced (<code>memory.read</code> /{" "}
-        <code>memory.write</code> events), no vector database. What you see here
-        is everything the agent remembers.
+        The agent&apos;s memory is deliberately boring. It is three named,
+        bounded stores, with no vector database. Every read and write is traced
+        as a <code>memory.read</code> or <code>memory.write</code> event. What
+        you see here is everything the agent remembers.
       </p>
 
       <section aria-labelledby="run-state-h">

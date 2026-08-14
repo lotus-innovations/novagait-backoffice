@@ -3,9 +3,9 @@
 [![CI](https://github.com/lotus-innovations/novagait-backoffice/actions/workflows/ci.yml/badge.svg)](https://github.com/lotus-innovations/novagait-backoffice/actions/workflows/ci.yml)
 
 A production-grade AI agent demonstration by
-[Lotus Innovations](https://lotusinnovations.io): accounts-payable invoice
-intake with 3-way match for a fictional physical-therapy clinic, built the way
-we build for clients. One workflow, one agent, with:
+[Lotus Innovations](https://lotusinnovations.io). It handles accounts-payable
+invoice intake with 3-way match, for a fictional physical-therapy clinic. We
+built it the way we build for clients. One workflow, one agent, with:
 
 - a published evaluation report (golden dataset, failure taxonomy, judge
   calibration) at `/eval`
@@ -44,13 +44,14 @@ Demo data is ephemeral by design; nothing in any demo store is worth backing
 up.
 
 **After editing `packages/agent/src/prompts.ts` or the tool surface, run
-`npm run -w @novagait/evals-runner spend:prefix`** (needs
-`secrets/backoffice-runtime.env`; uses the free `count_tokens` endpoint). It
-re-measures the cacheable system+tools prefix per model and fails if any
-drops under that model's prompt-cache minimum - `claude-haiku-4-5` needs
-4,096 tokens, and below the minimum `cache_control` is silently ignored with
-no error. `npm test` carries a character-count floor as a cheap proxy, but
-because CI is key-free the exact token check only ever runs locally.
+`npm run -w @novagait/evals-runner spend:prefix`.** It needs
+`secrets/backoffice-runtime.env`, and it uses the free `count_tokens` endpoint.
+It
+re-measures the cacheable system and tools prefix per model. It fails if any
+prefix drops under that model's prompt-cache minimum. `claude-haiku-4-5` needs
+4,096 tokens, and below that minimum `cache_control` is silently ignored with
+no error at all. `npm test` carries a character-count floor as a cheap proxy.
+Because CI is key-free, the exact token check only ever runs locally.
 
 ## License
 

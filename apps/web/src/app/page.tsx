@@ -62,18 +62,18 @@ export default async function Home({
     <main>
       <h1>Novagait Back Office</h1>
       <p>
-        AP invoice intake with 3-way match: a production-grade agent
+        AP invoice intake with 3-way match. This is a production-grade agent
         demonstration with a full audit trail, deliberate memory, guardrails,
-        and human approval gates. The approval gate is code, not a prompt: the
-        execution tool itself checks mode and approval state, so it cannot be
-        prompt-injected around.
+        and human approval gates. The approval gate is code, not a prompt. The
+        execution tool itself checks the mode and the approval state. A prompt
+        cannot talk it into skipping that check.
       </p>
       <p>
-        Every run is capped in code: {MAX_ITERATIONS} tool iterations,{" "}
-        {RUN_WALL_CLOCK_MS / 1000} seconds, $
-        {(MAX_RUN_COST_MICRO_USD / 1_000_000).toFixed(2)} per run, $
-        {(DAILY_BUDGET_MICRO_USD / 1_000_000).toFixed(2)} per day for the whole
-        demo.
+        Every run is capped in code at {MAX_ITERATIONS} tool iterations,{" "}
+        {RUN_WALL_CLOCK_MS / 1000} seconds, and $
+        {(MAX_RUN_COST_MICRO_USD / 1_000_000).toFixed(2)} per run. The whole
+        demo is capped at ${(DAILY_BUDGET_MICRO_USD / 1_000_000).toFixed(2)} per
+        day.
       </p>
 
       {errorText ? (
@@ -95,10 +95,10 @@ export default async function Home({
         <section aria-labelledby="intake-h">
           <h2 id="intake-h">Process a document</h2>
           <p>
-            Pick a seeded inbound document (uploads are deliberately out of
-            scope: the picker is the containment boundary), choose a mode, and
-            launch. Re-submitting an already-processed document demonstrates the
-            duplicate hold.
+            Pick a seeded inbound document, choose a mode, and launch. Uploads
+            are deliberately out of scope, because the picker is the containment
+            boundary. Re-submitting an already-processed document demonstrates
+            the duplicate hold.
           </p>
           <form method="post" action="/api/intake">
             {scripted ? (
