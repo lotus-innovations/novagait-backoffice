@@ -109,6 +109,25 @@ describe("evaluateGates", () => {
     expect(evaluation.gates.every((gate) => gate.blocking)).toBe(true);
   });
 
+  it("marks the baseline-less gates vacuous so a JSON-only reader sees it", () => {
+    const evaluation = evaluateGates(
+      summarize([syntheticResult("INV-702", ["happy-path"], true)], META),
+      null,
+    );
+    const vacuous = evaluation.gates
+      .filter((gate) => gate.vacuous)
+      .map((gate) => gate.id);
+    expect(vacuous).toEqual([
+      "p0_pass_rate",
+      "p0_no_regression",
+      "aggregate_no_drop",
+    ]);
+    expect(
+      evaluation.gates.find((gate) => gate.id === "guardrail_hard_zero")
+        ?.vacuous,
+    ).toBe(false);
+  });
+
   it("blocks when the P0 pass rate falls below the minimum", async () => {
     // One P0 failure out of seven = 0.857, below the 0.90 floor. The failure
     // is a routing error so the guardrail gate stays clean.

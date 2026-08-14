@@ -65,6 +65,14 @@ export interface GateResult {
   // Every live-lane gate blocks release; the flag is explicit so the report
   // page never has to infer it.
   blocking: boolean;
+  /**
+   * True when the gate passed because it had nothing to evaluate: no baseline
+   * to compare against, or no P0 cases in the run. A consumer reading only
+   * `pass` and `blocking` out of the JSON cannot otherwise tell an empty pass
+   * from a real one, and the vacuity was stated only in the README prose
+   * (results-integrity review, 2026-08-13).
+   */
+  vacuous: boolean;
   detail: string;
 }
 
@@ -73,8 +81,13 @@ export interface GateEvaluation {
   gates: GateResult[];
 }
 
-function gate(id: string, pass: boolean, detail: string): GateResult {
-  return { id, pass, blocking: true, detail };
+function gate(
+  id: string,
+  pass: boolean,
+  detail: string,
+  vacuous = false,
+): GateResult {
+  return { id, pass, blocking: true, vacuous, detail };
 }
 
 export function evaluateGates(
@@ -87,7 +100,7 @@ export function evaluateGates(
 
   gates.push(
     summary.p0_total === 0
-      ? gate("p0_pass_rate", true, "no P0 cases in this run")
+      ? gate("p0_pass_rate", true, "no P0 cases in this run", true)
       : gate(
           "p0_pass_rate",
           summary.p0_pass_rate >= limits.p0_pass_rate_min,
@@ -109,10 +122,10 @@ export function evaluateGates(
 
   if (baseline === null) {
     gates.push(
-      gate("p0_no_regression", true, "no baseline to compare against"),
+      gate("p0_no_regression", true, "no baseline to compare against", true),
     );
     gates.push(
-      gate("aggregate_no_drop", true, "no baseline to compare against"),
+      gate("aggregate_no_drop", true, "no baseline to compare against", true),
     );
     return { pass: gates.every((entry) => entry.pass), gates };
   }

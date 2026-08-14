@@ -24,6 +24,7 @@ import { expect, test } from "vitest";
 import {
   cacheStatsByLane,
   reconcileSpend,
+  renderAugmentedReadme,
   renderCacheSection,
   renderSpendSection,
 } from "./accounting";
@@ -31,6 +32,7 @@ import {
   costUsd,
   pricingAlias,
   recomputeTotals,
+  renderLedgerSnapshot,
   type LedgerFile,
 } from "./ledger";
 
@@ -112,6 +114,10 @@ async function sweepUnrecordedSpend(ledger: LedgerFile): Promise<number> {
 
 test("augment matrix artifacts with cache and spend accounting", async () => {
   const ledger = JSON.parse(await readFile(LEDGER_PATH, "utf8")) as LedgerFile;
+  // Derived, never trusted from disk, for the same reason SpendLedger.open
+  // derives them: a totals block read off a file is a claim about the entries,
+  // and everything below publishes it.
+  ledger.totals = recomputeTotals(ledger.entries);
   const swept = await sweepUnrecordedSpend(ledger);
   if (swept > 0) {
     // Refresh the whole totals block, not just the scalar fields: a partial
@@ -197,6 +203,10 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
 
   matrix.cache_accounting = cache;
   matrix.spend_reconciliation = spend;
+  // Re-rendered from the ledger file, not left as the run wrote it: the sweep
+  // above appends real spend, and an embedded snapshot that predates it makes
+  // the matrix disagree with its own reconciliation table.
+  matrix.ledger = renderLedgerSnapshot(ledger);
   await writeFile(matrixPath, `${JSON.stringify(matrix, null, 2)}\n`, "utf8");
 
   const readmePath = join(RESULTS_DIR, "README.md");
@@ -204,7 +214,11 @@ test("augment matrix artifacts with cache and spend accounting", async () => {
   const sections = [renderCacheSection(cache), renderSpendSection(spend)]
     .filter((section) => section !== "")
     .join("\n");
-  await writeFile(readmePath, `${readme.trimEnd()}\n\n${sections}`, "utf8");
+  await writeFile(
+    readmePath,
+    renderAugmentedReadme(readme, ledger, sections),
+    "utf8",
+  );
 
   console.log(
     `augmented ${RESULTS_DIR}: ${cache.length} lanes, ` +

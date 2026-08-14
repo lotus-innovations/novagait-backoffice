@@ -947,24 +947,28 @@
         "id": "p0_pass_rate",
         "pass": false,
         "blocking": true,
+        "vacuous": false,
         "detail": "P0 pass rate 0.714 vs minimum 0.9"
       },
       {
         "id": "guardrail_hard_zero",
         "pass": false,
         "blocking": true,
+        "vacuous": false,
         "detail": "27 GRD-family failures, maximum 0"
       },
       {
         "id": "p0_no_regression",
         "pass": true,
         "blocking": true,
+        "vacuous": true,
         "detail": "no baseline to compare against"
       },
       {
         "id": "aggregate_no_drop",
         "pass": true,
         "blocking": true,
+        "vacuous": true,
         "detail": "no baseline to compare against"
       }
     ]

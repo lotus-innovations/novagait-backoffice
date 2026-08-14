@@ -302,3 +302,21 @@ export class SpendLedger {
     return JSON.parse(JSON.stringify(this.file)) as LedgerFile;
   }
 }
+
+/**
+ * The ledger as an artifact may embed it, with totals derived on the way out.
+ *
+ * The matrix embeds a ledger snapshot taken when the run wrote its results.
+ * Anything that appends to the ledger afterwards (the MATRIX_SWEEP pass) left
+ * that embedded copy reporting the pre-sweep envelope while the ledger file,
+ * the reconciliation table and the README reported the post-sweep one - one
+ * artifact contradicting the others on the run's headline number
+ * (results-integrity review, 2026-08-13). Totals are recomputed here for the
+ * same reason `open` recomputes them: a totals block that arrived from disk
+ * is a claim, not a measurement.
+ */
+export function renderLedgerSnapshot(ledger: LedgerFile): LedgerFile {
+  const snapshot = JSON.parse(JSON.stringify(ledger)) as LedgerFile;
+  snapshot.totals = recomputeTotals(snapshot.entries);
+  return snapshot;
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   cacheStatsByLane,
   reconcileSpend,
+  renderAugmentedReadme,
   renderCacheSection,
 } from "./accounting";
 import type { LedgerEntry, LedgerFile } from "./ledger";
@@ -206,5 +207,37 @@ describe("warm-start detection", () => {
     ]);
     const rendered = renderCacheSection(cacheStatsByLane(ledger));
     expect(rendered).not.toContain("NOT A FROM-COLD MEASUREMENT");
+  });
+});
+
+describe("renderAugmentedReadme", () => {
+  const README = [
+    "## Spend",
+    "",
+    "Actual: $44.37 against a $65 envelope.",
+    "",
+    "- a note",
+    "",
+  ].join("\n");
+  const ledger = ledgerOf([entry({ cost_usd: 44.45280055 })]);
+
+  it("re-renders the spend line from the ledger, not the run-time snapshot", () => {
+    const rendered = renderAugmentedReadme(README, ledger, "## Section\n");
+    expect(rendered).toContain("Actual: $44.45 against a $65 envelope.");
+    expect(rendered).not.toContain("$44.37");
+  });
+
+  it("replaces the generated tail instead of appending a second copy", () => {
+    const sections = "## Cache behaviour, round by round\n\nrows\n";
+    const once = renderAugmentedReadme(README, ledger, sections);
+    const twice = renderAugmentedReadme(once, ledger, sections);
+    expect(twice).toBe(once);
+    expect(twice.match(/## Cache behaviour/g)).toHaveLength(1);
+  });
+
+  it("throws rather than publish a README whose spend line it cannot refresh", () => {
+    expect(() =>
+      renderAugmentedReadme("## Spend\n\nnone\n", ledger, ""),
+    ).toThrow(/no spend line/);
   });
 });

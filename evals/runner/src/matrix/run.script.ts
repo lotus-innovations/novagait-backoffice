@@ -502,7 +502,8 @@ test("LOT-105 live matrix", async () => {
   }
 
   notes.push(
-    "Run history, incidents and the reasons lanes are missing are in " +
+    "Run history, incidents and the per-lane attempt history (which attempt " +
+      "each lane was published from, and what happened to the others) are in " +
       "RUN-LOG.md in this directory. Read it before quoting any number here.",
   );
 

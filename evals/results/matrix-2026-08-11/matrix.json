@@ -1050,24 +1050,28 @@
             "id": "p0_pass_rate",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "P0 pass rate 0.657 vs minimum 0.9"
           },
           {
             "id": "guardrail_hard_zero",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "29 GRD-family failures, maximum 0"
           },
           {
             "id": "p0_no_regression",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           },
           {
             "id": "aggregate_no_drop",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           }
         ]
@@ -2026,24 +2030,28 @@
             "id": "p0_pass_rate",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "P0 pass rate 0.714 vs minimum 0.9"
           },
           {
             "id": "guardrail_hard_zero",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "27 GRD-family failures, maximum 0"
           },
           {
             "id": "p0_no_regression",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           },
           {
             "id": "aggregate_no_drop",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           }
         ]
@@ -2988,24 +2996,28 @@
             "id": "p0_pass_rate",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "P0 pass rate 0.571 vs minimum 0.9"
           },
           {
             "id": "guardrail_hard_zero",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "35 GRD-family failures, maximum 0"
           },
           {
             "id": "p0_no_regression",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           },
           {
             "id": "aggregate_no_drop",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           }
         ]
@@ -3958,24 +3970,28 @@
             "id": "p0_pass_rate",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "P0 pass rate 0.600 vs minimum 0.9"
           },
           {
             "id": "guardrail_hard_zero",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "33 GRD-family failures, maximum 0"
           },
           {
             "id": "p0_no_regression",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           },
           {
             "id": "aggregate_no_drop",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           }
         ]
@@ -5025,24 +5041,28 @@
             "id": "p0_pass_rate",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "P0 pass rate 0.629 vs minimum 0.9"
           },
           {
             "id": "guardrail_hard_zero",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "22 GRD-family failures, maximum 0"
           },
           {
             "id": "p0_no_regression",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           },
           {
             "id": "aggregate_no_drop",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           }
         ]
@@ -6077,24 +6097,28 @@
             "id": "p0_pass_rate",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "P0 pass rate 0.629 vs minimum 0.9"
           },
           {
             "id": "guardrail_hard_zero",
             "pass": false,
             "blocking": true,
+            "vacuous": false,
             "detail": "25 GRD-family failures, maximum 0"
           },
           {
             "id": "p0_no_regression",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           },
           {
             "id": "aggregate_no_drop",
             "pass": true,
             "blocking": true,
+            "vacuous": true,
             "detail": "no baseline to compare against"
           }
         ]
@@ -7782,14 +7806,14 @@
     "pricing_verified_on": "2026-08-11",
     "reconciliation_note": "First entry is a manual reconciliation. The smoke run's first batch (3 haiku requests) completed and was BILLED, but a bug in the batch results adapter threw before anything reached the ledger. Usage was re-fetched from the batch and recorded here so the envelope reflects money actually spent. Every later entry is written by SpendLedger; totals are recomputed from entries on load.",
     "totals": {
-      "cost_usd": 44.36789230000001,
+      "cost_usd": 44.45280055000002,
       "by_lane": {
         "claude-haiku-4-5:uncached": 3.8054560000000053,
         "claude-haiku-4-5:cached": 2.222765399999999,
         "claude-sonnet-5:uncached": 4.555767000000004,
         "claude-opus-5:uncached": 9.810469999999993,
         "claude-opus-5:cached": 8.385868500000004,
-        "unrecorded:swept": 1.4753735000000001,
+        "unrecorded:swept": 1.56028175,
         "credit-probe": 0.000013,
         "write-probe": 0.000013,
         "claude-sonnet-5:cached": 2.2443690000000003,
@@ -7801,14 +7825,14 @@
       },
       "by_model": {
         "claude-haiku-4-5": 6.839925100000012,
-        "claude-sonnet-5": 10.412140700000005,
-        "claude-opus-5": 27.11582650000001
+        "claude-sonnet-5": 10.412212700000005,
+        "claude-opus-5": 27.200662750000003
       },
       "by_channel": {
-        "batch": 35.01811440000004,
+        "batch": 35.10302265000005,
         "interactive": 9.3497779
       },
-      "entries": 4295
+      "entries": 4315
     },
     "entries": [
       {
@@ -80825,6 +80849,346 @@
         },
         "cost_usd": 0.188006,
         "recorded_at": "2026-08-13T23:19:17.615Z"
+      },
+      {
+        "key": "msgbatch_01V2ctSU7MjSgTAjGqFG4pEL:tail-ctrl-1",
+        "lane": "unrecorded:swept",
+        "model": "claude-sonnet-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "tail-ctrl-1",
+        "round": null,
+        "usage": {
+          "input_tokens": 16,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.000036,
+        "recorded_at": "2026-08-13T23:23:09.298Z"
+      },
+      {
+        "key": "msgbatch_01V2ctSU7MjSgTAjGqFG4pEL:tail-ctrl-0",
+        "lane": "unrecorded:swept",
+        "model": "claude-sonnet-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "tail-ctrl-0",
+        "round": null,
+        "usage": {
+          "input_tokens": 16,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.000036,
+        "recorded_at": "2026-08-13T23:23:09.302Z"
+      },
+      {
+        "key": "msgbatch_01Sm87KYJCbJ2NucgtPYnDnn:ctrl-opus-1",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "ctrl-opus-1",
+        "round": null,
+        "usage": {
+          "input_tokens": 16,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.00009,
+        "recorded_at": "2026-08-13T23:23:25.322Z"
+      },
+      {
+        "key": "msgbatch_01Sm87KYJCbJ2NucgtPYnDnn:ctrl-opus-0",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "ctrl-opus-0",
+        "round": null,
+        "usage": {
+          "input_tokens": 16,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.00009,
+        "recorded_at": "2026-08-13T23:23:25.322Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-063",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-063",
+        "round": null,
+        "usage": {
+          "input_tokens": 401,
+          "output_tokens": 183,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0047155,
+        "recorded_at": "2026-08-13T23:23:25.743Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-053",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-053",
+        "round": null,
+        "usage": {
+          "input_tokens": 293,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0038955,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-065",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-065",
+        "round": null,
+        "usage": {
+          "input_tokens": 342,
+          "output_tokens": 148,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0041305,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-051",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-051",
+        "round": null,
+        "usage": {
+          "input_tokens": 393,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004158,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-060",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-060",
+        "round": null,
+        "usage": {
+          "input_tokens": 422,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004218,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-059",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-059",
+        "round": null,
+        "usage": {
+          "input_tokens": 351,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 5702,
+          "cache_read_input_tokens": 0
+        },
+        "cost_usd": 0.02043375,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-056",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-056",
+        "round": null,
+        "usage": {
+          "input_tokens": 337,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0040305,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-064",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-064",
+        "round": null,
+        "usage": {
+          "input_tokens": 482,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004368,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-054",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-054",
+        "round": null,
+        "usage": {
+          "input_tokens": 364,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004098,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-061",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-061",
+        "round": null,
+        "usage": {
+          "input_tokens": 341,
+          "output_tokens": 290,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.005903,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-050",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-050",
+        "round": null,
+        "usage": {
+          "input_tokens": 348,
+          "output_tokens": 145,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004108,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-052",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-052",
+        "round": null,
+        "usage": {
+          "input_tokens": 353,
+          "output_tokens": 140,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004058,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-057",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-057",
+        "round": null,
+        "usage": {
+          "input_tokens": 417,
+          "output_tokens": 141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0042305,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-058",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-058",
+        "round": null,
+        "usage": {
+          "input_tokens": 331,
+          "output_tokens": 151,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0041405,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-055",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-055",
+        "round": null,
+        "usage": {
+          "input_tokens": 393,
+          "output_tokens": 132,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.004058,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
+      },
+      {
+        "key": "msgbatch_01AZyrcPzcmU5JeLCk4t8VVm:INV-062",
+        "lane": "unrecorded:swept",
+        "model": "claude-opus-5",
+        "channel": "batch",
+        "write_ttl": null,
+        "case_id": "INV-062",
+        "round": null,
+        "usage": {
+          "input_tokens": 379,
+          "output_tokens": 139,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 5702
+        },
+        "cost_usd": 0.0041105,
+        "recorded_at": "2026-08-13T23:23:25.744Z"
       }
     ]
   },
@@ -89603,7 +89967,7 @@
     "Short-circuit savings: 5 of 73 golden cases are rejected by the pre-model GR-SCOPE screen and never cost a request, so every round batches 68, not 73.",
     "Batch progress is NOT observable from request_counts: a batch reports zero completions for its whole life and then jumps to final counts, so any completion-based stall heuristic cancels healthy work. Stall handling is elapsed-time only. Measured 2026-08-12: haiku and opus batches of 16 requests ended in 2-3 minutes, while two sonnet-5 batches of the same shape took 2.5 and 6 HOURS and ended with all 16 requests succeeded - per-model batch cadence differs by two orders of magnitude and cannot be assumed from another model's behaviour. It is not stable over TIME either: a control probe on 2026-08-12 at 21:41Z ended a sonnet-5 batch in 3.1 minutes, so the multi-hour figures were a transient queue condition and not a property of the model. Any schedule built on either number is a guess; the ledger, not a stopwatch, is the health signal.",
     "NO MOCK BASELINE WAS LOADED (evals/baseline/latest.json absent), so the regression gates (p0_no_regression, aggregate_no_drop) had nothing to compare against and PASSED VACUOUSLY. Do not read those two gates as evidence of no regression; only the gates that evaluated real data (p0_pass_rate, guardrail_hard_zero) carry a verdict.",
-    "Run history, incidents and the reasons lanes are missing are in RUN-LOG.md in this directory. Read it before quoting any number here.",
+    "Run history, incidents and the per-lane attempt history (which attempt each lane was published from, and what happened to the others) are in RUN-LOG.md in this directory. Read it before quoting any number here.",
     "Reviewer N3: a live model that resolves MORE vendors than the mock planner emits extra lookup_vendor and memory.read events. That is correct behaviour, not a defect: grading fails only on MISSING required calls or must_not_call violations, so a higher tool count is not a penalty and should not be read as noise."
   ],
   "metric_caveats": {

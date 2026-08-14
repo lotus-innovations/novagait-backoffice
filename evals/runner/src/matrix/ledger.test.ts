@@ -8,6 +8,7 @@ import {
   SpendLedger,
   costUsd,
   pricingAlias,
+  renderLedgerSnapshot,
   type LedgerFile,
 } from "./ledger";
 
@@ -197,5 +198,65 @@ describe("pricingAlias", () => {
         writeTtl: null,
       }),
     ).toThrow(/no pricing/);
+  });
+});
+
+describe("renderLedgerSnapshot", () => {
+  const file = (): LedgerFile => ({
+    version: 1,
+    ticket: "LOT-105",
+    envelope_hard_usd: ENVELOPE_HARD_USD,
+    envelope_soft_usd: 55,
+    pricing_verified_on: "2026-08-11",
+    // The pre-sweep totals: what the run embedded in the matrix before the
+    // sweep appended the billed-but-unread entry below.
+    totals: {
+      cost_usd: 1,
+      by_lane: { "claude-haiku-4-5:uncached": 1 },
+      by_model: { "claude-haiku-4-5": 1 },
+      by_channel: { batch: 1 },
+      entries: 1,
+    },
+    entries: [
+      {
+        key: "batch_a:INV-001",
+        lane: "claude-haiku-4-5:uncached",
+        model: "claude-haiku-4-5",
+        channel: "batch",
+        write_ttl: null,
+        case_id: "INV-001",
+        round: 0,
+        usage: usage(),
+        cost_usd: 1,
+        recorded_at: "2026-08-12T00:00:00.000Z",
+      },
+      {
+        key: "batch_b:INV-002",
+        lane: "unrecorded:swept",
+        model: "claude-haiku-4-5",
+        channel: "batch",
+        write_ttl: null,
+        case_id: "INV-002",
+        round: null,
+        usage: usage(),
+        cost_usd: 0.5,
+        recorded_at: "2026-08-13T00:00:00.000Z",
+      },
+    ],
+  });
+
+  it("derives the totals rather than carrying a stale block through", () => {
+    const snapshot = renderLedgerSnapshot(file());
+    expect(snapshot.totals.cost_usd).toBe(1.5);
+    expect(snapshot.totals.entries).toBe(2);
+    expect(snapshot.totals.by_lane["unrecorded:swept"]).toBe(0.5);
+  });
+
+  it("does not alias the ledger it snapshots", () => {
+    const source = file();
+    const snapshot = renderLedgerSnapshot(source);
+    snapshot.entries[0].cost_usd = 99;
+    expect(source.entries[0].cost_usd).toBe(1);
+    expect(source.totals.cost_usd).toBe(1);
   });
 });
