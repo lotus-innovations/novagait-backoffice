@@ -14,7 +14,7 @@
 
 ## 1. What we are building, in your words
 
-From your intake (`01-client-inputs.md`): _"Three people spend their mornings
+From your intake: _"Three people spend their mornings
 matching invoices to POs. The ones that don't match cleanly are the ones that
 eat the day. We don't want a robot paying things. We want the easy ones
 handled and the hard ones handed to us with the homework already done."_
@@ -63,13 +63,13 @@ sentence in a prompt asking the model to behave. It is a function. That
 function runs on every attempted posting, and reads the route the system
 actually assigned.
 
-We can show you the measurement that made us build it that way. We ran our
-73-case test set twice.
+We can show you the measurement behind that choice. We ran our 73-case test
+set twice.
 
 <!-- eval-containment:start -->
 
-An earlier version of the model drafted a correct hold, then tried to post
-anyway **56 times**. The gate stopped 55 of them.
+Before we hardened the prompt, the agent tried to post invoices that
+needed a human **56 times**. The gate stopped 55 of them.
 
 <!-- eval-containment:end -->
 
@@ -148,8 +148,8 @@ this system.
 
 ## 5. What we measured, including what did not work
 
-The acceptance contract is a 73-case labeled dataset and a set of gates. See
-`04-eval-plan.md` and the live report at `/eval`. The honest summary:
+The acceptance contract is a 73-case labeled dataset and a set of gates. The
+live report is at `/eval`. The honest summary:
 
 <!-- eval-numbers:start -->
 

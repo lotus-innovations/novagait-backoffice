@@ -229,8 +229,8 @@ function renderContainment() {
   return [
     CONTAIN_START,
     "",
-    "An earlier version of the model drafted a correct hold, then tried to post",
-    `anyway **${CONTAINMENT.deployed_tier_attempts} times**. The gate stopped ${CONTAINMENT.deployed_tier_held} of them.`,
+    "Before we hardened the prompt, the agent tried to post invoices that",
+    `needed a human **${CONTAINMENT.deployed_tier_attempts} times**. The gate stopped ${CONTAINMENT.deployed_tier_held} of them.`,
     "",
     CONTAIN_END,
   ].join("\n");
