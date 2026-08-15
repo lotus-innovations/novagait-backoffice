@@ -55,8 +55,8 @@ flowchart LR
   HU --> H
 ```
 
-Two properties are worth naming because they are the ones that fail in most
-AI pilots:
+Two properties are worth naming, because they are the two we see fail
+first:
 
 **The gate is code.** Whether a human must see something is not decided by a
 sentence in a prompt asking the model to behave. It is a function. That
@@ -76,7 +76,7 @@ anyway **56 times**. The gate stopped 55 of them.
 Section 5 discusses the one that got through, and it is the most useful thing
 in this document.
 
-**Every field is quoted.** The agent must supply a source span for every value
+**Every field must carry a quote.** The agent must supply a source span for every value
 it extracts. A purchase-order number that is not printed on the invoice is a
 missing PO, not an inferred one. We should be straight about what code enforces
 here and what the prompt enforces. The output schema requires the span. The
@@ -93,8 +93,8 @@ harden.
 
 ## 3. Run lifecycle
 
-Every run is a state machine, and the states are the ones your auditor would
-ask about.
+Every run is a state machine, and the states are the ones an auditor asks
+about.
 
 ```mermaid
 stateDiagram-v2
@@ -130,14 +130,14 @@ quietly retried.
 
 Deliberately boring, and readable as three plain tables in the app:
 
-| Store           | Holds                                                                  | Why bounded                                                   |
-| --------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Run state       | The workflow position of each run                                      | So a parked run can resume days later                         |
-| Vendor profiles | Per-vendor learned facts (canonical name, learned GL code, run counts) | So the second invoice from a vendor is smarter than the first |
-| Dedupe ledger   | A content digest of every processed document                           | So a resubmitted invoice is caught, citing the earlier run    |
+| Store           | Holds                                                                  | Why bounded                                                       |
+| --------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Run state       | The workflow position of each run                                      | So a parked run can resume days later                             |
+| Vendor profiles | Per-vendor learned facts (canonical name, learned GL code, run counts) | So the second invoice reuses what the first one taught the system |
+| Dedupe ledger   | A content digest of every processed document                           | So a resubmitted invoice is caught, citing the earlier run        |
 
-Policy knowledge is retrieved from your written policies by keyword search and
-**cited by document and section** in the draft. There is no vector database in
+The system retrieves policy knowledge from your written policies by keyword
+search. It cites the document and section in the draft. There is no vector database in
 this system.
 
 > **For your engagement:** we will be asked why not. The answer is that your
@@ -184,8 +184,8 @@ the gate does.
 
 > **For your engagement:** this is what a Lotus readout looks like. You get
 > the number that failed, the case that escaped, and the reasoning, before
-> you decide to widen autonomy. We would rather show you the gate that did not
-> hold than a page of green checkmarks.
+> you decide to widen autonomy. We would rather show you the case that got
+> past the gate than a page of green checkmarks.
 
 ## 6. Deployment
 
@@ -219,8 +219,8 @@ production system. The gap is the engagement:
 - Real integration with your ERP, including its failure modes and rate limits
 - Your actual documents, which are messier than any synthetic set
 - Your policies as the retrieval corpus, and your approvers in the loop
-- An eval set built from **your** historical exceptions, which is the only
-  version of the acceptance contract that means anything
+- An eval set built from **your** historical exceptions, which is the version
+  of the acceptance contract that matters most
 - Operational ownership: alerting, escalation, and a plan for the day the
   model provider ships a new version
 
