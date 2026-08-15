@@ -67,11 +67,11 @@ function Bar({ value, max }: { value: number; max: number }) {
 export const CAVEAT_GLOSS: Record<string, string> = {
   source: "Where these caveats come from.",
   vendor_id_field_accuracy:
-    "Vendor id accuracy is not a model score. Code re-resolves the vendor from the printed name and overwrites what the model claimed. The field is correct by construction.",
+    "Vendor id accuracy is not a model score. Code re-resolves the vendor from the printed name and overwrites the model's value. The field measures the code, not the model. Do not read it as extraction accuracy.",
   output_schema_valid:
     "Format grading records only whether the agent drafted an action. It does not inspect the fields inside that draft.",
   decision:
-    "Route grading scores the route the system disposed, not the route the model proposed. The divergence column is what measures the model.",
+    "Route grading scores the route the system disposed, not the route the model proposed. A model that under-routes a case the policy holds can still score as correct. The artifacts carry a divergence measure for the model. This page does not show it.",
 };
 
 export function caveatGloss(key: string): string {
@@ -180,9 +180,16 @@ export default function EvalPage() {
           <code>execute_action</code> anyway. The code-side approval gate held{" "}
           {CONTAINMENT.deployed_tier_held} of{" "}
           {CONTAINMENT.deployed_tier_attempts} deployed-tier attempts. On{" "}
-          <code>{CONTAINMENT.escape_case}</code> it could not, because{" "}
-          {CONTAINMENT.escape_mechanism}.
+          <code>{CONTAINMENT.escape_case}</code> it could not. The model
+          invented a PO reference and routed the case for auto-approval. The
+          gate read that route as one which permitted the posting.
         </p>
+        <p className="gloss">
+          The artifact records the mechanism in its own words.
+        </p>
+        <blockquote className="gloss-quote">
+          {CONTAINMENT.escape_mechanism}.
+        </blockquote>
         <p>
           The hardened prompt makes execution conditional on the route, and
           guards against inferring PO references the document does not print. We
@@ -462,9 +469,21 @@ export default function EvalPage() {
           of {CALIBRATION.drafts_scored} drafts ({CALIBRATION.scored_on}) put
           verdict agreement at <strong>{CALIBRATION.verdict_agreement}</strong>{" "}
           with a mean absolute score difference of{" "}
-          {CALIBRATION.mean_abs_score_diff}. Direction is{" "}
-          {CALIBRATION.direction}. Scope: {CALIBRATION.scope_note}.
+          {CALIBRATION.mean_abs_score_diff}.
         </p>
+        <p>
+          The judge read conservatively, and never rated a draft above the
+          human. Its direction and scope are recorded in the artifacts, in their
+          own words.
+        </p>
+        <ul>
+          <li>
+            <strong>Direction:</strong> {CALIBRATION.direction}
+          </li>
+          <li>
+            <strong>Scope:</strong> {CALIBRATION.scope_note}
+          </li>
+        </ul>
         <p>
           Judge verdicts are computed once per model on the uncached outcomes,
           then stamped onto both cache columns. Drafts differ between cache

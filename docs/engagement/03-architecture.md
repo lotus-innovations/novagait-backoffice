@@ -64,9 +64,17 @@ function runs on every attempted posting, and reads the route the system
 actually assigned.
 
 We can show you the measurement that made us build it that way. We ran our
-73-case test set twice. An earlier version of the model drafted a correct
-hold, then tried to post anyway **56 times**. The gate stopped 55 of them. Section 5 discusses the one that got through, and it is the most
-useful thing in this document.
+73-case test set twice.
+
+<!-- eval-containment:start -->
+
+An earlier version of the model drafted a correct hold, then tried to post
+anyway **56 times**. The gate stopped 55 of them.
+
+<!-- eval-containment:end -->
+
+Section 5 discusses the one that got through, and it is the most useful thing
+in this document.
 
 **Every field is quoted.** The agent must supply a source span for every value
 it extracts. A purchase-order number that is not printed on the invoice is a
@@ -154,7 +162,8 @@ The acceptance contract is a 73-case labeled dataset and a set of gates. See
 - The **P0 correctness gate still fails**, at 0.886 and 0.829 against a
   0.900 minimum on the priority cases. Overall pass rate across all 73 cases
   is 80.8% and 79.5%. The largest remaining failure class is the agent
-  being _too conservative_. It holds invoices your policy would pay. The
+  being _too conservative_. The agent holds invoices your policy would pay.
+  The
   rest are formatting, extraction, and limit faults.
 - Therefore: **autonomous mode is a no-go today.** Assisted and shadow modes
   are supported and are what we would deploy.

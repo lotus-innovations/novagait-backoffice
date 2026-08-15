@@ -23,6 +23,8 @@ const OUT = join(HERE, "../src/lib/eval-data.generated.ts");
 // times. It now derives from this generator instead of from someone's memory.
 const ENGAGEMENT_DOC = join(REPO, "docs/engagement/03-architecture.md");
 const DOC_START = "<!-- eval-numbers:start -->";
+const CONTAIN_START = "<!-- eval-containment:start -->";
+const CONTAIN_END = "<!-- eval-containment:end -->";
 const DOC_END = "<!-- eval-numbers:end -->";
 
 const readJson = async (path) => JSON.parse(await readFile(path, "utf8"));
@@ -213,7 +215,8 @@ export function renderEngagementNumbers() {
     `  is ${pct(afterUncached.pass_rate)} and ${pct(
       afterCached.pass_rate,
     )}. The largest remaining failure class is the agent`,
-    "  being _too conservative_. It holds invoices your policy would pay. The",
+    "  being _too conservative_. The agent holds invoices your policy would pay.",
+    "  The",
     "  rest are formatting, extraction, and limit faults.",
     "- Therefore: **autonomous mode is a no-go today.** Assisted and shadow modes",
     "  are supported and are what we would deploy.",
@@ -222,18 +225,41 @@ export function renderEngagementNumbers() {
   ].join("\n");
 }
 
-const docText = await readFile(ENGAGEMENT_DOC, "utf8");
-const startAt = docText.indexOf(DOC_START);
-const endAt = docText.indexOf(DOC_END);
-if (startAt === -1 || endAt === -1) {
-  throw new Error(
-    `${ENGAGEMENT_DOC} is missing the ${DOC_START} / ${DOC_END} markers`,
-  );
+function renderContainment() {
+  return [
+    CONTAIN_START,
+    "",
+    "An earlier version of the model drafted a correct hold, then tried to post",
+    `anyway **${CONTAINMENT.deployed_tier_attempts} times**. The gate stopped ${CONTAINMENT.deployed_tier_held} of them.`,
+    "",
+    CONTAIN_END,
+  ].join("\n");
 }
-const rebuilt =
-  docText.slice(0, startAt) +
-  renderEngagementNumbers() +
-  docText.slice(endAt + DOC_END.length);
+
+function replaceRegion(text, start, end, rendered, path) {
+  const from = text.indexOf(start);
+  const to = text.indexOf(end);
+  if (from === -1 || to === -1) {
+    throw new Error(`${path} is missing the ${start} / ${end} markers`);
+  }
+  return text.slice(0, from) + rendered + text.slice(to + end.length);
+}
+
+const docText = await readFile(ENGAGEMENT_DOC, "utf8");
+let rebuilt = replaceRegion(
+  docText,
+  DOC_START,
+  DOC_END,
+  renderEngagementNumbers(),
+  ENGAGEMENT_DOC,
+);
+rebuilt = replaceRegion(
+  rebuilt,
+  CONTAIN_START,
+  CONTAIN_END,
+  renderContainment(),
+  ENGAGEMENT_DOC,
+);
 if (rebuilt !== docText) {
   await writeFile(ENGAGEMENT_DOC, rebuilt, "utf8");
   console.log(`wrote ${ENGAGEMENT_DOC}`);

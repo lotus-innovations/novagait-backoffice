@@ -209,6 +209,14 @@ details p.gloss {
   margin-top: 0;
 }
 
+/* A paragraph whose body is text quoted verbatim from a run artifact. Set
+   apart so a reader can see where our words stop and the record starts. */
+.gloss-quote {
+  border-left: 3px solid var(--line);
+  padding-left: 12px;
+  color: var(--muted);
+}
+
 fieldset {
   border: 1px solid var(--line);
   border-radius: 6px;

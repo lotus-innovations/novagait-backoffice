@@ -165,6 +165,31 @@ describe("eval-data.generated", () => {
     expect(region).not.toMatch(/\d+ of \d+ on the\s+measured lane/);
   });
 
+  // The same doc restated the containment pair in its own prose, outside the
+  // generated region. That is half-applied single-sourcing, and it drifts on
+  // the next regeneration. The generator owns this region too now.
+  it("engagement doc containment figures match the generated eval data", async () => {
+    const doc = await readFile(
+      join(REPO, "docs/engagement/03-architecture.md"),
+      "utf8",
+    );
+    const region = doc.slice(
+      doc.indexOf("<!-- eval-containment:start -->"),
+      doc.indexOf("<!-- eval-containment:end -->"),
+    );
+    expect(region).not.toBe("");
+    expect(region).toContain(`**${CONTAINMENT.deployed_tier_attempts} times**`);
+    expect(region).toContain(
+      `stopped ${CONTAINMENT.deployed_tier_held} of them`,
+    );
+
+    // No containment figure may appear outside the region it is generated into.
+    const outside = doc.replace(region, "");
+    expect(outside).not.toContain(
+      `${CONTAINMENT.deployed_tier_attempts} times`,
+    );
+  });
+
   it("calibration constants still match calibration-results.md", async () => {
     const text = await readFile(
       join(PUBLISHED_DIR, "calibration-results.md"),
