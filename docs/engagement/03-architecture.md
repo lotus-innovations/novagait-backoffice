@@ -141,21 +141,25 @@ this system.
 The acceptance contract is a 73-case labeled dataset and a set of gates. See
 `04-eval-plan.md` and the live report at `/eval`. The honest summary:
 
+<!-- eval-numbers:start -->
+
 - On the deployed model, the approval-bypass failure mode was measured at
-  **56 attempts**. A prompt fix drove it to **0** in a re-measurement on the
-  same 73 cases, under the same rubric. The scope, stated plainly, is two lanes of
-  the deployed model, one run each. The larger models were not re-measured,
-  and one run is not a proof of absence. The rubric itself also moved: we
-  tightened it so an agent that simply stopped posting could not score as
-  "fixed". The before numbers were re-graded under the new rubric to keep the
-  comparison fair.
-- The **P0 correctness gate still fails**, at 0.886 and 0.829 against a 0.900
-  minimum on the priority cases. Overall pass rate across all 73 cases is
-  80.8% and 79.5%. The largest remaining failure class, 8 of 14 on the
-  measured lane, is the agent being _too conservative_. It holds invoices your
-  policy would pay. The rest are formatting, extraction, and limit faults.
+  **56 attempts**. A prompt fix drove it to **0** in a re-measurement
+  on the same 73 cases, under the same rubric. The scope, stated plainly,
+  is two lanes of the deployed model, one run each. The larger models were
+  not re-measured, and one run is not a proof of absence. The rubric itself
+  also moved: we tightened it so an agent that simply stopped posting could
+  not score as "fixed". The before numbers were re-graded under the new
+  rubric to keep the comparison fair.
+- The **P0 correctness gate still fails**, at 0.886 and 0.829 against a
+  0.900 minimum on the priority cases. Overall pass rate across all 73 cases
+  is 80.8% and 79.5%. The largest remaining failure class is the agent
+  being _too conservative_. It holds invoices your policy would pay. The
+  rest are formatting, extraction, and limit faults.
 - Therefore: **autonomous mode is a no-go today.** Assisted and shadow modes
   are supported and are what we would deploy.
+
+<!-- eval-numbers:end -->
 
 Here is the finding we would lead with in a real readout. One case escaped the
 gate. The agent invented a PO number, which made a should-have-been-held

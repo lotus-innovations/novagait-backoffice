@@ -194,6 +194,21 @@ main section {
   font-size: 0.88em;
 }
 
+/* Plain-language lead-in for text republished verbatim from a run artifact.
+   The verbatim text cannot be edited for readability without making the word
+   "verbatim" false, so the gloss carries the meaning and reads first. It is
+   deliberately more prominent than the quotation it introduces. */
+.gloss {
+  display: block;
+  color: var(--ink);
+  font-weight: 550;
+  margin-bottom: 4px;
+}
+
+details p.gloss {
+  margin-top: 0;
+}
+
 fieldset {
   border: 1px solid var(--line);
   border-radius: 6px;

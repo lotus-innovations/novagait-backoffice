@@ -62,9 +62,10 @@ export default async function Home({
     <main>
       <h1>Novagait Back Office</h1>
       <p>
-        AP invoice intake with 3-way match. This is a production-grade agent
-        demonstration with a full audit trail, deliberate memory, guardrails,
-        and human approval gates. The approval gate is code, not a prompt. The
+        AP invoice intake with 3-way match. This demonstration ships with a full
+        audit trail, deliberate memory, guardrails, and human approval gates. It
+        is complete as a demonstration, and deliberately incomplete as a
+        production system. The approval gate is code, not a prompt. The
         execution tool itself checks the mode and the approval state. A prompt
         cannot talk it into skipping that check.
       </p>

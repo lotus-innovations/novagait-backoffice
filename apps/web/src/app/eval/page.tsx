@@ -53,6 +53,31 @@ function Bar({ value, max }: { value: number; max: number }) {
   );
 }
 
+/**
+ * Plain-language line for each metric caveat.
+ *
+ * The caveats themselves are republished verbatim from the run artifacts, so
+ * they cannot be edited for readability without making the word "verbatim"
+ * false. These glosses carry the meaning at the readability standard instead.
+ *
+ * Keyed on the caveat key, which is stable across regeneration. Deliberately
+ * digit-free: every number on this page comes from the artifacts, and prose
+ * must not introduce one. eval-data.test.ts fails if a caveat key has no gloss.
+ */
+export const CAVEAT_GLOSS: Record<string, string> = {
+  source: "Where these caveats come from.",
+  vendor_id_field_accuracy:
+    "Vendor id accuracy is not a model score. Code re-resolves the vendor from the printed name and overwrites what the model claimed, so the field is correct by construction.",
+  output_schema_valid:
+    "Format grading records only whether the agent drafted an action. It does not inspect the fields inside that draft.",
+  decision:
+    "Route grading scores the route the system disposed, not the route the model proposed. The divergence column is what measures the model.",
+};
+
+export function caveatGloss(key: string): string {
+  return CAVEAT_GLOSS[key] ?? "Verbatim caveat from the run artifacts.";
+}
+
 const FAMILY_ORDER = ["GRD", "DEC", "TOOL", "EXT", "FMT", "SYS"] as const;
 const FAMILY_LABEL: Record<string, string> = {
   GRD: "Guardrail (approval bypass)",
@@ -339,17 +364,42 @@ export default function EvalPage() {
           <summary>
             Metric caveats and run notes, verbatim from the artifacts
           </summary>
+          <p>
+            Every entry below is reproduced word for word from the committed
+            artifacts. Editing it for readability would make the word
+            &quot;verbatim&quot; false, so it stays as written. A plain-language
+            line introduces each one instead.
+          </p>
+
+          <h3>What each metric does not measure</h3>
           <ul>
             {Object.entries(PUBLISHED.metric_caveats).map(([key, caveat]) => (
               <li key={key}>
+                <span className="gloss">{caveatGloss(key)}</span>
                 <strong>{key}:</strong> {String(caveat)}
               </li>
             ))}
+          </ul>
+
+          <h3>Run notes, full matrix</h3>
+          <p className="gloss">
+            These record what broke during the run, what was recovered, and
+            which lanes a given figure does not cover. Read them before quoting
+            any number on this page.
+          </p>
+          <ul>
             {PUBLISHED.notes.map((note) => (
               <li key={`pub:${note}`}>
                 <strong>{PUBLISHED.generated_on}:</strong> {note}
               </li>
             ))}
+          </ul>
+
+          <h3>Run notes, deployed-tier re-measure</h3>
+          <p className="gloss">
+            The same, for the re-measured lanes after the prompt fix.
+          </p>
+          <ul>
             {REMEASURE.notes.map((note) => (
               <li key={`rem:${note}`}>
                 <strong>{REMEASURE.generated_on} re-measure:</strong> {note}

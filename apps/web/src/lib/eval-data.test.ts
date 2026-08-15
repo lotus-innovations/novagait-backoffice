@@ -15,6 +15,7 @@ import {
   REGRADE_BEFORE,
   REMEASURE,
 } from "./eval-data.generated";
+import { CAVEAT_GLOSS } from "../app/eval/page";
 
 const REPO = fileURLToPath(new URL("../../../..", import.meta.url));
 const PUBLISHED_DIR = join(REPO, "evals/results/matrix-2026-08-11");
@@ -107,6 +108,61 @@ describe("eval-data.generated", () => {
     expect(CONTAINMENT.deployed_tier_held).toBe(
       CONTAINMENT.deployed_tier_attempts - 1,
     );
+  });
+
+  // bd-100: the caveats are republished verbatim, so they cannot be edited for
+  // readability. Each one carries a plain-language gloss instead. If the
+  // generator emits a new caveat key, that gloss is missing and the page would
+  // silently publish unexplained dense text. Fail here instead.
+  it("every published metric caveat has a plain-language gloss", () => {
+    const missing = Object.keys(PUBLISHED.metric_caveats).filter(
+      (key) => !CAVEAT_GLOSS[key],
+    );
+    expect(missing).toEqual([]);
+  });
+
+  // The glosses are prose on a page whose every number comes from an artifact.
+  // A digit in a gloss would be an unsourced number.
+  it("no gloss introduces a number", () => {
+    const withDigits = Object.entries(CAVEAT_GLOSS)
+      .filter(([, text]) => /\d/.test(text))
+      .map(([key]) => key);
+    expect(withDigits).toEqual([]);
+  });
+
+  // bd-100: the client-facing engagement doc restated these figures in prose.
+  // They are now emitted by gen:eval-data into a marked region. This fails if
+  // someone edits the region by hand, or regenerates the data without
+  // re-running the generator, so the deliverable cannot drift from /eval.
+  it("engagement doc numbers match the generated eval data", async () => {
+    const doc = await readFile(
+      join(REPO, "docs/engagement/03-architecture.md"),
+      "utf8",
+    );
+    const region = doc.slice(
+      doc.indexOf("<!-- eval-numbers:start -->"),
+      doc.indexOf("<!-- eval-numbers:end -->"),
+    );
+    expect(region).not.toBe("");
+
+    const uncached = REGRADE_AFTER.lanes["claude-haiku-4-5:uncached"];
+    const cached = REGRADE_AFTER.lanes["claude-haiku-4-5:cached"];
+    const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+
+    expect(region).toContain(
+      `**${CONTAINMENT.deployed_tier_attempts} attempts**`,
+    );
+    expect(region).toContain(
+      `${uncached.p0_pass_rate.toFixed(3)} and ${cached.p0_pass_rate.toFixed(3)}`,
+    );
+    expect(region).toContain(
+      `${pct(uncached.pass_rate)} and ${pct(cached.pass_rate)}`,
+    );
+    expect(region).toContain(`all ${uncached.total} cases`);
+
+    // The doc must not reintroduce a figure /eval does not publish. "8 of 14"
+    // contradicted /eval's "9 before and 9 after" on the same lane.
+    expect(region).not.toMatch(/\d+ of \d+ on the\s+measured lane/);
   });
 
   it("calibration constants still match calibration-results.md", async () => {

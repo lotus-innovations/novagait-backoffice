@@ -18,6 +18,12 @@ const REPO = join(HERE, "../../..");
 const PUBLISHED_DIR = join(REPO, "evals/results/matrix-2026-08-11");
 const REMEASURE_DIR = join(REPO, "evals/results/matrix-2026-08-13-p130");
 const OUT = join(HERE, "../src/lib/eval-data.generated.ts");
+// bd-100: the client-facing engagement doc restated these same figures in
+// prose, which is the drift pattern that has already bitten Demo 4 three
+// times. It now derives from this generator instead of from someone's memory.
+const ENGAGEMENT_DOC = join(REPO, "docs/engagement/03-architecture.md");
+const DOC_START = "<!-- eval-numbers:start -->";
+const DOC_END = "<!-- eval-numbers:end -->";
 
 const readJson = async (path) => JSON.parse(await readFile(path, "utf8"));
 
@@ -175,3 +181,62 @@ export const CONTAINMENT = ${JSON.stringify(CONTAINMENT, null, 2)} as const;
 
 await writeFile(OUT, body, "utf8");
 console.log(`wrote ${OUT}`);
+
+// ---------------------------------------------------------------------------
+// Engagement doc: regenerate the measured-numbers block from the same source.
+// ---------------------------------------------------------------------------
+
+const UNCACHED = "claude-haiku-4-5:uncached";
+const CACHED = "claude-haiku-4-5:cached";
+const afterUncached = regradeAfter.lanes[UNCACHED];
+const afterCached = regradeAfter.lanes[CACHED];
+const pct = (value) => `${(value * 100).toFixed(1)}%`;
+
+export function renderEngagementNumbers() {
+  return [
+    DOC_START,
+    "",
+    "- On the deployed model, the approval-bypass failure mode was measured at",
+    `  **${CONTAINMENT.deployed_tier_attempts} attempts**. A prompt fix drove it to **${
+      afterUncached.failures_by_code["GRD-004"] ?? 0
+    }** in a re-measurement`,
+    `  on the same ${afterUncached.total} cases, under the same rubric. The scope, stated plainly,`,
+    "  is two lanes of the deployed model, one run each. The larger models were",
+    "  not re-measured, and one run is not a proof of absence. The rubric itself",
+    "  also moved: we tightened it so an agent that simply stopped posting could",
+    '  not score as "fixed". The before numbers were re-graded under the new',
+    "  rubric to keep the comparison fair.",
+    `- The **P0 correctness gate still fails**, at ${afterUncached.p0_pass_rate.toFixed(
+      3,
+    )} and ${afterCached.p0_pass_rate.toFixed(3)} against a`,
+    `  0.900 minimum on the priority cases. Overall pass rate across all ${afterUncached.total} cases`,
+    `  is ${pct(afterUncached.pass_rate)} and ${pct(
+      afterCached.pass_rate,
+    )}. The largest remaining failure class is the agent`,
+    "  being _too conservative_. It holds invoices your policy would pay. The",
+    "  rest are formatting, extraction, and limit faults.",
+    "- Therefore: **autonomous mode is a no-go today.** Assisted and shadow modes",
+    "  are supported and are what we would deploy.",
+    "",
+    DOC_END,
+  ].join("\n");
+}
+
+const docText = await readFile(ENGAGEMENT_DOC, "utf8");
+const startAt = docText.indexOf(DOC_START);
+const endAt = docText.indexOf(DOC_END);
+if (startAt === -1 || endAt === -1) {
+  throw new Error(
+    `${ENGAGEMENT_DOC} is missing the ${DOC_START} / ${DOC_END} markers`,
+  );
+}
+const rebuilt =
+  docText.slice(0, startAt) +
+  renderEngagementNumbers() +
+  docText.slice(endAt + DOC_END.length);
+if (rebuilt !== docText) {
+  await writeFile(ENGAGEMENT_DOC, rebuilt, "utf8");
+  console.log(`wrote ${ENGAGEMENT_DOC}`);
+} else {
+  console.log(`${ENGAGEMENT_DOC} already in sync`);
+}
