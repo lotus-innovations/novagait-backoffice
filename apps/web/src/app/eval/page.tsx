@@ -67,7 +67,7 @@ function Bar({ value, max }: { value: number; max: number }) {
 export const CAVEAT_GLOSS: Record<string, string> = {
   source: "Where these caveats come from.",
   vendor_id_field_accuracy:
-    "Vendor id accuracy is not a model score. Code re-resolves the vendor from the printed name and overwrites what the model claimed, so the field is correct by construction.",
+    "Vendor id accuracy is not a model score. Code re-resolves the vendor from the printed name and overwrites what the model claimed. The field is correct by construction.",
   output_schema_valid:
     "Format grading records only whether the agent drafted an action. It does not inspect the fields inside that draft.",
   decision:
