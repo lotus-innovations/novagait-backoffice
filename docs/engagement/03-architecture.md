@@ -120,9 +120,11 @@ rather than looping. Runs also stop on their own if they exceed a per-run cost
 or iteration budget. A stopped run is reported as stopped, and is never
 quietly retried.
 
-> **For your engagement:** the single revision cycle is a starting default. We
-> have seen teams want two (one for "wrong GL code," one for "wrong amount")
-> and teams that want zero. It is a one-line change plus a threshold update.
+> **For your engagement:** the single revision cycle is a starting default.
+> Two can make sense if you want to separate a wrong GL code from a wrong
+> amount. Zero can make sense if your approvers would rather fix a draft
+> themselves than send it back. It is a one-line change plus a threshold
+> update.
 
 ## 4. What the agent remembers
 
@@ -182,8 +184,8 @@ the gate does.
 
 > **For your engagement:** this is what a Lotus readout looks like. You get
 > the number that failed, the case that escaped, and the reasoning, before
-> you decide to widen autonomy. A vendor who shows you only green checkmarks
-> has not measured anything.
+> you decide to widen autonomy. We would rather show you the gate that did not
+> hold than a page of green checkmarks.
 
 ## 6. Deployment
 
