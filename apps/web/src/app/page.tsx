@@ -9,6 +9,7 @@ import {
   SESSION_RUN_CAP,
   isCapacityMode,
 } from "@novagait/agent";
+import TourLaunchButton from "@/components/tour/TourLaunchButton";
 import { ensureSeeded, getBackend, getStore } from "@/lib/runtime";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +62,7 @@ export default async function Home({
   return (
     <main>
       <h1>Novagait Back Office</h1>
-      <p>
+      <p data-tour="intro">
         AP invoice intake with 3-way match. This demonstration ships with a full
         audit trail, deliberate memory, guardrails, and human approval gates. It
         is complete as a demonstration, and deliberately incomplete as a
@@ -76,6 +77,8 @@ export default async function Home({
         demo is capped at ${(DAILY_BUDGET_MICRO_USD / 1_000_000).toFixed(2)} per
         day.
       </p>
+
+      <TourLaunchButton />
 
       {errorText ? (
         <p role="status" className="banner">
@@ -101,7 +104,7 @@ export default async function Home({
             boundary. Re-submitting an already-processed document demonstrates
             the duplicate hold.
           </p>
-          <form method="post" action="/api/intake">
+          <form method="post" action="/api/intake" data-tour="intake-form">
             {scripted ? (
               <input type="hidden" name="approver" value="script" />
             ) : null}

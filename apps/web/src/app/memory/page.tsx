@@ -78,7 +78,7 @@ export default async function MemoryPage() {
         )}
       </section>
 
-      <section aria-labelledby="profiles-h">
+      <section aria-labelledby="profiles-h" data-tour="vendor-profiles">
         <h2 id="profiles-h">Vendor profiles</h2>
         <p>
           Bounded per-vendor memory, written only through the audited{" "}

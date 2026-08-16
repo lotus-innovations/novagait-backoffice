@@ -283,3 +283,166 @@ button {
   margin-right: 0.5rem;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------------------------------------------------------------------------
+   Guided tour (LOT-118). Appended block; nothing above this line changes.
+
+   The tour is non-modal by design: the visitor clicks the REAL controls, so
+   the scrim and the spotlight are pointer-events: none and the card is the
+   only interactive part. TourOverlay renders null when the tour is off, so no
+   rule below applies and the page is byte-identical to the untoured page.
+
+   Colors come only from the existing :root tokens. Contrast, computed against
+   the WCAG 2.x formula: --ink on --bg 16.36:1, --ink on --panel 15.10:1,
+   --muted on --bg 5.98:1, --accent on --panel 5.62:1. All clear AA (4.5:1).
+--------------------------------------------------------------------------- */
+
+/* Positioning shell only; it paints nothing. The spotlight's 9999px spread
+   shadow is the dimmer whenever an anchor rect exists, and TourOverlay
+   renders this element only when there is NO anchor rect, so the two dimmers
+   can never both paint. Consequence, accepted: the no-anchor fallback shows a
+   centred card over an undimmed page. Restore a fill here if that fallback
+   needs separation. */
+.tour-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  background: transparent;
+}
+
+.tour-spotlight {
+  /* fixed, not absolute: the rect fed to it comes from getBoundingClientRect,
+     which is viewport-relative. TourOverlay also sets this inline; keeping the
+     two in agreement means a dropped inline style cannot make the dimmer drift
+     against the document on scroll. */
+  position: fixed;
+  z-index: 1001;
+  pointer-events: none;
+  border-radius: 8px;
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+  /* The cutout: the element itself paints NOTHING, so the anchor stays fully
+     legible, and the huge spread shadow dims everything outside the ring.
+     Filling this box instead would erase the one thing the tour points at. */
+  background: transparent;
+  box-shadow: 0 0 0 9999px color-mix(in srgb, var(--ink) 42%, transparent);
+  transition:
+    top 160ms ease,
+    left 160ms ease,
+    width 160ms ease,
+    height 160ms ease;
+}
+
+.tour-card {
+  position: fixed;
+  z-index: 1002;
+  max-width: 22rem;
+  width: calc(100vw - 32px);
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--ink) 24%, transparent);
+}
+
+.tour-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.tour-card p {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+}
+
+.tour-progress {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  margin: 0 0 4px;
+}
+
+.tour-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Inherits the base button colors (--accent on white); only the size changes. */
+.tour-controls button {
+  padding: 6px 14px;
+  font-size: 0.92rem;
+}
+
+.tour-controls a {
+  color: var(--accent);
+  font-size: 0.92rem;
+}
+
+.tour-launch,
+.tour-resume a {
+  display: inline-block;
+  background: var(--panel);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tour-launch:hover,
+.tour-launch:focus-visible,
+.tour-resume a:hover,
+.tour-resume a:focus-visible {
+  background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+  text-decoration: underline;
+}
+
+.tour-resume {
+  position: fixed;
+  z-index: 1002;
+  right: 16px;
+  bottom: 16px;
+  max-width: 22rem;
+  width: calc(100vw - 32px);
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.92rem;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--ink) 24%, transparent);
+}
+
+.tour-resume p {
+  margin: 0 0 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-spotlight {
+    transition: none;
+  }
+}
+
+/* SC 1.4.3 under the dim. The 42% dimmer composites --muted text on --bg down
+   to 3.62:1 (measured), below the 4.5:1 minimum, for as long as the tour is
+   open. --ink survives it comfortably (6.33:1 on --bg, 5.95:1 on --panel), so
+   the fix is to promote muted text rather than weaken the spotlight: clearing
+   4.5:1 by lowering the dim needs alpha <= 0.20, which is a visibly worse
+   highlight. TourOverlay sets data-tour-active on <html> only while active. */
+html[data-tour-active] .muted,
+html[data-tour-active] .empty,
+html[data-tour-active] .gloss-quote,
+html[data-tour-active] .stat-label,
+html[data-tour-active] footer.site p {
+  color: var(--ink);
+}

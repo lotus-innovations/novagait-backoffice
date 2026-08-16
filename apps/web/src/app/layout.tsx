@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import TourOverlay from "@/components/tour/TourOverlay";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             real clinic or entity.
           </p>
         </footer>
+        <TourOverlay />
       </body>
     </html>
   );

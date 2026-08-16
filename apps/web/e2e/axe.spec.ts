@@ -96,6 +96,29 @@ test.describe("@axe accessibility gate", () => {
     await scan(page, `/approvals/${pendingApprovalId}`);
   });
 
+  // LOT-118 acceptance: "axe 0 violations with tour active". The tour is the
+  // app's only client-rendered surface and the only one that paints over the
+  // page, so it is scanned in place, on top of real content, not in isolation.
+  test("@axe guided tour active on the landing page", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".tour-launch").click();
+    await expect(page.locator(".tour-card")).toBeVisible();
+    await scan(page, "/ with the guided tour active");
+  });
+
+  test("@axe guided tour active on a populated approval screen", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator(".tour-launch").click();
+    await expect(page.locator(".tour-card")).toBeVisible();
+    // Carry the tour across a real navigation onto a data-heavy route, so the
+    // card is scanned over a populated table rather than an empty page.
+    await page.goto(`/approvals/${pendingApprovalId}`);
+    await expect(page.locator(".tour-card, .tour-resume")).toBeVisible();
+    await scan(page, `/approvals/[id] with the guided tour active`);
+  });
+
   // /admin is a route handler, but it returns a full HTML document, so it is
   // in scope for the gate like any other page; it just needs Basic auth.
   test("@axe admin panel (/admin)", async ({ browser }) => {

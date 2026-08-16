@@ -55,7 +55,7 @@ export default async function RunDetailPage({
         </table>
       )}
       {approval?.status === "pending" ? (
-        <p role="status" className="banner">
+        <p role="status" className="banner" data-tour="approval-banner">
           This run is paused at the approval gate.{" "}
           <Link href={`/approvals/${approval.approval_id}`}>
             Review and decide
@@ -70,7 +70,7 @@ export default async function RunDetailPage({
         - one event per line, exactly as stored.
       </p>
       <h2>Timeline ({events.length} events)</h2>
-      <ol style={{ listStyle: "none", padding: 0 }}>
+      <ol style={{ listStyle: "none", padding: 0 }} data-tour="run-timeline">
         {events.map((event) => (
           <li key={event.seq}>
             <details className="event">

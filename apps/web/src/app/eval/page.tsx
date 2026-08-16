@@ -144,7 +144,7 @@ export default function EvalPage() {
         from committed run artifacts at build time.
       </p>
 
-      <section aria-labelledby="headline-h">
+      <section aria-labelledby="headline-h" data-tour="eval-headline">
         <h2 id="headline-h">The headline: a measured fix</h2>
         <div className="stat-grid">
           <div className="stat" data-testid="headline-grd004">

@@ -132,7 +132,7 @@ export default async function ApprovalPage({
       </section>
 
       {extraction ? (
-        <section aria-labelledby="evidence-h">
+        <section aria-labelledby="evidence-h" data-tour="evidence-table">
           <h2 id="evidence-h">Evidence: extracted fields</h2>
           <p>
             Every extracted value carries the verbatim quote it came from, so

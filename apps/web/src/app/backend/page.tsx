@@ -114,7 +114,7 @@ export default async function BackendPage() {
         </table>
       </section>
 
-      <section aria-labelledby="ledger-h">
+      <section aria-labelledby="ledger-h" data-tour="erp-rows">
         <h2 id="ledger-h">Ledger</h2>
         <table>
           <thead>
