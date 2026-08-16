@@ -446,3 +446,13 @@ html[data-tour-active] .stat-label,
 html[data-tour-active] footer.site p {
   color: var(--ink);
 }
+
+/* Pre-hydration state for the launch button. It is server-rendered HTML, so
+   it exists before its click handler does; measured on a throttled mobile
+   connection, taps at DOM-ready and at 300ms were silently dropped. It is
+   disabled until hydrated, and dimmed just enough to read as not-yet-ready
+   rather than broken. Disabled controls are exempt from SC 1.4.3. */
+.tour-launch:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
