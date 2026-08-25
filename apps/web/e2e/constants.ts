@@ -18,6 +18,8 @@ export const DOC = {
   // Full match, known vendor, under the $500 autonomy cap -> auto_approve.
   corvidaMonthly: "INB-001",
   brightlineSupplies: "INB-002",
+  // The guided tour drives this one: a nonzero price variance inside
+  // tolerance, which is the disposition beat 4 narrates.
   peloraCleaning: "INB-003", // minor exception -> route_for_approval
   corvidaReporting: "INB-005",
   brightlineDisputeNote: "INB-012",

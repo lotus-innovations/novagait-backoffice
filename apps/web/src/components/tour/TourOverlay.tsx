@@ -9,7 +9,8 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { TOUR_RESUME_COPY, TOUR_STEPS } from "./steps";
+import { TOUR_STEPS } from "./steps";
+import { resumePillCopy } from "./resume-copy";
 import type { TourStep } from "./types";
 import {
   clearState,
@@ -269,7 +270,8 @@ export default function TourOverlay() {
 
   // Off-script: the visitor is on a page the script does not cover. Approving
   // an invoice redirects to the run page and lands exactly here, so this is a
-  // normal path through the tour, not an error state.
+  // normal path through the tour, not an error state, and resumePillCopy
+  // gives that one arrival progress copy instead of the detour message.
   if (!onTrack) {
     // resumeTarget, NOT this step's own route. The stored step is the one the
     // visitor has already finished, and on the approval path its route is the
@@ -277,14 +279,14 @@ export default function TourOverlay() {
     // for the next reachable step is what keeps them from being stranded.
     const target = resumeTarget(TOUR_STEPS, stepIndex);
     const targetStep = target ? TOUR_STEPS[target.index] : undefined;
+    const copy = resumePillCopy(targetStep, path);
     return (
       <div className="tour-resume" role="region" aria-label="Guided tour">
-        <p aria-live="polite">{TOUR_RESUME_COPY.message}</p>
-        {target && targetStep ? (
-          <a
-            href={target.href}
-            onClick={() => stageAndLeave(target.index)}
-          >{`Continue the tour: ${targetStep.title}`}</a>
+        <p aria-live="polite">{copy.message}</p>
+        {target && copy.linkLabel ? (
+          <a href={target.href} onClick={() => stageAndLeave(target.index)}>
+            {copy.linkLabel}
+          </a>
         ) : null}
         <button type="button" onClick={endTour}>
           End tour

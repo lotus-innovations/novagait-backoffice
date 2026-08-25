@@ -9,9 +9,12 @@ import type { TourStep } from "./types";
  * packages/agent/src/policy-constants.ts, and a literal anywhere else is a bug,
  * so the cards describe limits qualitatively instead.
  *
- * Beat 4 is the pivot the demo exists to show: the invoice stops even in
- * Autonomous mode. Beat 8 stays inside what /eval itself publishes, which is a
- * NO-GO for fully autonomous operation.
+ * Beat 4 is the pivot the demo exists to show: the Pelora cleaning invoice
+ * (INB-003) stops even in Autonomous mode, because its total differs from the
+ * order by a nonzero amount that still sits inside tolerance. The claim is
+ * pinned by packages/pipeline/src/tour-story.test.ts, route and reason both.
+ * Beat 8 stays inside what /eval itself publishes, which is a NO-GO for fully
+ * autonomous operation.
  */
 export const TOUR_STEPS: TourStep[] = [
   {
@@ -27,7 +30,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: "/",
     anchor: "intake-form",
     title: "Start a run",
-    body: "Pick the invoice named INB-005. Choose Autonomous, the mode that acts without asking first. Then press Run the agent.",
+    body: "Pick the cleaning invoice from Pelora, received August 5. Choose Autonomous, the mode that acts without asking first. Then press Run the agent.",
     advanceOn: "action",
     actionLabel: "Submit the form to continue.",
     actionHref: null,
@@ -59,7 +62,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: "/approvals/*",
     anchor: "evidence-table",
     title: "Check the reading",
-    body: "Each field shows the exact words printed on the invoice. You compare what the machine read against the document itself. Approve it once the reading looks right.",
+    body: "Each field the agent read shows the exact words printed on the invoice. You compare what the machine read against the document itself. Approve it once the reading looks right.",
     advanceOn: "action",
     actionLabel: "Approve the invoice to continue.",
     actionHref: null,
@@ -107,6 +110,24 @@ export const TOUR_RESUME_COPY = {
   message:
     "You have stepped off the tour path. The tour can pick up where it left off.",
 } as const;
+
+/**
+ * Copy for the same pill on the one off-script arrival that is not a detour.
+ *
+ * Beat 5 tells the visitor to approve the invoice, and approving redirects to
+ * the run page, which no beat covers. Telling someone who just did exactly
+ * what the card asked that they have "stepped off the tour path" reads as a
+ * fault at the moment the demo is proving the opposite. The destination still
+ * comes from the step table (beat 6 owns /backend), never from here.
+ */
+export const TOUR_APPROVED_COPY = {
+  message: "Approved. The action executed.",
+  linkLabel: "Next: see it land in the books",
+} as const;
+
+/** Beat the approval hands off to, and the route approving lands on. */
+export const APPROVAL_HANDOFF_STEP_ID = "erp";
+export const APPROVAL_RETURN_ROUTE = "/runs/*";
 
 /** Words on the button that starts the walkthrough. Rendered by Lane A. */
 export const TOUR_LAUNCH_LABEL = "Take the guided tour";

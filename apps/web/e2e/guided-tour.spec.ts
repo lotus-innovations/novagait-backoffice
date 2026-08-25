@@ -80,7 +80,7 @@ test.describe("guided tour, full 8-beat walk", () => {
     // is a full document navigation, so surviving it proves the sessionStorage
     // resume rather than any in-memory state.
     const runId = await submitIntake(page, {
-      item: DOC.corvidaReporting, // INB-005
+      item: DOC.peloraCleaning, // INB-003, the beat 4 park
       mode: "autonomous",
     });
 
@@ -319,7 +319,7 @@ test.describe("guided tour containment", () => {
     await startTour(page);
     await control(page, "Next").click();
     await submitIntake(page, {
-      item: DOC.corvidaReporting,
+      item: DOC.peloraCleaning,
       mode: "autonomous",
     });
     await expectBeat(page, "The work, step by step", "run-timeline");
@@ -341,10 +341,10 @@ test.describe("guided tour containment", () => {
     // drive the real form while the tour is pointing at it. If either one
     // swallowed clicks, this check() would time out.
     await page
-      .locator(`input[name="item"][value="${DOC.corvidaReporting}"]`)
+      .locator(`input[name="item"][value="${DOC.peloraCleaning}"]`)
       .check();
     await expect(
-      page.locator(`input[name="item"][value="${DOC.corvidaReporting}"]`),
+      page.locator(`input[name="item"][value="${DOC.peloraCleaning}"]`),
     ).toBeChecked();
   });
 });
