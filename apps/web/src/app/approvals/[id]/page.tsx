@@ -19,6 +19,8 @@ function usd(cents: number): string {
 interface MatchResult {
   matched: boolean;
   exceptions: string[];
+  // Optional: approvals stored before the field shipped may lack it.
+  minor_exceptions?: string[];
 }
 
 // The approver experience (spec 12 §1, design brief F): the drafted action,
@@ -219,7 +221,12 @@ export default async function ApprovalPage({
           {match ? (
             <p>
               3-way match:{" "}
-              {match.matched ? (
+              {match.matched && (match.minor_exceptions?.length ?? 0) > 0 ? (
+                <span className="outcome-executed">
+                  matched, with minor exceptions:{" "}
+                  {(match.minor_exceptions ?? []).join(", ")}
+                </span>
+              ) : match.matched ? (
                 <span className="outcome-executed">full match</span>
               ) : (
                 <span className="outcome-held">
