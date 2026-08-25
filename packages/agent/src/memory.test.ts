@@ -32,6 +32,16 @@ describe("DedupeLedger", () => {
     expect(await ledger.check(digest)).toBe("run-1");
   });
 
+  it("keeps the first run id when a resubmission records the same digest", async () => {
+    // "First processed by" on /memory and the held-run banner both depend on
+    // this pointer surviving the duplicate run's own record() call.
+    const ledger = new DedupeLedger(new InMemoryStore());
+    const digest = contentDigest("some invoice");
+    await ledger.record(digest, "run-1");
+    await ledger.record(digest, "run-2");
+    expect(await ledger.check(digest)).toBe("run-1");
+  });
+
   it("expires entries after the TTL", async () => {
     const store = new InMemoryStore();
     const ledger = new DedupeLedger(store);

@@ -52,8 +52,18 @@ export class DedupeLedger {
     return this.store.get(this.key(digest));
   }
 
+  /**
+   * First-writer-wins: the ledger answers "which run FIRST processed this
+   * document", so a resubmission must never replace the original pointer.
+   * The TTL is refreshed either way, so a re-seen document stays remembered.
+   */
   async record(digest: string, runId: string): Promise<void> {
-    await this.store.set(this.key(digest), runId, DEDUPE_TTL_SECONDS);
+    const existing = await this.store.get(this.key(digest));
+    await this.store.set(
+      this.key(digest),
+      existing ?? runId,
+      DEDUPE_TTL_SECONDS,
+    );
   }
 }
 
