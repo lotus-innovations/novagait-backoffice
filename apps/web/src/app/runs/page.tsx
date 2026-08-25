@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatInstant } from "@/lib/format";
 import { formatMicroUsd, listRecentRuns } from "@/lib/runs";
 import { getStore } from "@/lib/runtime";
 
@@ -54,7 +55,7 @@ export default async function RunsPage() {
                   </span>
                 </td>
                 <td>{formatMicroUsd(run.total_cost_micro_usd)}</td>
-                <td>{run.started_at ?? "-"}</td>
+                <td>{formatInstant(run.started_at)}</td>
               </tr>
             ))}
           </tbody>

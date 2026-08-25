@@ -6,6 +6,7 @@ import {
   RunStateMachine,
   VendorProfileStore,
   contentDigest,
+  readTrace,
   traceKeys,
   type RunStateRecord,
   type Store,
@@ -59,4 +60,31 @@ export async function listDedupeEntries(store: Store): Promise<DedupeRow[]> {
     if (runId) rows.push({ digest, fixture, run_id: runId });
   }
   return rows.sort((a, b) => a.fixture.localeCompare(b.fixture));
+}
+
+/**
+ * The earlier run that already processed this content digest.
+ *
+ * Not a dedupe-ledger read: a duplicate run rewrites `seen:{digest}` with its
+ * own id (memory.write) before GR-DUP fires, so by render time the ledger
+ * names the duplicate, not the original. The recent-run index still holds the
+ * answer - it is append-order, so the first run before this one carrying the
+ * same input digest is the original.
+ */
+export async function findPriorRunForDigest(
+  store: Store,
+  digest: string,
+  currentRunId: string,
+): Promise<string | null> {
+  const ids = await store.listRange(traceKeys.recent(), 0, -1);
+  for (const runId of ids) {
+    if (runId === currentRunId) break;
+    const events = await readTrace(store, runId);
+    const seen = events.some(
+      (event) =>
+        event.type === "guardrail.check" && event.input_digest === digest,
+    );
+    if (seen) return runId;
+  }
+  return null;
 }

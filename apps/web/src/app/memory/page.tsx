@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatInstant } from "@/lib/format";
 import {
   listDedupeEntries,
   listRunStates,
@@ -70,7 +71,7 @@ export default async function MemoryPage() {
                   <td>{record.mode}</td>
                   <td>{record.input_ref}</td>
                   <td>{record.revision_count}</td>
-                  <td>{record.updated_at}</td>
+                  <td>{formatInstant(record.updated_at)}</td>
                 </tr>
               ))}
             </tbody>

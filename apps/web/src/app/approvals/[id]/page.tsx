@@ -6,6 +6,7 @@ import {
   type ExtractedInvoice,
 } from "@novagait/agent";
 import { readExecution } from "@novagait/pipeline";
+import { UNREADABLE_DATE_LABEL, isUnreadableDate } from "@/lib/format";
 import { getRunTrace } from "@/lib/runs";
 import { getStore } from "@/lib/runtime";
 
@@ -24,6 +25,9 @@ interface MatchResult {
 // the evidence that produced it, and three decisions. This screen is the
 // human-in-the-loop gate at the material decision point; the gate itself is
 // code (GR-EXEC), so nothing executes until a decision lands here.
+// Fields whose value can be the parser's date sentinel rather than a date.
+const DATE_FIELDS = new Set(["invoice_date", "due_date"]);
+
 const FORM_ERRORS: Record<string, string> = {
   reason_required: "A reason is required for that decision.",
   bad_gl_code: "GL code must be exactly 4 digits; nothing was executed.",
@@ -167,7 +171,13 @@ export default async function ApprovalPage({
               ).map(([field, value, spanKey]) => (
                 <tr key={field}>
                   <td>{field}</td>
-                  <td>{value}</td>
+                  <td>
+                    {DATE_FIELDS.has(field) && isUnreadableDate(value) ? (
+                      <span className="muted">{UNREADABLE_DATE_LABEL}</span>
+                    ) : (
+                      value
+                    )}
+                  </td>
                   <td>
                     {extraction.source_spans[spanKey] ? (
                       <q>{extraction.source_spans[spanKey]}</q>
@@ -181,26 +191,30 @@ export default async function ApprovalPage({
           </table>
 
           <h3>Line items</h3>
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Description</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {extraction.line_items.map((line, index) => (
-                <tr key={index}>
-                  <td>{line.description}</td>
-                  <td>{line.qty}</td>
-                  <td>{usd(line.unit_price_cents)}</td>
-                  <td>{usd(line.amount_cents)}</td>
+          {extraction.line_items.length === 0 ? (
+            <p className="muted">No line items on this document.</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Description</th>
+                  <th scope="col">Qty</th>
+                  <th scope="col">Unit</th>
+                  <th scope="col">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {extraction.line_items.map((line, index) => (
+                  <tr key={index}>
+                    <td>{line.description}</td>
+                    <td>{line.qty}</td>
+                    <td>{usd(line.unit_price_cents)}</td>
+                    <td>{usd(line.amount_cents)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
           {match ? (
             <p>

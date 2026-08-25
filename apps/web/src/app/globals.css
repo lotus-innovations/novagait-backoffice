@@ -28,7 +28,10 @@ header.site {
   border-bottom: 1px solid var(--line);
   padding: 12px 24px;
   display: flex;
-  gap: 20px;
+  /* Narrow viewports (the 320px gate) must not scroll sideways: the brand and
+     the nav wrap onto their own lines rather than forcing the page wider. */
+  flex-wrap: wrap;
+  gap: 8px 20px;
   align-items: baseline;
 }
 
@@ -38,7 +41,45 @@ header.site .brand {
 
 header.site nav {
   display: flex;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+/* Text inputs are sized in characters for the desktop forms; that intrinsic
+   width must never push the page wider than the viewport. */
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+/* The 320px gate. Tables here carry digests, run ids and timestamps: long
+   unbreakable tokens are what force a table past the viewport, so let cells
+   break them rather than turning the table into a horizontally scrollable
+   region (axe scrollable-region-focusable, WCAG 2.1.1). */
+@media (max-width: 480px) {
+  header.site {
+    padding: 12px 16px;
+  }
+
+  main {
+    padding: 16px;
+  }
+
+  footer.site {
+    padding: 14px 16px 32px;
+  }
+
+  table {
+    font-size: 0.85rem;
+    table-layout: fixed;
+  }
+
+  th,
+  td {
+    padding: 6px;
+    overflow-wrap: anywhere;
+  }
 }
 
 header.site a {
@@ -264,7 +305,9 @@ button {
 .cellbar {
   display: inline-block;
   width: 9rem;
-  max-width: 40vw;
+  /* Never wider than the cell that holds it: 40vw alone overflows the page
+     at the 320px gate width. */
+  max-width: min(40vw, 100%);
   height: 0.6rem;
   background: var(--panel);
   border-radius: 4px;

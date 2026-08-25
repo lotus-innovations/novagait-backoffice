@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getApprovalForRun } from "@novagait/agent";
+import { findPriorRunForDigest } from "@/lib/memory-views";
 import { formatMicroUsd, getRunSummary, getRunTrace } from "@/lib/runs";
 import { getStore } from "@/lib/runtime";
 
@@ -19,6 +20,22 @@ export default async function RunDetailPage({
   const approval =
     summary?.outcome === "awaiting_approval"
       ? await getApprovalForRun(store, id)
+      : null;
+
+  // A hold is an outcome the run reached, not an error page: say so, and when
+  // the dedupe guardrail caused it, name the run that got there first.
+  const held = summary?.outcome === "held";
+  const duplicateCheck = held
+    ? events.find(
+        (event) =>
+          event.type === "guardrail.check" &&
+          event.rule_id === "GR-DUP" &&
+          event.verdict === "block",
+      )
+    : undefined;
+  const duplicateOf =
+    duplicateCheck && "input_digest" in duplicateCheck
+      ? await findPriorRunForDigest(store, duplicateCheck.input_digest, id)
       : null;
 
   return (
@@ -54,6 +71,21 @@ export default async function RunDetailPage({
           </tbody>
         </table>
       )}
+      {held ? (
+        <p role="status" className="banner">
+          This run ended in a hold.
+          {duplicateOf ? (
+            <>
+              {" "}
+              This document matches one already processed by run{" "}
+              <Link href={`/runs/${duplicateOf}`}>
+                <code>{duplicateOf.slice(-8)}</code>
+              </Link>
+              .
+            </>
+          ) : null}
+        </p>
+      ) : null}
       {approval?.status === "pending" ? (
         <p role="status" className="banner" data-tour="approval-banner">
           This run is paused at the approval gate.{" "}
