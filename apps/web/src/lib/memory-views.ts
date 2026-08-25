@@ -65,11 +65,11 @@ export async function listDedupeEntries(store: Store): Promise<DedupeRow[]> {
 /**
  * The earlier run that already processed this content digest.
  *
- * Not a dedupe-ledger read: a duplicate run rewrites `seen:{digest}` with its
- * own id (memory.write) before GR-DUP fires, so by render time the ledger
- * names the duplicate, not the original. The recent-run index still holds the
- * answer - it is append-order, so the first run before this one carrying the
- * same input digest is the original.
+ * Not a dedupe-ledger read: the ledger is first-writer-wins now, but this
+ * walk predates that fix and stays because it also covers entries that
+ * expired out of the ledger (24h TTL) while the runs themselves remain. The
+ * recent-run index is append-order, so the first run before this one
+ * carrying the same input digest is the original.
  */
 export async function findPriorRunForDigest(
   store: Store,

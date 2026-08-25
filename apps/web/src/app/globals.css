@@ -53,6 +53,14 @@ textarea {
   max-width: 100%;
 }
 
+/* Fieldsets default to min-width: min-content, so a character-sized input
+   inside one ("Edit, then approve" on the approval screen) re-widens the page
+   even with the max-width above. min-width: 0 lets the fieldset shrink with
+   the viewport; the inputs inside then obey their own max-width. */
+fieldset {
+  min-width: 0;
+}
+
 /* The 320px gate. Tables here carry digests, run ids and timestamps: long
    unbreakable tokens are what force a table past the viewport, so let cells
    break them rather than turning the table into a horizontally scrollable
