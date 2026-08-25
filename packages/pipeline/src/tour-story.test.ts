@@ -39,6 +39,7 @@ describe("guided tour story spine", () => {
     // beat 4's copy would then describe a disposition the demo never reaches.
     // Pin the reason: a price variance that is nonzero but inside tolerance.
     const machine = await RunStateMachine.load(store, result.runId);
+    if (machine === null) throw new Error("run state machine not found");
     const match = machine.state.data.match as {
       exceptions: string[];
       minor_exceptions: string[];

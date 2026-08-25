@@ -166,6 +166,49 @@ describe("runMockPipeline end-to-end", () => {
     expect(await backend.paymentSchedule()).toHaveLength(1); // only the original
   });
 
+  it("keeps a processed document processed when a rerun holds it", async () => {
+    const first = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    expect(first.outcome).toBe("executed");
+    expect((await backend.getInboxItem("INB-001"))?.state).toBe("processed");
+
+    // Same document resubmitted: GR-DUP holds the run, but the paid document
+    // must not be downgraded to "held" behind the ledger row (finding 7).
+    const second = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    expect(second.outcome).toBe("held");
+    expect((await backend.getInboxItem("INB-001"))?.state).toBe("processed");
+  });
+
+  it("stamps a real iteration count on run.end, not zero", async () => {
+    const result = await runMockPipeline({
+      store,
+      backend,
+      inboxItemId: "INB-001",
+      mode: "autonomous",
+    });
+    const events = await trace(result.runId);
+    const end = events.at(-1);
+    const iterations =
+      end?.type === "run.end" ? end.iteration_count : Number.NaN;
+    const highestNode = Math.max(
+      ...events
+        .map((event) => /^agent\.iter\[(\d+)\]/.exec(event.node_id)?.[1])
+        .filter((index): index is string => index !== undefined)
+        .map(Number),
+    );
+    expect(iterations).toBe(highestNode + 1);
+    expect(iterations).toBeGreaterThan(0);
+  });
+
   it("failure toggle: transient payment failure records the real error, retries, succeeds", async () => {
     await backend.setFailureToggle(true);
     const result = await runMockPipeline({

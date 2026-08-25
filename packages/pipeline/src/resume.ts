@@ -14,8 +14,10 @@
 
 import {
   MAX_REVISIONS,
+  MEMORY_STORE_NAMES,
   RunStateMachine,
   TraceWriter,
+  VendorProfileStore,
   createApproval,
   decideApproval,
   gateExecuteAction,
@@ -48,6 +50,9 @@ export interface ResumeResult {
 const GL_CODE_RE = /^\d{4}$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const CLAIM_TTL_SECONDS = 24 * 60 * 60;
+// Trace node index for the profile write, mirroring the first-pass lane so
+// the resumed segment reads as the same step (agent.iter[3]).
+const PROFILE_WRITE_ITERATION = 3;
 
 export async function resumeRun(
   store: Store,
@@ -147,6 +152,15 @@ export async function resumeRun(
     const priorCost = Number(summary?.total_cost_micro_usd ?? 0);
     const priorIterations = Number(summary?.iteration_count ?? 0);
 
+    // The resumed segment's own tool calls carry iteration indices too; the
+    // final summary must not report fewer iterations than the trace shows.
+    let resumeIterations = 0;
+    const usedIteration = (index: number): number => {
+      resumeIterations = Math.max(resumeIterations, index + 1);
+      return index;
+    };
+    const iterationCount = () => Math.max(priorIterations, resumeIterations);
+
     const finish = async (outcome: RunOutcome): Promise<ResumeResult> => {
       await writer.append({
         type: "run.end",
@@ -157,7 +171,7 @@ export async function resumeRun(
         output_tokens: 0,
         cache_creation_input_tokens: 0,
         cache_read_input_tokens: 0,
-        iteration_count: priorIterations,
+        iteration_count: iterationCount(),
         failure_code: null,
       });
       return { runId, outcome };
@@ -179,7 +193,10 @@ export async function resumeRun(
         });
         await writer.append({
           type: "tool.call",
-          node_id: nodeIds.tool(machine.state.revision_count, "draft_action"),
+          node_id: nodeIds.tool(
+            usedIteration(machine.state.revision_count),
+            "draft_action",
+          ),
           name: "draft_action",
           args: { route: approval.route, rejection_reason: input.reason },
           result_summary: JSON.stringify({ draft_ref: revisedRef }).slice(
@@ -268,14 +285,62 @@ export async function resumeRun(
         output_tokens: 0,
         cache_creation_input_tokens: 0,
         cache_read_input_tokens: 0,
-        iteration_count: priorIterations,
+        iteration_count: iterationCount(),
         failure_code: String(error).slice(0, 120),
       });
       return { runId, outcome: "error" };
     }
+    // Audit fix (finding 4): the first-pass executed branch writes a bounded
+    // vendor profile (spec 07 §9); an approved-then-executed run has to leave
+    // the same audited trail, or /memory is empty for every human approval.
+    await writeVendorProfile(execution.vendor_id);
+
     await machine.transition("executed", {
       executed_with_edits: edits ?? null,
     });
     return finish("executed");
+
+    async function writeVendorProfile(vendorId: string): Promise<void> {
+      const profiles = new VendorProfileStore(store);
+      const canonical = (await backend.listVendors()).find(
+        (vendor) => vendor.id === vendorId,
+      )?.canonical_name;
+      const fields = { last_seen: new Date().toISOString().slice(0, 10) };
+      const started = Date.now();
+      const result = await profiles.applyUpdate(vendorId, {
+        ...fields,
+        canonical_name: canonical,
+      });
+      await writer.append({
+        type: "tool.call",
+        node_id: nodeIds.tool(
+          usedIteration(PROFILE_WRITE_ITERATION),
+          "update_vendor_profile",
+        ),
+        name: "update_vendor_profile",
+        args: { vendor_id: vendorId, fields },
+        result_summary: JSON.stringify(result).slice(0, 160),
+        duration_ms: Date.now() - started,
+        attempt: 1,
+      });
+      if (result.rejected.length > 0) {
+        // Out-of-schema fields were refused by the bounded store: recorded,
+        // not swallowed (same as the first-pass write).
+        await writer.append({
+          type: "error",
+          node_id: nodeIds.error("memory.vendor_profile"),
+          scope: "memory.vendor_profile",
+          message: `profile update fields rejected: ${result.rejected.join(", ")}`,
+          recoverable: true,
+        });
+      }
+      await writer.append({
+        type: "memory.write",
+        node_id: nodeIds.memory(MEMORY_STORE_NAMES.vendorProfiles),
+        store: MEMORY_STORE_NAMES.vendorProfiles,
+        key: `vendor:${vendorId}`,
+        field_diff: result.diff,
+      });
+    }
   }
 }

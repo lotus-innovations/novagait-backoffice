@@ -136,6 +136,12 @@ export async function runMockPipeline(
   }
 
   async function runBody(): Promise<MockPipelineResult> {
+    // Audit fix (finding 8): the run summary reported zero iterations while
+    // the timeline showed agent.iter[0..n] nodes. The mock lane has no model
+    // loop to count, so the count IS the highest tool iteration index used.
+    let maxIterationIndex = -1;
+    const iterationCount = () => maxIterationIndex + 1;
+
     const traceGuardrail = async (result: GuardrailResult) => {
       await writer.append({
         type: "guardrail.check",
@@ -180,6 +186,7 @@ export async function runMockPipeline(
       args: Record<string, unknown>,
       fn: () => Promise<T>,
     ): Promise<T> => {
+      maxIterationIndex = Math.max(maxIterationIndex, iteration);
       const started = Date.now();
       const output = await fn();
       await writer.append({
@@ -208,7 +215,7 @@ export async function runMockPipeline(
         output_tokens: 0,
         cache_creation_input_tokens: 0,
         cache_read_input_tokens: 0,
-        iteration_count: 0,
+        iteration_count: iterationCount(),
         failure_code: null,
       });
       return { runId: writer.runId, outcome, route, approvalId };

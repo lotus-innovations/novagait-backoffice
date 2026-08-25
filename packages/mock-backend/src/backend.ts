@@ -231,11 +231,18 @@ export class MockBackend {
     return enqueued;
   }
 
+  /**
+   * Audit fix (finding 7): inbox state was last-run-wins, so re-running an
+   * already-paid document downgraded it to "held" and the ERP record and the
+   * picker label disagreed. "processed" is terminal-success and sticky: the
+   * single choke point every caller goes through refuses to overwrite it.
+   */
   async setInboxState(id: string, state: InboxItem["state"]): Promise<void> {
     await this.friction();
     const items = (await this.readJson<InboxItem[]>(KEYS.inbox)) ?? [];
     const item = items.find((candidate) => candidate.id === id);
     if (!item) throw new Error(`unknown inbox item: ${id}`);
+    if (item.state === "processed" && state !== "processed") return;
     item.state = state;
     await this.writeJson(KEYS.inbox, items);
   }

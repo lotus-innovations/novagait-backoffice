@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   InMemoryStore,
   RunStateMachine,
+  VendorProfileStore,
   getApprovalForRun,
   readTrace,
 } from "@novagait/agent";
@@ -60,6 +61,43 @@ describe("resumeRun", () => {
 
     const machine = await RunStateMachine.load(store, parked.runId);
     expect(machine?.state.step).toBe("executed");
+  });
+
+  it("human approval writes the vendor profile and traces it", async () => {
+    // INB-003 (Pelora, V-005) parks for approval in assisted mode; before the
+    // fix an approved-and-executed run left /memory empty (finding 4).
+    const parked = await parkRun("INB-003");
+    const resumed = await resumeRun(store, backend, parked.runId, {
+      approvalId: parked.approvalId!,
+      actor: "visitor:test",
+      decision: "approve",
+      reason: "ok",
+    });
+    expect(resumed.outcome).toBe("executed");
+
+    const profile = await new VendorProfileStore(store).get("V-005");
+    expect(profile).toBeTruthy();
+    expect(profile?.last_seen).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(profile?.canonical_name).toBe("Pelora Facilities Group");
+
+    const events = await readTrace(store, parked.runId);
+    const afterDecision = events.slice(
+      events.findIndex((event) => event.type === "approval.decided"),
+    );
+    expect(
+      afterDecision.some(
+        (event) =>
+          event.type === "tool.call" && event.name === "update_vendor_profile",
+      ),
+    ).toBe(true);
+    expect(
+      afterDecision.some(
+        (event) =>
+          event.type === "memory.write" && event.key === "vendor:V-005",
+      ),
+    ).toBe(true);
+    const end = events.at(-1);
+    expect(end?.type === "run.end" && end.iteration_count).toBeGreaterThan(0);
   });
 
   it("edit-then-approve applies GL and pay-date edits to the payment", async () => {

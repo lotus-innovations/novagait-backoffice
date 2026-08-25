@@ -49,6 +49,19 @@ describe("MockBackend", () => {
     expect(seen.size).toBe(PURCHASE_ORDERS.length);
   });
 
+  it("refuses to downgrade a processed inbox item (sticky terminal state)", async () => {
+    await backend.setInboxState("INB-001", "processed");
+    await backend.setInboxState("INB-001", "held");
+    expect((await backend.getInboxItem("INB-001"))?.state).toBe("processed");
+    await backend.setInboxState("INB-001", "processing");
+    expect((await backend.getInboxItem("INB-001"))?.state).toBe("processed");
+    // Non-terminal states still move freely.
+    await backend.setInboxState("INB-002", "held");
+    expect((await backend.getInboxItem("INB-002"))?.state).toBe("held");
+    await backend.setInboxState("INB-002", "processed");
+    expect((await backend.getInboxItem("INB-002"))?.state).toBe("processed");
+  });
+
   it("enforces ledger uniqueness on vendor + invoice number", async () => {
     expect(await backend.invoiceExists("V-001", "CB-2026-0703")).toBe(true);
     await expect(
