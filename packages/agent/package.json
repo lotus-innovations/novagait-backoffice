@@ -9,8 +9,8 @@
     "gen:kb": "node scripts/generate-kb.mjs && prettier --write src/kb.generated.ts"
   },
   "dependencies": {
-    "@upstash/redis": "^1.38.0",
-    "@anthropic-ai/sdk": "0.115.0",
-    "zod": "^4.4.3"
+    "@upstash/redis": "^1.38.4",
+    "@anthropic-ai/sdk": "0.125.0",
+    "zod": "^4.6.2"
   }
 }
